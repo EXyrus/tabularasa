@@ -3,11 +3,11 @@ import React from 'react';
 import { Button, Typography, Space, Divider, Card, Row, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { 
-  BookOpenIcon, 
-  BriefcaseIcon, 
-  UserGroupIcon, 
-  ShieldCheckIcon, 
-  AcademicCapIcon 
+  BookOpen, 
+  Briefcase, 
+  Users, 
+  ShieldCheck, 
+  GraduationCap 
 } from 'lucide-react';
 
 const { Title, Paragraph } = Typography;
@@ -66,7 +66,7 @@ const LandingPage: React.FC = () => {
               <Card className="h-full hover:shadow-md transition-shadow">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-sms-blue mb-4">
-                    <AcademicCapIcon size={32} />
+                    <GraduationCap size={32} />
                   </div>
                   <Title level={4}>Academic Management</Title>
                   <Paragraph className="text-gray-600">
@@ -79,7 +79,7 @@ const LandingPage: React.FC = () => {
               <Card className="h-full hover:shadow-md transition-shadow">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
-                    <UserGroupIcon size={32} />
+                    <Users size={32} />
                   </div>
                   <Title level={4}>Attendance Tracking</Title>
                   <Paragraph className="text-gray-600">
@@ -92,7 +92,7 @@ const LandingPage: React.FC = () => {
               <Card className="h-full hover:shadow-md transition-shadow">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 text-orange-600 mb-4">
-                    <ShieldCheckIcon size={32} />
+                    <ShieldCheck size={32} />
                   </div>
                   <Title level={4}>Fee Management</Title>
                   <Paragraph className="text-gray-600">
@@ -105,7 +105,7 @@ const LandingPage: React.FC = () => {
               <Card className="h-full hover:shadow-md transition-shadow">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 text-purple-600 mb-4">
-                    <BookOpenIcon size={32} />
+                    <BookOpen size={32} />
                   </div>
                   <Title level={4}>Class Management</Title>
                   <Paragraph className="text-gray-600">
@@ -118,7 +118,7 @@ const LandingPage: React.FC = () => {
               <Card className="h-full hover:shadow-md transition-shadow">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-red-600 mb-4">
-                    <BriefcaseIcon size={32} />
+                    <Briefcase size={32} />
                   </div>
                   <Title level={4}>Event Management</Title>
                   <Paragraph className="text-gray-600">
