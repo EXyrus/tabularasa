@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Typography, Card, Row, Col, Statistic, Space, List, Avatar } from 'antd';
 import { 
@@ -23,14 +22,12 @@ const InstitutionDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  // Mock data for statistics
   const stats = [
     { title: 'Total Students', value: 856, icon: <TeamOutlined />, color: 'text-blue-500' },
     { title: 'Classes', value: 42, icon: <BookOutlined />, color: 'text-green-500' },
     { title: 'Attendance', value: '94%', icon: <CheckCircleOutlined />, color: 'text-purple-500' },
   ];
   
-  // Mock data for menu items
   const menuItems = [
     { 
       title: 'Control Panel', 
@@ -70,14 +67,12 @@ const InstitutionDashboard: React.FC = () => {
     },
   ];
   
-  // Mock data for upcoming events
   const upcomingEvents = [
     { id: 1, title: 'Parent-Teacher Meeting', date: '2023-05-15', time: '14:00 - 16:00' },
     { id: 2, title: 'Science Fair', date: '2023-05-20', time: '09:00 - 15:00' },
     { id: 3, title: 'Board Meeting', date: '2023-05-25', time: '13:00 - 14:30' },
   ];
   
-  // Mock data for recent activities
   const recentActivities = [
     { id: 1, user: 'Jane Smith', action: 'Added new student', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
     { id: 2, user: 'Mike Johnson', action: 'Updated class schedule', time: '5 hours ago', avatar: 'https://randomuser.me/api/portraits/men/35.jpg' },
@@ -103,7 +98,6 @@ const InstitutionDashboard: React.FC = () => {
           <Text type="secondary">Overview of school performance and activities</Text>
         </div>
         
-        {/* Stats Cards */}
         <Row gutter={[16, 16]} className="mb-8">
           {stats.map((stat, index) => (
             <Col xs={24} sm={8} key={index}>
@@ -123,7 +117,6 @@ const InstitutionDashboard: React.FC = () => {
           ))}
         </Row>
         
-        {/* Menu Items */}
         <div className="mb-8">
           <Title level={5} className="mb-4">Quick Access</Title>
           <Row gutter={[16, 16]}>
@@ -147,9 +140,7 @@ const InstitutionDashboard: React.FC = () => {
           </Row>
         </div>
         
-        {/* Two column layout for desktop */}
         <Row gutter={[16, 16]}>
-          {/* Upcoming Events */}
           <Col xs={24} md={12}>
             <Card 
               title={
@@ -165,28 +156,26 @@ const InstitutionDashboard: React.FC = () => {
                 renderItem={item => (
                   <ListItemWithContext
                     key={item.id}
-                    content={
-                      <div className="w-full">
-                        <div className="flex justify-between items-center mb-1">
-                          <Text strong>{item.title}</Text>
-                          <Text type="secondary">{item.date}</Text>
-                        </div>
-                        <Text type="secondary">{item.time}</Text>
-                      </div>
-                    }
                     menuItems={[
                       { label: 'View Details', key: 'view' },
                       { label: 'Edit Event', key: 'edit' },
                       { label: 'Delete Event', key: 'delete', danger: true }
                     ]}
                     onMenuClick={(key) => console.log(`Event ${item.id}: ${key}`)}
-                  />
+                  >
+                    <div className="w-full">
+                      <div className="flex justify-between items-center mb-1">
+                        <Text strong>{item.title}</Text>
+                        <Text type="secondary">{item.date}</Text>
+                      </div>
+                      <Text type="secondary">{item.time}</Text>
+                    </div>
+                  </ListItemWithContext>
                 )}
               />
             </Card>
           </Col>
           
-          {/* Recent Activities */}
           <Col xs={24} md={12}>
             <Card 
               title="Recent Activities" 
@@ -197,23 +186,22 @@ const InstitutionDashboard: React.FC = () => {
                 renderItem={item => (
                   <ListItemWithContext
                     key={item.id}
-                    content={
-                      <div className="flex items-center w-full">
-                        <Avatar src={item.avatar} />
-                        <div className="ml-3 flex-grow">
-                          <div>{item.user}</div>
-                          <div className="text-gray-500">{item.action}</div>
-                        </div>
-                        <Text type="secondary">{item.time}</Text>
-                      </div>
-                    }
                     menuItems={[
                       { label: 'View Details', key: 'view' },
                       { label: 'Mark as Read', key: 'mark-read' },
                       { label: 'Remove', key: 'remove', danger: true }
                     ]}
                     onMenuClick={(key) => console.log(`Activity ${item.id}: ${key}`)}
-                  />
+                  >
+                    <div className="flex items-center w-full">
+                      <Avatar src={item.avatar} />
+                      <div className="ml-3 flex-grow">
+                        <div>{item.user}</div>
+                        <div className="text-gray-500">{item.action}</div>
+                      </div>
+                      <Text type="secondary">{item.time}</Text>
+                    </div>
+                  </ListItemWithContext>
                 )}
               />
             </Card>

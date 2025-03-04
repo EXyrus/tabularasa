@@ -14,7 +14,7 @@ export interface ContextMenuItem {
 }
 
 interface ListItemWithContextProps {
-  title: string;
+  title?: string;
   description?: string;
   icon?: React.ReactNode;
   onClick?: () => void;
@@ -23,6 +23,8 @@ interface ListItemWithContextProps {
   active?: boolean;
   disabled?: boolean;
   extra?: React.ReactNode;
+  children?: React.ReactNode;
+  onMenuClick?: (key: string) => void;
 }
 
 export const ListItemWithContext: React.FC<ListItemWithContextProps> = ({
@@ -35,14 +37,20 @@ export const ListItemWithContext: React.FC<ListItemWithContextProps> = ({
   active = false,
   disabled = false,
   extra,
+  children,
+  onMenuClick,
 }) => {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
 
   const handleMenuClick = (e: any) => {
     e.domEvent.stopPropagation();
-    const item = menuItems.find(item => item.key === e.key);
-    if (item && item.onClick) {
-      item.onClick();
+    if (onMenuClick) {
+      onMenuClick(e.key);
+    } else {
+      const item = menuItems.find(item => item.key === e.key);
+      if (item && item.onClick) {
+        item.onClick();
+      }
     }
     setMenuVisible(false);
   };
@@ -79,19 +87,25 @@ export const ListItemWithContext: React.FC<ListItemWithContextProps> = ({
       <div className="flex items-center flex-1">
         {icon && <div className="mr-3">{icon}</div>}
         <div className="flex-1 min-w-0">
-          <Typography.Text
-            className="block font-medium text-gray-900"
-            ellipsis={{ tooltip: title }}
-          >
-            {title}
-          </Typography.Text>
-          {description && (
-            <Typography.Text
-              className="block text-sm text-gray-500"
-              ellipsis={{ tooltip: description }}
-            >
-              {description}
-            </Typography.Text>
+          {children || (
+            <>
+              {title && (
+                <Typography.Text
+                  className="block font-medium text-gray-900"
+                  ellipsis={{ tooltip: title }}
+                >
+                  {title}
+                </Typography.Text>
+              )}
+              {description && (
+                <Typography.Text
+                  className="block text-sm text-gray-500"
+                  ellipsis={{ tooltip: description }}
+                >
+                  {description}
+                </Typography.Text>
+              )}
+            </>
           )}
         </div>
       </div>

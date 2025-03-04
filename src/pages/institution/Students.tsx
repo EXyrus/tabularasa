@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Typography, Card, Button, Form, Input, DatePicker, Select, Row, Col, Modal } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -32,7 +31,6 @@ const InstitutionStudents: React.FC = () => {
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [form] = Form.useForm();
   
-  // Mock data for students
   const [students, setStudents] = useState<Student[]>([
     { 
       id: '1', 
@@ -149,14 +147,12 @@ const InstitutionStudents: React.FC = () => {
     };
     
     if (editingStudent) {
-      // Update existing student
       const updatedStudents = students.map(student => 
         student.id === editingStudent.id ? formattedValues : student
       );
       setStudents(updatedStudents);
       setFilteredStudents(updatedStudents);
     } else {
-      // Add new student
       const newStudents = [...students, formattedValues];
       setStudents(newStudents);
       setFilteredStudents(newStudents);
@@ -201,7 +197,7 @@ const InstitutionStudents: React.FC = () => {
             <SearchableSelect
               placeholder="Search students by name, grade or section"
               onSearch={handleSearch}
-              style={{ width: '100%' }}
+              className="w-full"
               options={students.map(student => ({
                 value: student.id,
                 label: `${student.name} (Grade ${student.grade}-${student.section})`
@@ -221,25 +217,6 @@ const InstitutionStudents: React.FC = () => {
           {filteredStudents.map(student => (
             <ListItemWithContext
               key={student.id}
-              content={
-                <div className="flex items-center w-full py-2">
-                  <div className="flex-shrink-0 mr-4">
-                    <img 
-                      src={student.photo || 'https://randomuser.me/api/portraits/lego/1.jpg'} 
-                      alt={student.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-grow">
-                    <div className="font-medium">{student.name}</div>
-                    <div className="text-gray-500">Grade {student.grade}-{student.section} | {student.age} yrs</div>
-                  </div>
-                  <div className="text-right">
-                    <div>{student.guardianName}</div>
-                    <div className="text-gray-500">{student.contactNo}</div>
-                  </div>
-                </div>
-              }
               menuItems={[
                 { label: 'View Details', key: 'view' },
                 { label: 'Edit Student', key: 'edit' },
@@ -251,11 +228,28 @@ const InstitutionStudents: React.FC = () => {
                 } else if (key === 'delete') {
                   handleDelete(student.id);
                 } else if (key === 'view') {
-                  // View details functionality
                   console.log('View student:', student);
                 }
               }}
-            />
+            >
+              <div className="flex items-center w-full py-2">
+                <div className="flex-shrink-0 mr-4">
+                  <img 
+                    src={student.photo || 'https://randomuser.me/api/portraits/lego/1.jpg'} 
+                    alt={student.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                </div>
+                <div className="flex-grow">
+                  <div className="font-medium">{student.name}</div>
+                  <div className="text-gray-500">Grade {student.grade}-{student.section} | {student.age} yrs</div>
+                </div>
+                <div className="text-right">
+                  <div>{student.guardianName}</div>
+                  <div className="text-gray-500">{student.contactNo}</div>
+                </div>
+              </div>
+            </ListItemWithContext>
           ))}
           
           {filteredStudents.length === 0 && (

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Typography, Card, Button, Form, Input, DatePicker, Select, Row, Col, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -31,7 +30,6 @@ const InstitutionEmployees: React.FC = () => {
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [form] = Form.useForm();
   
-  // Mock data for employees
   const [employees, setEmployees] = useState<Employee[]>([
     { 
       id: '1', 
@@ -143,14 +141,12 @@ const InstitutionEmployees: React.FC = () => {
     };
     
     if (editingEmployee) {
-      // Update existing employee
       const updatedEmployees = employees.map(employee => 
         employee.id === editingEmployee.id ? formattedValues : employee
       );
       setEmployees(updatedEmployees);
       setFilteredEmployees(updatedEmployees);
     } else {
-      // Add new employee
       const newEmployees = [...employees, formattedValues];
       setEmployees(newEmployees);
       setFilteredEmployees(newEmployees);
@@ -195,7 +191,7 @@ const InstitutionEmployees: React.FC = () => {
             <SearchableSelect
               placeholder="Search employees by name, position or department"
               onSearch={handleSearch}
-              style={{ width: '100%' }}
+              className="w-full"
               options={employees.map(employee => ({
                 value: employee.id,
                 label: `${employee.name} (${employee.position})`
@@ -215,33 +211,6 @@ const InstitutionEmployees: React.FC = () => {
           {filteredEmployees.map(employee => (
             <ListItemWithContext
               key={employee.id}
-              content={
-                <div className="flex items-center w-full py-2">
-                  <div className="flex-shrink-0 mr-4">
-                    <img 
-                      src={employee.photo || 'https://randomuser.me/api/portraits/lego/1.jpg'} 
-                      alt={employee.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-grow">
-                    <div className="font-medium">{employee.name}</div>
-                    <div className="text-gray-500">{employee.position} | {employee.department}</div>
-                  </div>
-                  <div className="text-right">
-                    <div>{employee.email}</div>
-                    <div className="text-gray-500">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        employee.status === 'active' ? 'bg-green-100 text-green-800' : 
-                        employee.status === 'on leave' ? 'bg-yellow-100 text-yellow-800' : 
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              }
               menuItems={[
                 { label: 'View Details', key: 'view' },
                 { label: 'Edit Employee', key: 'edit' },
@@ -253,11 +222,36 @@ const InstitutionEmployees: React.FC = () => {
                 } else if (key === 'delete') {
                   handleDelete(employee.id);
                 } else if (key === 'view') {
-                  // View details functionality
                   console.log('View employee:', employee);
                 }
               }}
-            />
+            >
+              <div className="flex items-center w-full py-2">
+                <div className="flex-shrink-0 mr-4">
+                  <img 
+                    src={employee.photo || 'https://randomuser.me/api/portraits/lego/1.jpg'} 
+                    alt={employee.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                </div>
+                <div className="flex-grow">
+                  <div className="font-medium">{employee.name}</div>
+                  <div className="text-gray-500">{employee.position} | {employee.department}</div>
+                </div>
+                <div className="text-right">
+                  <div>{employee.email}</div>
+                  <div className="text-gray-500">
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      employee.status === 'active' ? 'bg-green-100 text-green-800' : 
+                      employee.status === 'on leave' ? 'bg-yellow-100 text-yellow-800' : 
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </ListItemWithContext>
           ))}
           
           {filteredEmployees.length === 0 && (

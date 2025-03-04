@@ -23,6 +23,8 @@ interface SearchableSelectProps {
   renderOption?: (option: SelectOption) => React.ReactNode;
   filterOption?: (input: string, option: SelectOption) => boolean;
   notFoundContent?: React.ReactNode;
+  style?: React.CSSProperties;
+  allowClear?: boolean;
 }
 
 export const SearchableSelect: React.FC<SearchableSelectProps> = ({
@@ -38,6 +40,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   renderOption,
   filterOption,
   notFoundContent,
+  style,
+  allowClear,
 }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
@@ -94,6 +98,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   return (
     <Select
       className={cn('w-full', className)}
+      style={style}
       showSearch
       value={value}
       open={open}
@@ -105,7 +110,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
       searchValue={searchText}
       loading={loading}
       disabled={disabled}
-      allowClear={!required}
+      allowClear={allowClear ?? !required}
       onClear={handleClear}
       dropdownRender={menu => (
         <div>
