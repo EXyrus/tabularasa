@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,9 +6,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute, PublicRoute } from "./utils/routeGuard";
 import ErrorBoundary from "./components/ErrorBoundary";
+import UpdateNotification from "./components/UpdateNotification";
 
 // Landing Page
 import LandingPage from "./pages/LandingPage";
+import InstitutionSignup from "./pages/InstitutionSignup";
 
 // Auth pages
 import Login from "./pages/Login";
@@ -40,10 +41,14 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <UpdateNotification />
           <BrowserRouter>
             <Routes>
               {/* Landing page */}
               <Route path="/" element={<LandingPage />} />
+              
+              {/* Institution Signup */}
+              <Route path="/institution-signup" element={<InstitutionSignup />} />
               
               {/* Vendor Routes */}
               <Route path="/vendor/login" element={
