@@ -1,15 +1,25 @@
-
 interface UpdateEvent {
-  type: 'UPDATE_AVAILABLE' | 'UPDATE_READY' | 'OFFLINE' | 'ONLINE';
+  type: 'UPDATE_AVAILABLE' | 'UPDATE_READY' | 'OFFLINE' | 'ONLINE' | 'INSTALLABLE';
   registration?: ServiceWorkerRegistration;
+  deferredPrompt?: BeforeInstallPromptEvent;
 }
 
 type UpdateCallback = (event: UpdateEvent) => void;
+
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
 
 class PWAManager {
   private updateCallbacks: UpdateCallback[] = [];
   private registration: ServiceWorkerRegistration | null = null;
   private refreshing = false;
+  private deferredPrompt: BeforeInstallPromptEvent | null = null;
 
   constructor() {
     // Handle page refresh when new service worker is activated
@@ -31,6 +41,19 @@ class PWAManager {
       if (!this.refreshing) {
         window.location.reload();
       }
+    });
+
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Store the event so it can be triggered later
+      this.deferredPrompt = e as BeforeInstallPromptEvent;
+      // Notify listeners that the app is installable
+      this.notifyListeners({ 
+        type: 'INSTALLABLE', 
+        deferredPrompt: this.deferredPrompt 
+      });
     });
   }
 
@@ -84,6 +107,24 @@ class PWAManager {
       // Send message to service worker to skip waiting and activate new version
       this.registration.waiting.postMessage({ type: 'SKIP_WAITING' });
     }
+  };
+
+  public promptInstall = async (): Promise<boolean> => {
+    if (!this.deferredPrompt) {
+      console.log('Install prompt not available');
+      return false;
+    }
+
+    // Show the install prompt
+    this.deferredPrompt.prompt();
+
+    // Wait for the user to respond to the prompt
+    const choiceResult = await this.deferredPrompt.userChoice;
+    
+    // Clear the saved prompt
+    this.deferredPrompt = null;
+
+    return choiceResult.outcome === 'accepted';
   };
 
   public onUpdate = (callback: UpdateCallback): () => void => {

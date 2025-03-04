@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,9 +26,14 @@ import CreateInstitution from "./pages/vendor/CreateInstitution";
 import InstitutionDashboard from "./pages/institution/Dashboard";
 import InstitutionStudents from "./pages/institution/Students";
 import InstitutionEmployees from "./pages/institution/Employees";
+import AttendancePage from "./pages/institution/Attendance";
 
 // Guardian pages
 import GuardianDashboard from "./pages/guardian/Dashboard";
+import GuardianFinances from "./pages/guardian/Finances";
+import GuardianStudents from "./pages/guardian/Students";
+import GuardianNotifications from "./pages/guardian/Notifications";
+import GuardianAccount from "./pages/guardian/Account";
 
 // Not Found page
 import NotFound from "./pages/NotFound";
@@ -108,6 +114,11 @@ const App = () => (
                   <InstitutionEmployees />
                 </ProtectedRoute>
               } />
+              <Route path="/institution/attendance" element={
+                <ProtectedRoute appType="institution">
+                  <AttendancePage />
+                </ProtectedRoute>
+              } />
               
               {/* Guardian Routes */}
               <Route path="/guardian/login" element={
@@ -128,6 +139,26 @@ const App = () => (
               <Route path="/guardian/dashboard" element={
                 <ProtectedRoute appType="guardian">
                   <GuardianDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/guardian/finances" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianFinances />
+                </ProtectedRoute>
+              } />
+              <Route path="/guardian/students" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianStudents />
+                </ProtectedRoute>
+              } />
+              <Route path="/guardian/notifications" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianNotifications />
+                </ProtectedRoute>
+              } />
+              <Route path="/guardian/account" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianAccount />
                 </ProtectedRoute>
               } />
               

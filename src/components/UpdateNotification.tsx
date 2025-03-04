@@ -2,11 +2,13 @@
 import { useState, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 import pwaManager from '@/utils/pwaManager';
 
 const UpdateNotification = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isInstallable, setIsInstallable] = useState(false);
 
   useEffect(() => {
     // Initialize PWA and listen for updates
@@ -41,6 +43,20 @@ const UpdateNotification = () => {
           variant: "destructive",
           duration: 0
         });
+      } else if (event.type === 'INSTALLABLE') {
+        setIsInstallable(true);
+        
+        // Show install prompt toast
+        toast({
+          title: "Install TabR App",
+          description: "Add TabR to your home screen for easier access",
+          action: (
+            <Button variant="default" size="sm" onClick={handleInstall}>
+              Install
+            </Button>
+          ),
+          duration: 10000
+        });
       }
     });
     
@@ -50,6 +66,18 @@ const UpdateNotification = () => {
 
   const handleUpdate = () => {
     pwaManager.installUpdate();
+  };
+
+  const handleInstall = async () => {
+    const installed = await pwaManager.promptInstall();
+    if (installed) {
+      setIsInstallable(false);
+      toast({
+        title: "Installation successful",
+        description: "TabR has been added to your home screen",
+        duration: 3000
+      });
+    }
   };
 
   return (
@@ -66,6 +94,17 @@ const UpdateNotification = () => {
             className="shadow-lg animate-pulse bg-blue-600 hover:bg-blue-700"
           >
             Update Now
+          </Button>
+        </div>
+      )}
+      {isInstallable && (
+        <div className="fixed bottom-16 left-4 z-50">
+          <Button 
+            onClick={handleInstall}
+            className="shadow-lg bg-green-600 hover:bg-green-700"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Install App
           </Button>
         </div>
       )}

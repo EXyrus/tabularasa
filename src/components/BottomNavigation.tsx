@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { HomeOutlined, TeamOutlined, FileTextOutlined, SettingOutlined } from '@ant-design/icons';
+import { HomeOutlined, TeamOutlined, BellOutlined, DollarOutlined, UserOutlined, FileTextOutlined, SettingOutlined, CalendarOutlined } from '@ant-design/icons';
 
 type AppType = 'vendor' | 'institution' | 'guardian';
 
@@ -26,14 +26,15 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ appType }) => {
     institution: [
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
       { icon: <TeamOutlined />, label: 'Students', path: `${basePath}/students` },
-      { icon: <FileTextOutlined />, label: 'Classes', path: `${basePath}/classes` },
+      { icon: <CalendarOutlined />, label: 'Attendance', path: `${basePath}/attendance` },
       { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
     ],
     guardian: [
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
-      { icon: <TeamOutlined />, label: 'Children', path: `${basePath}/children` },
-      { icon: <FileTextOutlined />, label: 'Activities', path: `${basePath}/activities` },
-      { icon: <SettingOutlined />, label: 'Profile', path: `${basePath}/profile` },
+      { icon: <DollarOutlined />, label: 'Finances', path: `${basePath}/finances` },
+      { icon: <TeamOutlined />, label: 'Students', path: `${basePath}/students` },
+      { icon: <BellOutlined />, label: 'Notifications', path: `${basePath}/notifications` },
+      { icon: <UserOutlined />, label: 'Account', path: `${basePath}/account` },
     ],
   };
 
