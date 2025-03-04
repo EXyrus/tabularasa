@@ -1,21 +1,73 @@
 
 import React from 'react';
 import { Typography, Card, Row, Col, Statistic, Space, List, Avatar } from 'antd';
-import { TeamOutlined, BookOutlined, CalendarOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { 
+  TeamOutlined, 
+  BookOutlined, 
+  CalendarOutlined, 
+  CheckCircleOutlined, 
+  SettingOutlined, 
+  DollarOutlined, 
+  UserOutlined, 
+  BellOutlined 
+} from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import HeaderBar from '../../components/HeaderBar';
 import BottomNavigation from '../../components/BottomNavigation';
 import { useAuth } from '../../context/AuthContext';
+import ListItemWithContext from '../../components/ListItemWithContext';
 
 const { Title, Text } = Typography;
 
 const InstitutionDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   // Mock data for statistics
   const stats = [
     { title: 'Total Students', value: 856, icon: <TeamOutlined />, color: 'text-blue-500' },
     { title: 'Classes', value: 42, icon: <BookOutlined />, color: 'text-green-500' },
     { title: 'Attendance', value: '94%', icon: <CheckCircleOutlined />, color: 'text-purple-500' },
+  ];
+  
+  // Mock data for menu items
+  const menuItems = [
+    { 
+      title: 'Control Panel', 
+      icon: <SettingOutlined className="text-blue-500" />, 
+      path: '/institution/control-panel',
+      description: 'System settings and configuration'
+    },
+    { 
+      title: 'Finances', 
+      icon: <DollarOutlined className="text-green-500" />, 
+      path: '/institution/finances',
+      description: 'Manage fees, payments and expenses'
+    },
+    { 
+      title: 'Students', 
+      icon: <TeamOutlined className="text-orange-500" />, 
+      path: '/institution/students',
+      description: 'Student records and information'
+    },
+    { 
+      title: 'Employees', 
+      icon: <UserOutlined className="text-purple-500" />, 
+      path: '/institution/employees',
+      description: 'Staff and teacher management'
+    },
+    { 
+      title: 'Class Management', 
+      icon: <BookOutlined className="text-red-500" />, 
+      path: '/institution/classes',
+      description: 'Schedules, subjects and curriculum'
+    },
+    { 
+      title: 'Events/Notifications', 
+      icon: <BellOutlined className="text-amber-500" />, 
+      path: '/institution/events',
+      description: 'School events and announcements'
+    },
   ];
   
   // Mock data for upcoming events
@@ -32,6 +84,10 @@ const InstitutionDashboard: React.FC = () => {
     { id: 3, user: 'Sarah Williams', action: 'Sent report to parents', time: '1 day ago', avatar: 'https://randomuser.me/api/portraits/women/68.jpg' },
     { id: 4, user: 'David Clark', action: 'Created new announcement', time: '2 days ago', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
   ];
+
+  const handleMenuItemClick = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <>
@@ -67,6 +123,30 @@ const InstitutionDashboard: React.FC = () => {
           ))}
         </Row>
         
+        {/* Menu Items */}
+        <div className="mb-8">
+          <Title level={5} className="mb-4">Quick Access</Title>
+          <Row gutter={[16, 16]}>
+            {menuItems.map((item, index) => (
+              <Col xs={24} sm={12} md={8} key={index}>
+                <Card 
+                  hoverable 
+                  className="shadow-sm h-full cursor-pointer"
+                  onClick={() => handleMenuItemClick(item.path)}
+                >
+                  <div className="flex items-center mb-2">
+                    <div className="text-2xl mr-3">{item.icon}</div>
+                    <div>
+                      <Title level={5} className="!mb-0">{item.title}</Title>
+                      <Text type="secondary">{item.description}</Text>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
+        
         {/* Two column layout for desktop */}
         <Row gutter={[16, 16]}>
           {/* Upcoming Events */}
@@ -83,15 +163,24 @@ const InstitutionDashboard: React.FC = () => {
               <List
                 dataSource={upcomingEvents}
                 renderItem={item => (
-                  <List.Item>
-                    <div className="w-full">
-                      <div className="flex justify-between items-center mb-1">
-                        <Text strong>{item.title}</Text>
-                        <Text type="secondary">{item.date}</Text>
+                  <ListItemWithContext
+                    key={item.id}
+                    content={
+                      <div className="w-full">
+                        <div className="flex justify-between items-center mb-1">
+                          <Text strong>{item.title}</Text>
+                          <Text type="secondary">{item.date}</Text>
+                        </div>
+                        <Text type="secondary">{item.time}</Text>
                       </div>
-                      <Text type="secondary">{item.time}</Text>
-                    </div>
-                  </List.Item>
+                    }
+                    menuItems={[
+                      { label: 'View Details', key: 'view' },
+                      { label: 'Edit Event', key: 'edit' },
+                      { label: 'Delete Event', key: 'delete', danger: true }
+                    ]}
+                    onMenuClick={(key) => console.log(`Event ${item.id}: ${key}`)}
+                  />
                 )}
               />
             </Card>
@@ -106,14 +195,25 @@ const InstitutionDashboard: React.FC = () => {
               <List
                 dataSource={recentActivities}
                 renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.avatar} />}
-                      title={item.user}
-                      description={item.action}
-                    />
-                    <Text type="secondary">{item.time}</Text>
-                  </List.Item>
+                  <ListItemWithContext
+                    key={item.id}
+                    content={
+                      <div className="flex items-center w-full">
+                        <Avatar src={item.avatar} />
+                        <div className="ml-3 flex-grow">
+                          <div>{item.user}</div>
+                          <div className="text-gray-500">{item.action}</div>
+                        </div>
+                        <Text type="secondary">{item.time}</Text>
+                      </div>
+                    }
+                    menuItems={[
+                      { label: 'View Details', key: 'view' },
+                      { label: 'Mark as Read', key: 'mark-read' },
+                      { label: 'Remove', key: 'remove', danger: true }
+                    ]}
+                    onMenuClick={(key) => console.log(`Activity ${item.id}: ${key}`)}
+                  />
                 )}
               />
             </Card>

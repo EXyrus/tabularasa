@@ -1,8 +1,8 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Typography, Divider, Space } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -18,10 +18,19 @@ interface AuthFormProps {
 
 const AuthForm: React.FC<AuthFormProps> = ({ appType, formType, onSubmit, loading = false }) => {
   const [form] = Form.useForm();
+  const { appType: routeAppType } = useParams<{ appType?: AppType }>();
+  
+  // Reset form when appType or formType changes
+  useEffect(() => {
+    form.resetFields();
+  }, [appType, formType, form]);
 
   // Get app-specific styling
   const getAppColor = () => {
-    switch (appType) {
+    // Ensure we use the most recent app type (from props or route)
+    const currentAppType = routeAppType || appType;
+    
+    switch (currentAppType) {
       case 'vendor':
         return 'bg-sms-vendor hover:bg-sms-vendor/90';
       case 'institution':
@@ -47,17 +56,20 @@ const AuthForm: React.FC<AuthFormProps> = ({ appType, formType, onSubmit, loadin
     }
   };
 
+  // Ensure we use the most recent app type (from props or route)
+  const currentAppType = routeAppType || appType;
+
   return (
     <div className="max-w-md w-full mx-auto p-8 card-glass animate-scale-in">
       <div className="text-center mb-6">
         <div className={`w-16 h-1 mx-auto ${getAppColor().split(' ')[0]} rounded-full mb-4`}></div>
         <Title level={3} className="!mb-2">{getTitle()}</Title>
-        <Text type="secondary" className="block mb-6 capitalize">{appType} Portal</Text>
+        <Text type="secondary" className="block mb-6 capitalize">{currentAppType} Portal</Text>
       </div>
 
       <Form
         form={form}
-        name={`${appType}-${formType}`}
+        name={`${currentAppType}-${formType}`}
         onFinish={onSubmit}
         layout="vertical"
         requiredMark={false}
@@ -181,12 +193,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ appType, formType, onSubmit, loadin
         <div className="text-center">
           {formType === 'login' && (
             <Space direction="vertical" size="middle" className="w-full">
-              <Link to={`/${appType}/forgot-password`} className="text-sms-blue hover:underline">
+              <Link to={`/${currentAppType}/forgot-password`} className="text-sms-blue hover:underline">
                 Forgot password?
               </Link>
               <Text type="secondary">
                 Don't have an account?{' '}
-                <Link to={`/${appType}/register`} className="text-sms-blue hover:underline">
+                <Link to={`/${currentAppType}/register`} className="text-sms-blue hover:underline">
                   Sign up
                 </Link>
               </Text>
@@ -196,14 +208,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ appType, formType, onSubmit, loadin
           {formType === 'register' && (
             <Text type="secondary">
               Already have an account?{' '}
-              <Link to={`/${appType}/login`} className="text-sms-blue hover:underline">
+              <Link to={`/${currentAppType}/login`} className="text-sms-blue hover:underline">
                 Sign in
               </Link>
             </Text>
           )}
 
           {(formType === 'forgotPassword' || formType === 'resetPassword') && (
-            <Link to={`/${appType}/login`} className="text-sms-blue hover:underline">
+            <Link to={`/${currentAppType}/login`} className="text-sms-blue hover:underline">
               Back to login
             </Link>
           )}

@@ -22,6 +22,8 @@ import CreateInstitution from "./pages/vendor/CreateInstitution";
 
 // Institution pages
 import InstitutionDashboard from "./pages/institution/Dashboard";
+import InstitutionStudents from "./pages/institution/Students";
+import InstitutionEmployees from "./pages/institution/Employees";
 
 // Guardian pages
 import GuardianDashboard from "./pages/guardian/Dashboard";
@@ -89,6 +91,16 @@ const App = () => (
               <Route path="/institution/dashboard" element={
                 <ProtectedRoute appType="institution">
                   <InstitutionDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/students" element={
+                <ProtectedRoute appType="institution">
+                  <InstitutionStudents />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/employees" element={
+                <ProtectedRoute appType="institution">
+                  <InstitutionEmployees />
                 </ProtectedRoute>
               } />
               
