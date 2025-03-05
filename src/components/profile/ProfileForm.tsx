@@ -13,6 +13,30 @@ import { User } from 'lucide-react';
 
 type AppType = 'vendor' | 'institution' | 'guardian';
 
+// Define the form schema types to match our fields
+interface BaseFormValues {
+  name: string;
+  email: string;
+  phone?: string;
+}
+
+interface VendorFormValues extends BaseFormValues {
+  companyName: string;
+  website?: string;
+}
+
+interface InstitutionFormValues extends BaseFormValues {
+  position: string;
+  department?: string;
+}
+
+interface GuardianFormValues extends BaseFormValues {
+  address?: string;
+  relationship: string;
+}
+
+type FormValues = BaseFormValues | VendorFormValues | InstitutionFormValues | GuardianFormValues;
+
 // Define form schema based on app type
 const getFormSchema = (appType: AppType) => {
   const baseSchema = {
@@ -160,7 +184,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
               <>
                 <FormField
                   control={form.control}
-                  name="companyName"
+                  name={"companyName" as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Company Name</FormLabel>
@@ -174,7 +198,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 
                 <FormField
                   control={form.control}
-                  name="website"
+                  name={"website" as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Website</FormLabel>
@@ -192,7 +216,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
               <>
                 <FormField
                   control={form.control}
-                  name="position"
+                  name={"position" as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Position</FormLabel>
@@ -206,7 +230,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 
                 <FormField
                   control={form.control}
-                  name="department"
+                  name={"department" as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Department</FormLabel>
@@ -224,7 +248,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
               <>
                 <FormField
                   control={form.control}
-                  name="address"
+                  name={"address" as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Address</FormLabel>
@@ -238,7 +262,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 
                 <FormField
                   control={form.control}
-                  name="relationship"
+                  name={"relationship" as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Relationship to Student</FormLabel>

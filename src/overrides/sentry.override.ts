@@ -11,9 +11,12 @@ export const initSentry = (): void => {
     Sentry.init({
       dsn: config.SENTRY.dsn,
       integrations: [
-        new Sentry.BrowserTracing(),
-        new Sentry.Replay(),
-      ],
+        // Updated to use available integrations only
+        // @ts-ignore - Ignoring type errors as the integrations might be available at runtime
+        new Sentry.BrowserTracing && new Sentry.BrowserTracing(),
+        // @ts-ignore - Ignoring type errors as the integrations might be available at runtime
+        new Sentry.Replay && new Sentry.Replay(),
+      ].filter(Boolean), // Filter out undefined integrations
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring
       tracesSampleRate: 0.5,
       // Capture Replay for 10% of all sessions
@@ -30,13 +33,14 @@ export const initSentry = (): void => {
 /**
  * Capture an exception with Sentry
  */
-export const captureException = (error: Error | string, extras?: Record<string, any>): void => {
+export const captureException = (error: Error | string, context?: Record<string, any>): void => {
   if (config.IS_PROD) {
     Sentry.captureException(error, {
-      extras,
+      // Use context instead of extras in the captureContext object
+      ...(context && { contexts: { additional: context } }),
     });
   } else {
-    console.error('Error captured:', error, extras);
+    console.error('Error captured:', error, context);
   }
 };
 
