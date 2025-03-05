@@ -1,0 +1,9 @@
+
+{
+  "ENV": "dev",
+  "HOST": "localhost",
+  "API_HOST": "localhost:8080",
+  "AUTH_ENABLED": false,
+  "IS_PROD": false,
+  "LOGGER": "console"
+}

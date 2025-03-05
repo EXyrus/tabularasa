@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import config from '../config';
 
 type AppType = 'vendor' | 'institution' | 'guardian';
 
@@ -29,7 +30,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
+    // Check if auth is enabled in the config
+    const authEnabled = config.AUTH_ENABLED;
+    
+    if (!authEnabled) {
+      // If auth is disabled (dev mode), create a mock user
+      const mockUser: User = {
+        id: '123456',
+        name: 'Development User',
+        email: 'dev@example.com',
+        role: 'Admin',
+        appType: 'institution',
+        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+      };
+      setUser(mockUser);
+      localStorage.setItem('sms_user_data', JSON.stringify(mockUser));
+      setLoading(false);
+      return;
+    }
+    
+    // Check if user is already logged in (for auth-enabled environments)
     const userData = localStorage.getItem('sms_user_data');
     if (userData) {
       try {

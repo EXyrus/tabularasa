@@ -1,0 +1,24 @@
+
+{
+  "ENV": "local",
+  "HOST": "tabr.internal",
+  "API_HOST": "api.tabr.internal",
+  "AUTH_ENABLED": true,
+  "SENTRY": {
+    "dsn": "dsn"
+  },
+  "CLOUDINARY": {
+    "cloudName": "tabr",
+    "apiKey": "key",
+    "apiSecret": "secret",
+    "profilePreset": "tabr.staging.verification",
+    "receiptPreset": "tabr.staging.alipay",
+    "blogPreset": "tabr.staging.blog",
+    "prefix": "res.cloudinary.com/orgname"
+  },
+  "IS_PROD": false,
+  "remoteConfig": {
+    "pusher": "false"
+  },
+  "LOGGER": "console"
+}

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import config from '../config';
 
 type AppType = 'vendor' | 'institution' | 'guardian';
 
@@ -13,6 +14,11 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, appType }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
+  
+  // Skip auth checks if auth is disabled in config
+  if (!config.AUTH_ENABLED) {
+    return <>{children}</>;
+  }
 
   if (loading) {
     // You could show a loading spinner here
@@ -45,6 +51,11 @@ interface PublicRouteProps {
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({ children, appType, restricted = false }) => {
   const { user } = useAuth();
+  
+  // Skip auth checks if auth is disabled in config
+  if (!config.AUTH_ENABLED) {
+    return <>{children}</>;
+  }
 
   // If restricted is true and user is logged in, redirect to dashboard
   if (restricted && user && user.appType === appType) {

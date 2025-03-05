@@ -1,0 +1,9 @@
+
+{
+  "ENV": "production",
+  "HOST": "tabr.ng",
+  "API_HOST": "api.tabr.ng",
+  "AUTH_ENABLED": true,
+  "IS_PROD": true,
+  "LOGGER": "prod"
+}
