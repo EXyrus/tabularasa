@@ -20,19 +20,28 @@ import ResetPassword from "./pages/ResetPassword";
 
 // Vendor pages
 import VendorDashboard from "./pages/vendor/Dashboard";
+import VendorProfile from "./pages/vendor/Profile";
+import VendorSettings from "./pages/vendor/Settings";
 import CreateInstitution from "./pages/vendor/CreateInstitution";
 
 // Institution pages
 import InstitutionDashboard from "./pages/institution/Dashboard";
+import InstitutionProfile from "./pages/institution/Profile";
+import InstitutionSettings from "./pages/institution/Settings";
 import InstitutionStudents from "./pages/institution/Students";
 import InstitutionEmployees from "./pages/institution/Employees";
+import EmployeeProfile from "./pages/institution/EmployeeProfile";
+import StudentProfile from "./pages/institution/StudentProfile";
 import AttendancePage from "./pages/institution/Attendance";
 import OrganizationChartPage from "./pages/institution/OrganizationChart";
 
 // Guardian pages
 import GuardianDashboard from "./pages/guardian/Dashboard";
+import GuardianProfile from "./pages/guardian/Profile";
+import GuardianSettings from "./pages/guardian/Settings";
 import GuardianFinances from "./pages/guardian/Finances";
 import GuardianStudents from "./pages/guardian/Students";
+import GuardianStudentProfile from "./pages/guardian/StudentProfile";
 import GuardianNotifications from "./pages/guardian/Notifications";
 import GuardianAccount from "./pages/guardian/Account";
 
@@ -78,6 +87,16 @@ const App = () => (
                   <VendorDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/vendor/profile" element={
+                <ProtectedRoute appType="vendor">
+                  <VendorProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/vendor/settings" element={
+                <ProtectedRoute appType="vendor">
+                  <VendorSettings />
+                </ProtectedRoute>
+              } />
               <Route path="/vendor/create-institution" element={
                 <ProtectedRoute appType="vendor">
                   <CreateInstitution />
@@ -105,14 +124,34 @@ const App = () => (
                   <InstitutionDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/institution/profile" element={
+                <ProtectedRoute appType="institution">
+                  <InstitutionProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/settings" element={
+                <ProtectedRoute appType="institution">
+                  <InstitutionSettings />
+                </ProtectedRoute>
+              } />
               <Route path="/institution/students" element={
                 <ProtectedRoute appType="institution">
                   <InstitutionStudents />
                 </ProtectedRoute>
               } />
+              <Route path="/institution/students/:studentId" element={
+                <ProtectedRoute appType="institution">
+                  <StudentProfile />
+                </ProtectedRoute>
+              } />
               <Route path="/institution/employees" element={
                 <ProtectedRoute appType="institution">
                   <InstitutionEmployees />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/employees/:employeeId" element={
+                <ProtectedRoute appType="institution">
+                  <EmployeeProfile />
                 </ProtectedRoute>
               } />
               <Route path="/institution/attendance" element={
@@ -147,6 +186,16 @@ const App = () => (
                   <GuardianDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/guardian/profile" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/guardian/settings" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianSettings />
+                </ProtectedRoute>
+              } />
               <Route path="/guardian/finances" element={
                 <ProtectedRoute appType="guardian">
                   <GuardianFinances />
@@ -155,6 +204,11 @@ const App = () => (
               <Route path="/guardian/students" element={
                 <ProtectedRoute appType="guardian">
                   <GuardianStudents />
+                </ProtectedRoute>
+              } />
+              <Route path="/guardian/students/:studentId" element={
+                <ProtectedRoute appType="guardian">
+                  <GuardianStudentProfile />
                 </ProtectedRoute>
               } />
               <Route path="/guardian/notifications" element={

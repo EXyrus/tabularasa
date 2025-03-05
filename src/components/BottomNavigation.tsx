@@ -30,22 +30,22 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ appType }) => {
     vendor: [
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
       { icon: <TeamOutlined />, label: 'Institutions', path: `${basePath}/institutions` },
-      { icon: <FileTextOutlined />, label: 'Reports', path: `${basePath}/reports` },
+      { icon: <UserOutlined />, label: 'Profile', path: `${basePath}/profile` },
       { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
     ],
     institution: [
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
       { icon: <TeamOutlined />, label: 'Students', path: `${basePath}/students` },
       { icon: <CalendarOutlined />, label: 'Attendance', path: `${basePath}/attendance` },
-      { icon: <ApartmentOutlined />, label: 'Organization', path: `${basePath}/organization-chart` },
+      { icon: <UserOutlined />, label: 'Profile', path: `${basePath}/profile` },
       { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
     ],
     guardian: [
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
       { icon: <DollarOutlined />, label: 'Finances', path: `${basePath}/finances` },
       { icon: <TeamOutlined />, label: 'Students', path: `${basePath}/students` },
-      { icon: <BellOutlined />, label: 'Notifications', path: `${basePath}/notifications` },
-      { icon: <UserOutlined />, label: 'Account', path: `${basePath}/account` },
+      { icon: <UserOutlined />, label: 'Profile', path: `${basePath}/profile` },
+      { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
     ],
   };
 
