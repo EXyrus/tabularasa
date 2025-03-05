@@ -77,6 +77,19 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+  
+  /* Additional dark mode specific styles */
+  .dark svg:not([class*="text-"]) {
+    @apply text-white;
+  }
+  
+  .dark .card-glass {
+    @apply bg-black/30 backdrop-blur-md border border-white/10;
+  }
+  
+  .dark .bottom-nav {
+    @apply bg-black/80 backdrop-blur-md border-t border-gray-800;
+  }
 }
 
 @layer components {
@@ -85,11 +98,11 @@
   }
   
   .card-glass {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-xl shadow-sm;
+    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-xl shadow-sm dark:bg-black/30 dark:border-white/10;
   }
 
   .bottom-nav {
-    @apply fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-lg z-50;
+    @apply fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-lg z-50 dark:bg-black/80 dark:border-gray-800;
   }
 
   .nav-item {
@@ -97,15 +110,15 @@
   }
 
   .nav-item.active {
-    @apply text-sms-blue;
+    @apply text-sms-blue dark:text-blue-400;
   }
 
   .nav-item:not(.active) {
-    @apply text-sms-darkGray;
+    @apply text-sms-darkGray dark:text-gray-400;
   }
   
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sms-blue/20 focus:border-sms-blue transition-all duration-200;
+    @apply w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sms-blue/20 focus:border-sms-blue transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white;
   }
   
   .btn {
@@ -117,7 +130,7 @@
   }
   
   .btn-secondary {
-    @apply bg-sms-gray text-sms-black hover:bg-sms-gray/80;
+    @apply bg-sms-gray text-sms-black hover:bg-sms-gray/80 dark:bg-gray-700 dark:text-white;
   }
   
   .btn-vendor {
@@ -150,6 +163,14 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Smooth scrolling */

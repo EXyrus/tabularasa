@@ -3,8 +3,8 @@ import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -52,10 +52,10 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ appType, initialSettings, o
   };
 
   return (
-    <Card>
+    <Card className="shadow-md dark:bg-gray-800 dark:border-gray-700">
       <CardHeader>
-        <CardTitle>Application Settings</CardTitle>
-        <CardDescription>Customize your application preferences</CardDescription>
+        <CardTitle className="dark:text-white">Application Settings</CardTitle>
+        <CardDescription className="dark:text-gray-300">Customize your application preferences</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -64,14 +64,17 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ appType, initialSettings, o
               control={form.control}
               name="darkMode"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 dark:border-gray-700">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base flex items-center">
-                      <Moon className="w-4 h-4 mr-2" />
-                      Dark Mode
+                    <FormLabel className="text-base flex items-center dark:text-white">
+                      {field.value ? 
+                        <Moon className="w-4 h-4 mr-2 text-blue-400" /> : 
+                        <Sun className="w-4 h-4 mr-2 text-amber-500" />
+                      }
+                      {field.value ? 'Dark Mode' : 'Light Mode'}
                     </FormLabel>
-                    <FormDescription>
-                      Enable dark mode for the application
+                    <FormDescription className="dark:text-gray-400">
+                      {field.value ? 'Disable dark mode' : 'Enable dark mode'} for the application
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -88,13 +91,13 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ appType, initialSettings, o
               control={form.control}
               name="pushNotifications"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 dark:border-gray-700">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base flex items-center">
+                    <FormLabel className="text-base flex items-center dark:text-white">
                       <BellRing className="w-4 h-4 mr-2" />
                       Push Notifications
                     </FormLabel>
-                    <FormDescription>
+                    <FormDescription className="dark:text-gray-400">
                       Receive push notifications for important updates
                     </FormDescription>
                   </div>
@@ -112,13 +115,13 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ appType, initialSettings, o
               control={form.control}
               name="emailNotifications"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 dark:border-gray-700">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base flex items-center">
+                    <FormLabel className="text-base flex items-center dark:text-white">
                       <Mail className="w-4 h-4 mr-2" />
                       Email Notifications
                     </FormLabel>
-                    <FormDescription>
+                    <FormDescription className="dark:text-gray-400">
                       Receive email notifications for important updates
                     </FormDescription>
                   </div>
@@ -136,13 +139,13 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ appType, initialSettings, o
               control={form.control}
               name="smsNotifications"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 dark:border-gray-700">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base flex items-center">
+                    <FormLabel className="text-base flex items-center dark:text-white">
                       <Phone className="w-4 h-4 mr-2" />
                       SMS Notifications
                     </FormLabel>
-                    <FormDescription>
+                    <FormDescription className="dark:text-gray-400">
                       Receive SMS notifications for important updates
                     </FormDescription>
                   </div>
@@ -157,7 +160,18 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ appType, initialSettings, o
             />
             
             <div className="pt-4">
-              <Button type="submit" className="w-full">Save Settings</Button>
+              <Button 
+                type="submit" 
+                className={`w-full ${
+                  appType === 'vendor' 
+                    ? 'bg-sms-vendor hover:bg-sms-vendor/90' 
+                    : appType === 'institution' 
+                    ? 'bg-sms-institution hover:bg-sms-institution/90' 
+                    : 'bg-sms-guardian hover:bg-sms-guardian/90'
+                } text-white`}
+              >
+                Save Settings
+              </Button>
             </div>
           </form>
         </Form>

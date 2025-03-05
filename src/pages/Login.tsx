@@ -13,6 +13,12 @@ const Login: React.FC = () => {
 
   // Default to 'vendor' if appType is not valid
   const validAppType = appType || 'vendor';
+  
+  // For institution, direct to the specialized login
+  if (validAppType === 'institution') {
+    navigate('/institution-login');
+    return null;
+  }
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
@@ -32,7 +38,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-black flex flex-col justify-center items-center p-4">
       <AuthForm
         appType={validAppType}
         formType="login"

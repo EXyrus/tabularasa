@@ -33,6 +33,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check if auth is enabled in the config
     const authEnabled = config.AUTH_ENABLED;
     
+    // Initialize dark mode from localStorage settings
+    const initializeDarkMode = () => {
+      // Check settings for current user type or default to vendor
+      const appType = user?.appType || 'vendor';
+      const settingsKey = `sms_settings_${appType}`;
+      
+      try {
+        const storedSettings = localStorage.getItem(settingsKey);
+        if (storedSettings) {
+          const settings = JSON.parse(storedSettings);
+          if (settings.darkMode) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to parse settings for dark mode:', error);
+      }
+    };
+    
     if (!authEnabled) {
       // If auth is disabled (dev mode), create a mock user
       const mockUser: User = {
@@ -46,21 +67,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser);
       localStorage.setItem('sms_user_data', JSON.stringify(mockUser));
       setLoading(false);
-      return;
+    } else {
+      // Check if user is already logged in (for auth-enabled environments)
+      const userData = localStorage.getItem('sms_user_data');
+      if (userData) {
+        try {
+          setUser(JSON.parse(userData));
+        } catch (error) {
+          console.error('Failed to parse user data from localStorage:', error);
+          localStorage.removeItem('sms_user_data');
+        }
+      }
+      setLoading(false);
     }
     
-    // Check if user is already logged in (for auth-enabled environments)
-    const userData = localStorage.getItem('sms_user_data');
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Failed to parse user data from localStorage:', error);
-        localStorage.removeItem('sms_user_data');
-      }
-    }
-    setLoading(false);
-  }, []);
+    // Initialize dark mode
+    initializeDarkMode();
+  }, [user?.appType]);
 
   // Mock login function - in a real app, this would connect to a backend
   const login = async (email: string, password: string, appType: AppType) => {

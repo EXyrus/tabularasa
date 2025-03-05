@@ -67,7 +67,7 @@ const VendorSettings: React.FC = () => {
   }, []);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen dark:bg-gray-900 dark:text-white">Loading...</div>;
   }
 
   return (
