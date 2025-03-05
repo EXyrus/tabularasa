@@ -1,69 +1,124 @@
-# Welcome to your Lovable project
+# Tabularasa Frontend
 
-## Project info
+Welcome to the frontend repository of the Tabularasa project. This repository contains all the code and assets related to the client-side application.
 
-**URL**: https://lovable.dev/projects/0c277d60-524d-4471-97e7-a698bff3305b
+## Table of Contents
 
-## How can I edit this code?
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Development](#development)
+- [Building for Production](#building-for-production)
+- [Configuration](#configuration)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-There are several ways of editing your application.
+## Overview
 
-**Use Lovable**
+Tabularasa is an innovative project designed to [briefly describe what the project does]. The frontend application is responsible for providing a responsive, user-friendly interface that communicates with our backend APIs and services.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0c277d60-524d-4471-97e7-a698bff3305b) and start prompting.
+## Features
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Responsive UI:** Optimized for both desktop and mobile devices.
+- **Interactive Components:** Engaging user interactions using modern frontend frameworks.
+- **API Integration:** Seamless integration with our backend services.
+- **Customizable Themes:** Easily switch between themes based on user preferences.
+- **Performance Optimizations:** Lazy-loading, code-splitting, and other techniques for fast loading times.
 
-**Use your preferred IDE**
+## Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Framework:** [React ] 
+- **Language:** TypeScript
+- **Styling:** TailwindCSS
+- **Build Tool:** Vite
+- **Testing:** Cypress
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Installation
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **Node.js:** v14.x or above
+- **npm or Yarn:** Latest version recommended
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Steps
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Clone the repository:**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+   ```bash
+   git clone https://epoh@dev.azure.com/epoh/TabulaRasa/_git/Website
+   cd Website
+   ```
+
+2. **Install dependencies:**
+
+   Using npm:
+
+   ```bash
+   npm install
+   ```
+
+## Development
+
+To run the project locally during development:
+
+```bash
+npm start
 ```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+This command starts the development server and opens your application in your default browser. The app will automatically reload if you make changes to the code.
 
-**Use GitHub Codespaces**
+## Building for Production
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+To create an optimized production build, run:
 
-## What technologies are used for this project?
+```bash
+npm run build
+```
 
-This project is built with .
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The build artifacts will be stored in the `build` (or `dist`) directory. You can then deploy the contents of this directory to your preferred hosting service.
 
-## How can I deploy this project?
+## Configuration
 
-Simply open [Lovable](https://lovable.dev/projects/0c277d60-524d-4471-97e7-a698bff3305b) and click on Share -> Publish.
+Environment variables can be set in a `.env` file at the root of the project. For example:
 
-## I want to use a custom domain - is that possible?
+```env
+REACT_APP_API_URL=https://api.tabularasa.ng
+REACT_APP_OTHER_CONFIG=value
+```
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Make sure to restart the development server after making changes to the `.env` file.
+
+## Testing
+
+To run tests, use the following command:
+
+```bash
+npm run test
+```
+
+
+This will execute all the tests and provide you with feedback on code quality and functionality.
+
+## Contributing
+
+We welcome contributions to the Tabularasa project! 
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Open a Pull Request detailing your changes.
+
+Please make sure to follow the existing coding standards and include tests where applicable.
+
+
+## Contact
+
+For any questions or feedback, please contact [pshammah@epohcj.com](mailto:pshammah@epohcj.com) or [chimezie@epohcj.com](mailto:chimezie@epohcj.com) or leave a message in the developers discord channel.
+
+

@@ -1,8 +1,9 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "@tabula-rasa/website",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "type": "module",
+  "homepage": "https://tabularasa.ng",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
