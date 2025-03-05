@@ -67,7 +67,7 @@ const OrganizationChartPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <HeaderBar title="Organization Chart" />
+      <HeaderBar appType="institution" userName="Admin User" />
       
       <main className="flex-1 p-4 pb-20">
         {activeView === 'tree' && (
