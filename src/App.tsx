@@ -1,30 +1,22 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute, PublicRoute } from "./utils/routeGuard";
 import ErrorBoundary from "./components/ErrorBoundary";
 import UpdateNotification from "./components/UpdateNotification";
-
-// Landing Page
 import LandingPage from "./pages/LandingPage";
 import InstitutionSignup from "./pages/InstitutionSignup";
-
-// Auth pages
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-
-// Vendor pages
 import VendorDashboard from "./pages/vendor/Dashboard";
 import VendorProfile from "./pages/vendor/Profile";
 import VendorSettings from "./pages/vendor/Settings";
 import CreateInstitution from "./pages/vendor/CreateInstitution";
-
-// Institution pages
+import InstitutionsList from "./pages/vendor/InstitutionsList";
 import InstitutionDashboard from "./pages/institution/Dashboard";
 import InstitutionProfile from "./pages/institution/Profile";
 import InstitutionSettings from "./pages/institution/Settings";
@@ -34,8 +26,13 @@ import EmployeeProfile from "./pages/institution/EmployeeProfile";
 import StudentProfile from "./pages/institution/StudentProfile";
 import AttendancePage from "./pages/institution/Attendance";
 import OrganizationChartPage from "./pages/institution/OrganizationChart";
-
-// Guardian pages
+import InstitutionControlPanel from "./pages/institution/ControlPanel";
+import ManageRoles from "./pages/institution/ManageRoles";
+import ManageFees from "./pages/institution/ManageFees";
+import ManagePayments from "./pages/institution/ManagePayments";
+import ViewTransactions from "./pages/institution/ViewTransactions";
+import ManagePayrolls from "./pages/institution/ManagePayrolls";
+import ManageBankAccounts from "./pages/institution/ManageBankAccounts";
 import GuardianDashboard from "./pages/guardian/Dashboard";
 import GuardianProfile from "./pages/guardian/Profile";
 import GuardianSettings from "./pages/guardian/Settings";
@@ -44,8 +41,6 @@ import GuardianStudents from "./pages/guardian/Students";
 import GuardianStudentProfile from "./pages/guardian/StudentProfile";
 import GuardianNotifications from "./pages/guardian/Notifications";
 import GuardianAccount from "./pages/guardian/Account";
-
-// Not Found page
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,13 +55,8 @@ const App = () => (
           <UpdateNotification />
           <BrowserRouter>
             <Routes>
-              {/* Landing page */}
               <Route path="/" element={<LandingPage />} />
-              
-              {/* Institution Signup */}
               <Route path="/institution-signup" element={<InstitutionSignup />} />
-              
-              {/* Vendor Routes */}
               <Route path="/vendor/login" element={
                 <PublicRoute appType="vendor" restricted>
                   <Login />
@@ -102,8 +92,11 @@ const App = () => (
                   <CreateInstitution />
                 </ProtectedRoute>
               } />
-              
-              {/* Institution Routes */}
+              <Route path="/vendor/institutions" element={
+                <ProtectedRoute appType="vendor">
+                  <InstitutionsList />
+                </ProtectedRoute>
+              } />
               <Route path="/institution/login" element={
                 <PublicRoute appType="institution" restricted>
                   <Login />
@@ -164,8 +157,41 @@ const App = () => (
                   <OrganizationChartPage />
                 </ProtectedRoute>
               } />
-              
-              {/* Guardian Routes */}
+              <Route path="/institution/control-panel" element={
+                <ProtectedRoute appType="institution">
+                  <InstitutionControlPanel />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/control-panel/roles" element={
+                <ProtectedRoute appType="institution">
+                  <ManageRoles />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/control-panel/fees" element={
+                <ProtectedRoute appType="institution">
+                  <ManageFees />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/control-panel/payments" element={
+                <ProtectedRoute appType="institution">
+                  <ManagePayments />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/control-panel/transactions" element={
+                <ProtectedRoute appType="institution">
+                  <ViewTransactions />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/control-panel/payrolls" element={
+                <ProtectedRoute appType="institution">
+                  <ManagePayrolls />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/control-panel/bank-accounts" element={
+                <ProtectedRoute appType="institution">
+                  <ManageBankAccounts />
+                </ProtectedRoute>
+              } />
               <Route path="/guardian/login" element={
                 <PublicRoute appType="guardian" restricted>
                   <Login />
@@ -221,8 +247,6 @@ const App = () => (
                   <GuardianAccount />
                 </ProtectedRoute>
               } />
-              
-              {/* Catchall route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
