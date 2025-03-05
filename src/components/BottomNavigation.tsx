@@ -1,7 +1,17 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { HomeOutlined, TeamOutlined, BellOutlined, DollarOutlined, UserOutlined, FileTextOutlined, SettingOutlined, CalendarOutlined } from '@ant-design/icons';
+import { 
+  HomeOutlined, 
+  TeamOutlined, 
+  BellOutlined, 
+  DollarOutlined, 
+  UserOutlined, 
+  FileTextOutlined, 
+  SettingOutlined, 
+  CalendarOutlined,
+  ApartmentOutlined 
+} from '@ant-design/icons';
 
 type AppType = 'vendor' | 'institution' | 'guardian';
 
@@ -27,6 +37,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ appType }) => {
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
       { icon: <TeamOutlined />, label: 'Students', path: `${basePath}/students` },
       { icon: <CalendarOutlined />, label: 'Attendance', path: `${basePath}/attendance` },
+      { icon: <ApartmentOutlined />, label: 'Organization', path: `${basePath}/organization-chart` },
       { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
     ],
     guardian: [

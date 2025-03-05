@@ -27,6 +27,7 @@ import InstitutionDashboard from "./pages/institution/Dashboard";
 import InstitutionStudents from "./pages/institution/Students";
 import InstitutionEmployees from "./pages/institution/Employees";
 import AttendancePage from "./pages/institution/Attendance";
+import OrganizationChartPage from "./pages/institution/OrganizationChart";
 
 // Guardian pages
 import GuardianDashboard from "./pages/guardian/Dashboard";
@@ -117,6 +118,11 @@ const App = () => (
               <Route path="/institution/attendance" element={
                 <ProtectedRoute appType="institution">
                   <AttendancePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/institution/organization-chart" element={
+                <ProtectedRoute appType="institution">
+                  <OrganizationChartPage />
                 </ProtectedRoute>
               } />
               
