@@ -6,62 +6,62 @@ import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Receipt, CreditCard, FileText, DollarSign, Building, UserCog, Network, LayoutList } from 'lucide-react';
+import { Receipt, CreditCard, FileText, DollarSign, Building, Wallet, BarChart } from 'lucide-react';
 
-const InstitutionControlPanel: React.FC = () => {
+const FinanceDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  const controlPanelItems = [
+  const financeItems = [
     {
-      title: 'Manage Roles',
-      description: 'Create and assign roles and permissions',
-      icon: <UserCog className="h-6 w-6" />,
-      color: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300',
-      path: '/institution/control-panel/roles'
-    },
-    {
-      title: 'Organization Chart',
-      description: 'View and manage organization structure',
-      icon: <Network className="h-6 w-6" />,
-      color: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300',
-      path: '/institution/organization-chart'
-    },
-    {
-      title: 'Add Fees',
+      title: 'Fee Management',
       description: 'Create and manage fee structures',
       icon: <Receipt className="h-6 w-6" />,
       color: 'bg-amber-100 text-amber-600 dark:bg-amber-900 dark:text-amber-300',
-      path: '/institution/control-panel/fees'
+      path: '/institution/finance/fees'
     },
     {
-      title: 'Add Payments',
-      description: 'Create payment entries for students',
+      title: 'Payment Processing',
+      description: 'Record and track student payments',
       icon: <CreditCard className="h-6 w-6" />,
       color: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300',
-      path: '/institution/control-panel/payments'
+      path: '/institution/finance/payments'
     },
     {
-      title: 'View Transactions',
-      description: 'Track all financial transactions',
+      title: 'Transaction History',
+      description: 'View all financial transactions',
       icon: <FileText className="h-6 w-6" />,
       color: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300',
-      path: '/institution/control-panel/transactions'
+      path: '/institution/finance/transactions'
     },
     {
-      title: 'Manage Payrolls',
-      description: 'Create and manage employee payrolls',
+      title: 'Financial Reports',
+      description: 'Generate and view financial reports',
+      icon: <BarChart className="h-6 w-6" />,
+      color: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300',
+      path: '/institution/finance/reports'
+    },
+    {
+      title: 'Payroll Management',
+      description: 'Process and manage employee payrolls',
       icon: <DollarSign className="h-6 w-6" />,
       color: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300',
-      path: '/institution/control-panel/payrolls'
+      path: '/institution/finance/payrolls'
     },
     {
       title: 'Bank Accounts',
       description: 'Manage institution bank accounts',
       icon: <Building className="h-6 w-6" />,
       color: 'bg-rose-100 text-rose-600 dark:bg-rose-900 dark:text-rose-300',
-      path: '/institution/control-panel/bank-accounts'
+      path: '/institution/finance/bank-accounts'
     },
+    {
+      title: 'Budget Planning',
+      description: 'Create and manage institution budgets',
+      icon: <Wallet className="h-6 w-6" />,
+      color: 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300',
+      path: '/institution/finance/budgets'
+    }
   ];
 
   return (
@@ -74,12 +74,12 @@ const InstitutionControlPanel: React.FC = () => {
       
       <div className="page-container pt-20 pb-20 px-4 animate-fade-in">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-1 dark:text-white">Control Panel</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Manage your institution settings and configurations</p>
+          <h1 className="text-2xl font-bold mb-1 dark:text-white">Finance Dashboard</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Manage all financial aspects of your institution</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {controlPanelItems.map((item, index) => (
+          {financeItems.map((item, index) => (
             <Card key={index} className="border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
@@ -108,4 +108,4 @@ const InstitutionControlPanel: React.FC = () => {
   );
 };
 
-export default InstitutionControlPanel;
+export default FinanceDashboard;

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Typography, Card, Row, Col, Statistic, Space, List, Avatar } from 'antd';
 import { 
@@ -38,7 +39,7 @@ const InstitutionDashboard: React.FC = () => {
     { 
       title: 'Finances', 
       icon: <DollarOutlined className="text-green-500" />, 
-      path: '/institution/finances',
+      path: '/institution/finance-dashboard',
       description: 'Manage fees, payments and expenses'
     },
     { 
@@ -54,16 +55,16 @@ const InstitutionDashboard: React.FC = () => {
       description: 'Staff and teacher management'
     },
     { 
-      title: 'Class Management', 
-      icon: <BookOutlined className="text-red-500" />, 
-      path: '/institution/classes',
-      description: 'Schedules, subjects and curriculum'
+      title: 'Events', 
+      icon: <CalendarOutlined className="text-red-500" />, 
+      path: '/institution/events-dashboard',
+      description: 'Manage events and notifications'
     },
     { 
-      title: 'Events/Notifications', 
+      title: 'Notifications', 
       icon: <BellOutlined className="text-amber-500" />, 
-      path: '/institution/events',
-      description: 'School events and announcements'
+      path: '/institution/notifications',
+      description: 'School announcements and alerts'
     },
   ];
   

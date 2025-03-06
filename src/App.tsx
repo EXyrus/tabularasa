@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute, PublicRoute } from "./utils/routeGuard";
@@ -24,6 +25,8 @@ import StudentProfile from "./pages/institution/StudentProfile";
 import AttendancePage from "./pages/institution/Attendance";
 import OrganizationChartPage from "./pages/institution/OrganizationChart";
 import InstitutionControlPanel from "./pages/institution/InstitutionControlPanel";
+import FinanceDashboard from "./pages/institution/FinanceDashboard";
+import EventsDashboard from "./pages/institution/EventsDashboard";
 import ManageRoles from "./pages/institution/ManageRoles";
 import ManageFees from "./pages/institution/ManageFees";
 import ManagePayments from "./pages/institution/ManagePayments";
@@ -39,11 +42,11 @@ import GuardianStudentProfile from "./pages/guardian/StudentProfile";
 import GuardianNotifications from "./pages/guardian/Notifications";
 import GuardianAccount from "./pages/guardian/Account";
 import NotFound from "./pages/NotFound";
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from "./components/ui/error-boundary";
 
 const App = () => (
   <AuthProvider>
-    <ErrorBoundary fallback={<div>An error has occurred</div>}>
+    <ErrorBoundary>
       <UpdateNotification />
       <BrowserRouter>
         <Routes>
@@ -163,6 +166,22 @@ const App = () => (
               <InstitutionControlPanel />
             </ProtectedRoute>
           } />
+          
+          {/* New Finance Dashboard */}
+          <Route path="/institution/finance-dashboard" element={
+            <ProtectedRoute appType="institution">
+              <FinanceDashboard />
+            </ProtectedRoute>
+          } />
+          
+          {/* New Events Dashboard */}
+          <Route path="/institution/events-dashboard" element={
+            <ProtectedRoute appType="institution">
+              <EventsDashboard />
+            </ProtectedRoute>
+          } />
+          
+          {/* Control Panel Routes */}
           <Route path="/institution/control-panel/roles" element={
             <ProtectedRoute appType="institution">
               <ManageRoles />
