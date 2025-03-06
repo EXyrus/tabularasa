@@ -70,3 +70,14 @@ export type InstitutionRole = {
     name: string;
     permissions: Permission[];
 };
+
+export type BankAccount = {
+    id: string;
+    bank: string;
+    accountNumber: string;
+    accountName: string;
+    accountType: string;
+    isDefault?: boolean;
+};
+
+export type BankAccountResponse = BankAccount;

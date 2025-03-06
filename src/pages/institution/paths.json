@@ -1,3 +1,4 @@
+
 {
     "home": "/",
     "login": "/login",
@@ -21,7 +22,9 @@
             "manage": "/manage-invoice",
             "all": "/all-invoice",
             "details": "/payment-details"
-        }
+        },
+        "payrolls": "/payrolls",
+        "bankAccounts": "/bank-accounts"
     },
     "employees": {
         "index": "/employees",
@@ -55,6 +58,15 @@
             "items": "/finance/transactions/all",
             "manage": "/finance/transactions/manage",
             "item": "/finance/transaction/:id"
+        },
+        "payrolls": {
+            "index": "/finance/payrolls",
+            "items": "/finance/payrolls/all",
+            "item": "/finance/payroll/:id"
+        },
+        "bankAccounts": {
+            "index": "/finance/bank-accounts",
+            "items": "/finance/bank-accounts/all"
         }
     },
     "manageCustomize": "/manage-customize",

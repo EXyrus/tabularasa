@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,7 @@ import VendorProfile from "./pages/vendor/Profile";
 import VendorSettings from "./pages/vendor/Settings";
 import CreateInstitution from "./pages/vendor/CreateInstitution";
 import InstitutionsList from "./pages/vendor/InstitutionsList";
+import InstitutionDetails from "./pages/vendor/InstitutionDetails";
 import InstitutionLogin from "./pages/InstitutionLogin";
 import InstitutionDashboard from "./pages/institution/Dashboard";
 import InstitutionProfile from "./pages/institution/Profile";
@@ -58,6 +60,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/institution-signup" element={<InstitutionSignup />} />
+              
+              {/* Vendor Routes */}
               <Route path="/vendor/login" element={
                 <PublicRoute appType="vendor" restricted>
                   <Login />
@@ -98,6 +102,13 @@ const App = () => (
                   <InstitutionsList />
                 </ProtectedRoute>
               } />
+              <Route path="/vendor/institutions/:id" element={
+                <ProtectedRoute appType="vendor">
+                  <InstitutionDetails />
+                </ProtectedRoute>
+              } />
+              
+              {/* Institution Routes */}
               <Route path="/institution/login" element={
                 <PublicRoute appType="institution" restricted>
                   <InstitutionLogin />
@@ -193,6 +204,8 @@ const App = () => (
                   <ManageBankAccounts />
                 </ProtectedRoute>
               } />
+              
+              {/* Guardian Routes */}
               <Route path="/guardian/login" element={
                 <PublicRoute appType="guardian" restricted>
                   <Login />
