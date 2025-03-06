@@ -6,9 +6,7 @@ import BottomNavigation from '../../components/BottomNavigation';
 import { useAuth } from '../../context/AuthContext';
 import SearchableSelect from '../../components/SearchableSelect';
 import ListItemWithContext from '../../components/ListItemWithContext';
-
-const { Title, Text } = Typography;
-const { Option } = Select;
+import dayjs from 'dayjs';
 
 interface Employee {
   id: string;
@@ -23,6 +21,9 @@ interface Employee {
   status: 'active' | 'on leave' | 'terminated';
   photo?: string;
 }
+
+const { Title, Text } = Typography;
+const { Option } = Select;
 
 const InstitutionEmployees: React.FC = () => {
   const { user } = useAuth();
@@ -119,7 +120,7 @@ const InstitutionEmployees: React.FC = () => {
       setEditingEmployee(employee);
       form.setFieldsValue({
         ...employee,
-        joinDate: employee.joinDate ? new Date(employee.joinDate) : undefined
+        joinDate: employee.joinDate ? dayjs(employee.joinDate) : undefined
       });
     } else {
       setEditingEmployee(null);
