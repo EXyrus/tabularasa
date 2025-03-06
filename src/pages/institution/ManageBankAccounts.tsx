@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -10,8 +9,6 @@ import {
   Select, 
   Typography, 
   Popconfirm, 
-  message, 
-  Tooltip,
   Alert,
   Empty,
   Spin
@@ -22,10 +19,9 @@ import {
   DeleteOutlined, 
   BankOutlined, 
   CreditCardOutlined,
-  LockOutlined,
-  CheckCircleOutlined
+  LockOutlined
 } from '@ant-design/icons';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { 
   useGetBankAccounts, 
   useAddBankAccount, 
@@ -35,19 +31,10 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import HeaderBar from '@/components/HeaderBar';
 import { useAuth } from '@/context/AuthContext';
+import { BankAccount } from '@/types';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
-
-// Define bank account type
-interface BankAccount {
-  id: string;
-  bank: string;
-  accountNumber: string;
-  accountName: string;
-  accountType: string;
-  isDefault?: boolean;
-}
 
 const ManageBankAccounts: React.FC = () => {
   const { user } = useAuth();
@@ -119,7 +106,7 @@ const ManageBankAccounts: React.FC = () => {
             });
             queryClient.invalidateQueries({ queryKey: ['bank_accounts'] });
           },
-          onError: (error) => {
+          onError: (error: any) => {
             toast({
               title: "Error",
               description: `Failed to update bank account: ${error.message}`,
@@ -155,7 +142,7 @@ const ManageBankAccounts: React.FC = () => {
             });
             queryClient.invalidateQueries({ queryKey: ['bank_accounts'] });
           },
-          onError: (error) => {
+          onError: (error: any) => {
             toast({
               title: "Error",
               description: `Failed to add bank account: ${error.message}`,
@@ -177,7 +164,7 @@ const ManageBankAccounts: React.FC = () => {
         });
         queryClient.invalidateQueries({ queryKey: ['bank_accounts'] });
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast({
           title: "Error",
           description: `Failed to delete bank account: ${error.message}`,
@@ -283,7 +270,7 @@ const ManageBankAccounts: React.FC = () => {
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => showModal()}
-            className="bg-sms-institution"
+            className="bg-blue-500"
           >
             Add Bank Account
           </Button>
@@ -297,7 +284,7 @@ const ManageBankAccounts: React.FC = () => {
           ) : isError ? (
             <Alert 
               message="Error" 
-              description={`Failed to load bank accounts: ${error?.message}`}
+              description={`Failed to load bank accounts: ${(error as Error)?.message}`}
               type="error" 
               showIcon 
             />

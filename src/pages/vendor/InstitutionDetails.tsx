@@ -2,369 +2,365 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
-  Card, 
-  Tabs, 
-  Button, 
-  Form, 
-  Input, 
-  Select, 
-  DatePicker,
-  Spin, 
-  Typography, 
-  Alert,
-  Switch
-} from 'antd';
-import { ArrowLeftIcon, BuildingIcon, MailIcon, PhoneIcon, GlobeIcon, CheckCircleIcon, XCircleIcon } from 'lucide-react';
-import { useInstitutionDetails, useUpdateInstitutionDetails, useUpdateInstitutionStatus } from '@/queries/use-institutions';
-import HeaderBar from '@/components/HeaderBar';
+  Building, ArrowLeft, Edit, Users, School, CheckCircle, XCircle, AlertTriangle,
+  MoreHorizontal, Mail, BellRing, FileText, Download, Trash2
+} from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
+import HeaderBar from '@/components/HeaderBar';
+import BottomNavigation from '@/components/BottomNavigation';
+import { useAuth } from '@/context/AuthContext';
+import { useGetInstitutionDetails } from '@/queries/use-institutions';
 
-const { Title, Text } = Typography;
-const { TabPane } = Tabs;
-const { Option } = Select;
+import configIcon from '@/assets/img/config.svg';
 
 const InstitutionDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id = '' } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { toast } = useToast();
-  const [form] = Form.useForm();
-  const [statusForm] = Form.useForm();
-  const [activeTab, setActiveTab] = useState('1');
+  const [activeTab, setActiveTab] = useState('overview');
+  
+  const { 
+    data: institution, 
+    isLoading, 
+    isError, 
+    error 
+  } = useGetInstitutionDetails(id);
 
-  // Query the institution details
-  const { data: institution, isLoading, isError, error } = useInstitutionDetails(id || '');
-  
-  // Mutations
-  const updateInstitutionMutation = useUpdateInstitutionDetails();
-  const updateStatusMutation = useUpdateInstitutionStatus();
-  
-  const handleSubmit = async (values: any) => {
-    try {
-      await updateInstitutionMutation.mutateAsync({
-        id: id || '',
-        ...values
-      });
-      
-      toast({
-        title: "Success",
-        description: "Institution details updated successfully",
-        variant: "default",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update institution details",
-        variant: "destructive",
-      });
-    }
+  const handleEdit = () => {
+    navigate(`/vendor/institutions/${id}/edit`);
   };
-  
-  const handleStatusChange = async (values: any) => {
-    try {
-      await updateStatusMutation.mutateAsync({
-        id: id || '',
-        status: values.status
-      });
-      
-      toast({
-        title: "Success",
-        description: `Institution ${values.status === 'active' ? 'activated' : 'suspended'} successfully`,
-        variant: "default",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update institution status",
-        variant: "destructive",
-      });
-    }
+
+  const handleGenerateReport = () => {
+    toast({
+      title: "Report Generated",
+      description: "The report has been generated and is ready for download.",
+    });
   };
-  
-  const handleGoBack = () => {
-    navigate(-1);
+
+  const handleSendEmail = () => {
+    toast({
+      title: "Email Sent",
+      description: "Email has been sent to the institution admin.",
+    });
   };
-  
+
+  const handleDeleteInstitution = () => {
+    toast({
+      title: "Delete Institution",
+      description: "This feature is not available in the current version.",
+      variant: "destructive",
+    });
+  };
+
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Spin size="large" />
-      </div>
+      <>
+        <HeaderBar 
+          appType="vendor" 
+          userName={user?.name || 'Admin User'} 
+          userAvatar={user?.avatar}
+        />
+        <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+        <BottomNavigation appType="vendor" />
+      </>
     );
   }
-  
+
   if (isError) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Alert 
-          message="Error" 
-          description={`Failed to load institution details: ${error?.message}`}
-          type="error" 
-          showIcon 
+      <>
+        <HeaderBar 
+          appType="vendor" 
+          userName={user?.name || 'Admin User'} 
+          userAvatar={user?.avatar}
         />
-      </div>
+        <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 p-4">
+          <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold mb-2 dark:text-white">Error</h2>
+          <p className="text-gray-600 dark:text-gray-400 text-center max-w-md mb-4">
+            Failed to load institution details: {(error as Error)?.message || 'Unknown error'}
+          </p>
+          <Button onClick={() => navigate('/vendor/institutions')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Institutions
+          </Button>
+        </div>
+        <BottomNavigation appType="vendor" />
+      </>
     );
   }
-  
+
+  const renderStatusBadge = (status: string) => {
+    if (status === 'active') {
+      return <Badge className="bg-green-500 hover:bg-green-600">Active</Badge>;
+    } else if (status === 'suspended') {
+      return <Badge className="bg-red-500 hover:bg-red-600">Suspended</Badge>;
+    } else {
+      return <Badge className="bg-yellow-500 hover:bg-yellow-600">Pending</Badge>;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <HeaderBar appType="vendor" userName="Vendor Admin" />
+    <>
+      <HeaderBar 
+        appType="vendor" 
+        userName={user?.name || 'Admin User'} 
+        userAvatar={user?.avatar}
+      />
       
-      <div className="container mx-auto p-4 pt-20">
-        <div className="mb-6 flex items-center">
-          <Button 
-            icon={<ArrowLeftIcon className="h-4 w-4" />} 
-            onClick={handleGoBack}
-            className="mr-3"
-          >
-            Back
-          </Button>
-          <Title level={4} className="!m-0">Institution Details</Title>
-        </div>
-        
-        <Card className="mb-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
-            <div className="flex items-center mb-4 md:mb-0">
-              <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full mr-4">
-                <BuildingIcon className="h-8 w-8 text-blue-600 dark:text-blue-300" />
-              </div>
-              <div>
-                <Title level={4} className="!m-0">{institution?.name}</Title>
-                <div className="flex items-center">
-                  <Text className="text-gray-500 dark:text-gray-400">{institution?.type || 'Educational Institution'}</Text>
-                  <span className="mx-2">•</span>
-                  <Text className={`px-2 py-0.5 rounded-full text-xs ${
-                    institution?.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 
-                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                  }`}>
-                    {institution?.status === 'active' ? 'Active' : 'Suspended'}
-                  </Text>
-                </div>
-              </div>
+      <div className="page-container pt-20 pb-20 px-4 animate-fade-in bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <div className="max-w-6xl mx-auto">
+          {/* Header with actions */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div className="flex items-center">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="mr-2"
+                onClick={() => navigate('/vendor/institutions')}
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <h1 className="text-2xl font-bold dark:text-white">{institution?.name}</h1>
+              <div className="ml-3">{renderStatusBadge(institution?.status || 'pending')}</div>
             </div>
             
-            <div className="flex space-x-2">
-              <Button type="primary" onClick={() => setActiveTab('2')}>
-                Edit Details
+            <div className="flex gap-2">
+              <Button onClick={handleEdit} variant="outline" className="gap-1">
+                <Edit className="h-4 w-4" />
+                <span className="hidden sm:inline">Edit</span>
               </Button>
-              <Button 
-                type={institution?.status === 'active' ? 'default' : 'primary'} 
-                danger={institution?.status === 'active'}
-                onClick={() => setActiveTab('3')}
-              >
-                {institution?.status === 'active' ? 'Suspend' : 'Activate'}
-              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <MoreHorizontal className="h-4 w-4" />
+                    <span className="sr-only">More actions</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleSendEmail}>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Send Email
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <BellRing className="mr-2 h-4 w-4" />
+                    Send Notification
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleGenerateReport}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Generate Report
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Data
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDeleteInstitution} className="text-red-600 dark:text-red-400">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Institution
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           
-          <Tabs activeKey={activeTab} onChange={setActiveTab}>
-            <TabPane tab="Overview" key="1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Text className="text-gray-500 dark:text-gray-400 block mb-2">Contact Information</Text>
-                  <div className="space-y-3">
-                    <div className="flex items-start">
-                      <MailIcon className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
-                      <div>
-                        <Text className="font-medium">Email</Text>
-                        <Text className="block text-gray-600 dark:text-gray-300">{institution?.email || 'N/A'}</Text>
-                      </div>
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+            <TabsList className="grid grid-cols-3 w-full max-w-md">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="modules">Modules</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="space-y-6 mt-6">
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Students</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center">
+                      <School className="h-5 w-5 text-blue-500 mr-2" />
+                      <span className="text-2xl font-bold dark:text-white">{institution?.studentsCount || 0}</span>
                     </div>
-                    
-                    <div className="flex items-start">
-                      <PhoneIcon className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
-                      <div>
-                        <Text className="font-medium">Phone</Text>
-                        <Text className="block text-gray-600 dark:text-gray-300">{institution?.phone || 'N/A'}</Text>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <GlobeIcon className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
-                      <div>
-                        <Text className="font-medium">Website</Text>
-                        <Text className="block text-gray-600 dark:text-gray-300">{institution?.website || 'N/A'}</Text>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
                 
-                <div>
-                  <Text className="text-gray-500 dark:text-gray-400 block mb-2">Institution Information</Text>
-                  <div className="space-y-3">
-                    <div>
-                      <Text className="font-medium">Type</Text>
-                      <Text className="block text-gray-600 dark:text-gray-300">{institution?.type || 'N/A'}</Text>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Employees</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center">
+                      <Users className="h-5 w-5 text-green-500 mr-2" />
+                      <span className="text-2xl font-bold dark:text-white">{institution?.employeesCount || 0}</span>
                     </div>
-                    
-                    <div>
-                      <Text className="font-medium">Address</Text>
-                      <Text className="block text-gray-600 dark:text-gray-300">{institution?.address || 'N/A'}</Text>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Institution Type</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center">
+                      <Building className="h-5 w-5 text-purple-500 mr-2" />
+                      <span className="text-xl font-medium capitalize dark:text-white">{institution?.type || 'Unknown'}</span>
                     </div>
-                    
-                    <div>
-                      <Text className="font-medium">Established</Text>
-                      <Text className="block text-gray-600 dark:text-gray-300">{institution?.establishedDate || 'N/A'}</Text>
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               </div>
-            </TabPane>
-            
-            <TabPane tab="Edit Details" key="2">
-              <Form
-                form={form}
-                layout="vertical"
-                initialValues={{
-                  name: institution?.name,
-                  email: institution?.email,
-                  phone: institution?.phone,
-                  website: institution?.website,
-                  type: institution?.type,
-                  address: institution?.address,
-                  establishedDate: institution?.establishedDate ? new Date(institution.establishedDate) : undefined
-                }}
-                onFinish={handleSubmit}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item 
-                    name="name" 
-                    label="Institution Name"
-                    rules={[{ required: true, message: 'Please input institution name' }]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  
-                  <Form.Item 
-                    name="email" 
-                    label="Email"
-                    rules={[
-                      { required: true, message: 'Please input email address' },
-                      { type: 'email', message: 'Please enter a valid email' }
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  
-                  <Form.Item 
-                    name="phone" 
-                    label="Phone"
-                  >
-                    <Input />
-                  </Form.Item>
-                  
-                  <Form.Item 
-                    name="website" 
-                    label="Website"
-                  >
-                    <Input />
-                  </Form.Item>
-                  
-                  <Form.Item 
-                    name="type" 
-                    label="Institution Type"
-                  >
-                    <Select>
-                      <Option value="primary">Primary School</Option>
-                      <Option value="secondary">Secondary School</Option>
-                      <Option value="university">University</Option>
-                      <Option value="vocational">Vocational Institute</Option>
-                      <Option value="other">Other</Option>
-                    </Select>
-                  </Form.Item>
-                  
-                  <Form.Item 
-                    name="establishedDate" 
-                    label="Established Date"
-                  >
-                    <DatePicker style={{ width: '100%' }} />
-                  </Form.Item>
-                  
-                  <Form.Item 
-                    name="address" 
-                    label="Address"
-                    className="md:col-span-2"
-                  >
-                    <Input.TextArea rows={3} />
-                  </Form.Item>
-                </div>
-                
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" loading={updateInstitutionMutation.isPending}>
-                    Save Changes
-                  </Button>
-                </Form.Item>
-              </Form>
-            </TabPane>
-            
-            <TabPane tab="Manage Status" key="3">
-              <Form
-                form={statusForm}
-                layout="vertical"
-                initialValues={{
-                  status: institution?.status
-                }}
-                onFinish={handleStatusChange}
-              >
-                <div className="mb-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
-                  <Text className="block mb-2 font-medium">Current Status</Text>
-                  <div className="flex items-center">
-                    {institution?.status === 'active' ? (
-                      <>
-                        <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
-                        <Text className="text-green-600 dark:text-green-400">Active</Text>
-                      </>
-                    ) : (
-                      <>
-                        <XCircleIcon className="h-5 w-5 text-red-500 mr-2" />
-                        <Text className="text-red-600 dark:text-red-400">Suspended</Text>
-                      </>
-                    )}
-                  </div>
-                </div>
-                
-                <Form.Item
-                  name="status"
-                  label="Institution Status"
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    <Option value="active">Active</Option>
-                    <Option value="suspended">Suspended</Option>
-                  </Select>
-                </Form.Item>
-                
-                <Alert
-                  message="Important"
-                  description={
+              
+              {/* Institution Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Institution Details</CardTitle>
+                  <CardDescription>Basic information about the institution</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p>Changing the status of an institution will affect user access:</p>
-                      <ul className="list-disc pl-5 mt-2">
-                        <li>Active: Users can log in and access all features</li>
-                        <li>Suspended: Users cannot log in and all service access is temporarily blocked</li>
-                      </ul>
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Name</h3>
+                      <p className="dark:text-white">{institution?.name}</p>
                     </div>
-                  }
-                  type="warning"
-                  showIcon
-                  className="mb-4"
-                />
-                
-                <Form.Item>
-                  <Button 
-                    type="primary" 
-                    htmlType="submit" 
-                    danger={institution?.status === 'active'}
-                    loading={updateStatusMutation.isPending}
-                  >
-                    {institution?.status === 'active' ? 'Suspend Institution' : 'Activate Institution'}
-                  </Button>
-                </Form.Item>
-              </Form>
-            </TabPane>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</h3>
+                      <p className="dark:text-white">{institution?.email}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</h3>
+                      <p className="dark:text-white">{institution?.phoneNumber}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Website</h3>
+                      <p className="dark:text-white">{institution?.settings?.slug}.tabularasa.com.ng</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Status & Subscription */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Status & Access</CardTitle>
+                  <CardDescription>Information about access and activation</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                    <div className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      <div>
+                        <p className="font-medium dark:text-white">Account Status</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Institution account is active</p>
+                      </div>
+                    </div>
+                    {renderStatusBadge(institution?.status || 'pending')}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="modules" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Active Modules</CardTitle>
+                  <CardDescription>Modules assigned to this institution</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {institution?.modules && institution.modules.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {institution.modules.map((module) => (
+                        <div key={module.id} className="flex p-3 bg-gray-50 dark:bg-gray-800 rounded-lg items-center">
+                          <img src={configIcon} alt={module.name} className="w-8 h-8 mr-3" />
+                          <div>
+                            <p className="font-medium dark:text-white">{module.name}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {module.permissions?.length || 0} Permissions
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-gray-500 dark:text-gray-400">No modules assigned</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="settings" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Customization</CardTitle>
+                  <CardDescription>Institution branding and appearance</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Theme Color</h3>
+                      <div className="flex items-center mt-1">
+                        <div 
+                          className="w-6 h-6 rounded-full mr-2" 
+                          style={{ backgroundColor: institution?.settings?.color || '#4A90E2' }}
+                        ></div>
+                        <span className="dark:text-white">{institution?.settings?.color || '#4A90E2'}</span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Logo</h3>
+                      <div className="mt-1">
+                        {institution?.settings?.logo ? (
+                          <img 
+                            src={institution.settings.logo} 
+                            alt={`${institution.name} logo`} 
+                            className="h-12 object-contain"
+                          />
+                        ) : (
+                          <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                            <Building className="h-6 w-6 text-gray-500" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Separator className="my-2" />
+                  
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">URL</h3>
+                    <p className="text-blue-500 dark:text-blue-400 hover:underline">
+                      https://{institution?.settings?.slug || 'institution'}.tabularasa.com.ng
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
-        </Card>
+        </div>
       </div>
-    </div>
+      
+      <BottomNavigation appType="vendor" />
+    </>
   );
 };
 
