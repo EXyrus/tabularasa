@@ -6,62 +6,62 @@ import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Receipt, CreditCard, FileText, DollarSign, Building, UserCog, Network, LayoutList } from 'lucide-react';
+import { Calendar, Bell, Users, Clock, Send, FileEdit, ListChecks } from 'lucide-react';
 
-const InstitutionControlPanel: React.FC = () => {
+const EventsDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  const controlPanelItems = [
+  const eventsItems = [
     {
-      title: 'Manage Roles',
-      description: 'Create and assign roles and permissions',
-      icon: <UserCog className="h-6 w-6" />,
+      title: 'Create Event',
+      description: 'Schedule a new event or announcement',
+      icon: <Calendar className="h-6 w-6" />,
       color: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300',
-      path: '/institution/control-panel/roles'
+      path: '/institution/events/create'
     },
     {
-      title: 'Organization Chart',
-      description: 'View and manage organization structure',
-      icon: <Network className="h-6 w-6" />,
+      title: 'Manage Events',
+      description: 'View and edit existing events',
+      icon: <FileEdit className="h-6 w-6" />,
       color: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300',
-      path: '/institution/organization-chart'
+      path: '/institution/events/manage'
     },
     {
-      title: 'Add Fees',
-      description: 'Create and manage fee structures',
-      icon: <Receipt className="h-6 w-6" />,
+      title: 'Event Calendar',
+      description: 'View all events in calendar format',
+      icon: <Clock className="h-6 w-6" />,
       color: 'bg-amber-100 text-amber-600 dark:bg-amber-900 dark:text-amber-300',
-      path: '/institution/control-panel/fees'
+      path: '/institution/events/calendar'
     },
     {
-      title: 'Add Payments',
-      description: 'Create payment entries for students',
-      icon: <CreditCard className="h-6 w-6" />,
-      color: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300',
-      path: '/institution/control-panel/payments'
-    },
-    {
-      title: 'View Transactions',
-      description: 'Track all financial transactions',
-      icon: <FileText className="h-6 w-6" />,
-      color: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300',
-      path: '/institution/control-panel/transactions'
-    },
-    {
-      title: 'Manage Payrolls',
-      description: 'Create and manage employee payrolls',
-      icon: <DollarSign className="h-6 w-6" />,
-      color: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300',
-      path: '/institution/control-panel/payrolls'
-    },
-    {
-      title: 'Bank Accounts',
-      description: 'Manage institution bank accounts',
-      icon: <Building className="h-6 w-6" />,
+      title: 'Notifications',
+      description: 'Send and manage notifications',
+      icon: <Bell className="h-6 w-6" />,
       color: 'bg-rose-100 text-rose-600 dark:bg-rose-900 dark:text-rose-300',
-      path: '/institution/control-panel/bank-accounts'
+      path: '/institution/events/notifications'
     },
+    {
+      title: 'Recipient Groups',
+      description: 'Manage event recipient groups',
+      icon: <Users className="h-6 w-6" />,
+      color: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300',
+      path: '/institution/events/recipients'
+    },
+    {
+      title: 'Send Announcement',
+      description: 'Create and send announcements',
+      icon: <Send className="h-6 w-6" />,
+      color: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300',
+      path: '/institution/events/announcements'
+    },
+    {
+      title: 'Templates',
+      description: 'Create and manage event templates',
+      icon: <ListChecks className="h-6 w-6" />,
+      color: 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300',
+      path: '/institution/events/templates'
+    }
   ];
 
   return (
@@ -74,12 +74,12 @@ const InstitutionControlPanel: React.FC = () => {
       
       <div className="page-container pt-20 pb-20 px-4 animate-fade-in">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-1 dark:text-white">Control Panel</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Manage your institution settings and configurations</p>
+          <h1 className="text-2xl font-bold mb-1 dark:text-white">Events Dashboard</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Create and manage events, announcements and notifications</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {controlPanelItems.map((item, index) => (
+          {eventsItems.map((item, index) => (
             <Card key={index} className="border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
@@ -108,4 +108,4 @@ const InstitutionControlPanel: React.FC = () => {
   );
 };
 
-export default InstitutionControlPanel;
+export default EventsDashboard;
