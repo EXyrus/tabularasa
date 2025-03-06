@@ -11,6 +11,12 @@ const UpdateNotification = () => {
   const [isInstallable, setIsInstallable] = useState(false);
 
   useEffect(() => {
+    // Show installation prompt immediately if available
+    if (window.deferredPrompt) {
+      setIsInstallable(true);
+      showInstallPrompt();
+    }
+
     // Initialize PWA and listen for updates
     pwaManager.register();
     
@@ -45,24 +51,27 @@ const UpdateNotification = () => {
         });
       } else if (event.type === 'INSTALLABLE') {
         setIsInstallable(true);
-        
-        // Show install prompt toast
-        toast({
-          title: "Install Tabula Rasa App",
-          description: "Add Tabula Rasa to your home screen for easier access",
-          action: (
-            <Button variant="default" size="sm" onClick={handleInstall}>
-              Install
-            </Button>
-          ),
-          duration: 10000
-        });
+        showInstallPrompt();
       }
     });
     
     // Clean up on unmount
     return () => unsubscribe();
   }, []);
+
+  const showInstallPrompt = () => {
+    // Show install prompt toast
+    toast({
+      title: "Install Tabula Rasa App",
+      description: "Add Tabula Rasa to your home screen for easier access",
+      action: (
+        <Button variant="default" size="sm" onClick={handleInstall}>
+          Install
+        </Button>
+      ),
+      duration: 10000
+    });
+  };
 
   const handleUpdate = () => {
     pwaManager.installUpdate();

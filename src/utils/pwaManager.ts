@@ -1,3 +1,4 @@
+
 interface UpdateEvent {
   type: 'UPDATE_AVAILABLE' | 'UPDATE_READY' | 'OFFLINE' | 'ONLINE' | 'INSTALLABLE';
   registration?: ServiceWorkerRegistration;
@@ -5,15 +6,6 @@ interface UpdateEvent {
 }
 
 type UpdateCallback = (event: UpdateEvent) => void;
-
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
-}
 
 class PWAManager {
   private updateCallbacks: UpdateCallback[] = [];
@@ -49,6 +41,8 @@ class PWAManager {
       e.preventDefault();
       // Store the event so it can be triggered later
       this.deferredPrompt = e as BeforeInstallPromptEvent;
+      // Store at window level to allow immediate access on first page load
+      window.deferredPrompt = this.deferredPrompt;
       // Notify listeners that the app is installable
       this.notifyListeners({ 
         type: 'INSTALLABLE', 
@@ -110,6 +104,10 @@ class PWAManager {
   };
 
   public promptInstall = async (): Promise<boolean> => {
+    if (!this.deferredPrompt && window.deferredPrompt) {
+      this.deferredPrompt = window.deferredPrompt;
+    }
+    
     if (!this.deferredPrompt) {
       console.log('Install prompt not available');
       return false;
@@ -123,6 +121,7 @@ class PWAManager {
     
     // Clear the saved prompt
     this.deferredPrompt = null;
+    window.deferredPrompt = null;
 
     return choiceResult.outcome === 'accepted';
   };

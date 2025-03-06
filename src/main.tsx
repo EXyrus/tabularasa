@@ -2,8 +2,8 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { BrowserRouter } from 'react-router-dom';
 import AppWrapper from './AppWrapper';
+import { BrowserRouter } from 'react-router-dom';
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
@@ -20,6 +20,8 @@ if ('serviceWorker' in navigator) {
 
 createRoot(document.getElementById("root")!).render(
   <AppWrapper>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </AppWrapper>
 );

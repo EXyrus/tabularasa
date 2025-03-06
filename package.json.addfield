@@ -1,0 +1,11 @@
+
+{
+  "scripts": {
+    "prepare": "node scripts/setup-husky.js",
+    "lint": "eslint . --ext ts,tsx",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open"
+  }
+}
