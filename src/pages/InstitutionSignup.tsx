@@ -89,14 +89,14 @@ const InstitutionSignup = () => {
           to="/" 
           className="inline-block mb-8 text-xl font-bold text-blue-600 hover:text-blue-800"
         >
-          TabR
+          Tabula Rasa
         </Link>
         
         <Card className="w-full shadow-lg animate-scale-in">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-800">Request a Callback</CardTitle>
             <CardDescription>
-              Fill out the form below and our team will contact you to discuss how TabR can benefit your institution.
+              Fill out the form below and our team will contact you to discuss how Tabula Rasa can benefit your institution.
             </CardDescription>
           </CardHeader>
           

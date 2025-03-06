@@ -1,9 +1,9 @@
 
 {
   "ENV": "production",
-  "HOST": "tabr.ng",
-  "API_HOST": "api.tabr.ng",
+  "HOST": "tabularasa.ng",
+  "API_HOST": "api.tabularasa.ng",
   "AUTH_ENABLED": true,
   "IS_PROD": true,
-  "LOGGER": "prod"
+  "LOGGER": "sentry"
 }

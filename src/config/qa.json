@@ -1,9 +1,9 @@
 
 {
   "ENV": "qa",
-  "HOST": "qa.tabr.ng",
-  "API_HOST": "api.qa.tabr.ng",
+  "HOST": "qa.tabularasa.ng",
+  "API_HOST": "api.qa.tabularasa.ng",
   "AUTH_ENABLED": true,
   "IS_PROD": false,
-  "LOGGER": "console"
+  "LOGGER": "sentry"
 }

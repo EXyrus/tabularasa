@@ -58,8 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // If auth is disabled (dev mode), create a mock user
       const mockUser: User = {
         id: '123456',
-        name: 'Development User',
-        email: 'dev@example.com',
+        name: 'Tabula Rasa',
+        email: 'tabula@rasa.ng',
         role: 'Admin',
         appType: 'institution',
         avatar: 'https://randomuser.me/api/portraits/men/32.jpg'

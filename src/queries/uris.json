@@ -1,0 +1,44 @@
+{
+    "index": "",
+    "request": "/request",
+    "data": "/data",
+    "login": "/vendor/login",
+    "logout": "/logout",
+    "token": "/token",
+    "modules": "/modules",
+    "theme": "/theme",
+    "users": {
+        "index": "/users",
+        "token": "/vendor/token",
+        "password": {
+            "update": "/users/account/update-password",
+            "forgot": "/users/forgot-password",
+            "reset": "/users/   reset-password"
+        }
+    },
+    "institutions": {
+        "index": "/institutions",
+        "stats": "/institutions/stats"
+    },
+    "employees": {
+        "token": "/employees/token",
+        "index": "/employees"
+    },
+    "transactions": {
+        "index": "/employees"
+    },
+    "roles": {
+        "index": "/roles"
+    },
+    "students": {
+        "token": "/student/token",
+        "fees": "guardian/fees"
+    },
+    "guardians": {
+        "index": "/guardian",
+        "students": "/guardian/students",
+        "announcements": "/guardian/announcements",
+        "fees": "/guardian/fees",
+        "feeDetails": "/guardian/fees/:id"
+    }
+}

@@ -24,6 +24,9 @@ import {
   CalendarIcon,
   MessageSquareIcon
 } from 'lucide-react';
+import HeaderBar from '@/components/HeaderBar';
+import BottomNavigation from '@/components/BottomNavigation';
+import { useAuth } from '@/context/AuthContext';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -37,6 +40,7 @@ interface StepItem {
 const CreateInstitution: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm();
+    const { user } = useAuth();
   const navigate = useNavigate();
   
   // Track which modules are completed in setup process
@@ -846,6 +850,8 @@ const CreateInstitution: React.FC = () => {
   
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <HeaderBar appType="vendor" userName={user?.name || ''} userAvatar={user?.avatar} />
+      
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <Title level={2}>Create a new institution</Title>
@@ -888,6 +894,7 @@ const CreateInstitution: React.FC = () => {
           {currentContent}
         </div>
       </div>
+      <BottomNavigation appType="vendor" />
     </div>
   );
 };

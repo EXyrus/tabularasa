@@ -32,9 +32,9 @@ function getEnvironment(): string {
   // Check hostname to determine environment
   const hostname = window.location.hostname;
   
-  if (hostname === 'tabr.ng') {
+  if (hostname === 'tabularasa.ng') {
     return 'production';
-  } else if (hostname === 'qa.tabr.ng') {
+  } else if (hostname === 'qa.tabularasa.ng') {
     return 'qa';
   } else {
     return 'dev';

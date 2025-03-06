@@ -17,6 +17,7 @@ import VendorProfile from "./pages/vendor/Profile";
 import VendorSettings from "./pages/vendor/Settings";
 import CreateInstitution from "./pages/vendor/CreateInstitution";
 import InstitutionsList from "./pages/vendor/InstitutionsList";
+import InstitutionLogin from "./pages/InstitutionLogin";
 import InstitutionDashboard from "./pages/institution/Dashboard";
 import InstitutionProfile from "./pages/institution/Profile";
 import InstitutionSettings from "./pages/institution/Settings";
@@ -26,7 +27,7 @@ import EmployeeProfile from "./pages/institution/EmployeeProfile";
 import StudentProfile from "./pages/institution/StudentProfile";
 import AttendancePage from "./pages/institution/Attendance";
 import OrganizationChartPage from "./pages/institution/OrganizationChart";
-import InstitutionControlPanel from "./pages/institution/ControlPanel";
+import InstitutionControlPanel from "./pages/institution/InstitutionControlPanel";
 import ManageRoles from "./pages/institution/ManageRoles";
 import ManageFees from "./pages/institution/ManageFees";
 import ManagePayments from "./pages/institution/ManagePayments";
@@ -99,7 +100,7 @@ const App = () => (
               } />
               <Route path="/institution/login" element={
                 <PublicRoute appType="institution" restricted>
-                  <Login />
+                  <InstitutionLogin />
                 </PublicRoute>
               } />
               <Route path="/institution/forgot-password" element={

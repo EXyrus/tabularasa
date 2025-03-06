@@ -1,12 +1,15 @@
 
 import React, { useState } from 'react';
-import { message } from 'antd';
+import { message, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import AuthForm from '@/components/AuthForm';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+;
+
+const { Paragraph } = Typography;
 
 const InstitutionLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -17,7 +20,7 @@ const InstitutionLogin: React.FC = () => {
   const [institutionName, setInstitutionName] = useState('');
   const [slugError, setSlugError] = useState('');
 
-  const handleSlugSubmit = async (e: React.FormEvent) => {
+  const onSlugSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSlugError('');
@@ -27,12 +30,12 @@ const InstitutionLogin: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Mock validation - in a real app this would check against a database
-      const mockValidSlugs = ['springfield-elementary', 'westfield-high', 'oakridge-academy', 'riverside-middle'];
+      const mockValidSlugs = ['springfield', 'westfield', 'oakridge', 'riverside'];
       const mockInstitutionNames = {
-        'springfield-elementary': 'Springfield Elementary School',
-        'westfield-high': 'Westfield High School',
-        'oakridge-academy': 'Oakridge Academy',
-        'riverside-middle': 'Riverside Middle School'
+        'springfield': 'Springfield Elementary School',
+        'westfield': 'Westfield High School',
+        'oakridge': 'Oakridge Academy',
+        'riverside': 'Riverside Middle School'
       };
       
       if (mockValidSlugs.includes(institutionSlug)) {
@@ -48,7 +51,7 @@ const InstitutionLogin: React.FC = () => {
     }
   };
 
-  const handleLogin = async (values: { email: string; password: string }) => {
+  const onLogin = async (values: { email: string; password: string }) => {
     try {
       setLoading(true);
       await login(values.email, values.password, 'institution');
@@ -65,7 +68,7 @@ const InstitutionLogin: React.FC = () => {
     }
   };
 
-  const handleBack = () => {
+  const onBack = () => {
     setInstitutionFound(false);
     setInstitutionSlug('');
     setInstitutionName('');
@@ -79,16 +82,17 @@ const InstitutionLogin: React.FC = () => {
             <div className="w-16 h-1 mx-auto bg-sms-institution rounded-full mb-4"></div>
             <CardTitle className="text-2xl">Institution Login</CardTitle>
             <CardDescription>Enter your institution's unique slug to proceed</CardDescription>
+            <Paragraph copyable={{ text: 'springfield' }}>springfield</Paragraph>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSlugSubmit} className="space-y-4">
+            <form onSubmit={onSlugSubmit} className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="institutionSlug" className="text-sm font-medium">
                   Institution Slug
                 </label>
                 <Input 
                   id="institutionSlug"
-                  placeholder="e.g., springfield-elementary" 
+                  placeholder="springfield" 
                   value={institutionSlug}
                   onChange={(e) => setInstitutionSlug(e.target.value)}
                   className="w-full"
@@ -127,7 +131,7 @@ const InstitutionLogin: React.FC = () => {
           <div className="w-full max-w-md mx-auto mb-4">
             <Button 
               variant="ghost" 
-              onClick={handleBack}
+              onClick={onBack}
               className="mb-2 pl-0 hover:bg-transparent"
             >
               ← Back to institution selection
@@ -140,7 +144,7 @@ const InstitutionLogin: React.FC = () => {
           <AuthForm
             appType="institution"
             formType="login"
-            onSubmit={handleLogin}
+            onSubmit={onLogin}
             loading={loading}
           />
         </>

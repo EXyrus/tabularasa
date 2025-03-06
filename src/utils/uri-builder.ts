@@ -16,7 +16,7 @@ type UriParams = {
  * @returns Complete API URI
  */
 export const buildUri = (endpoint: string, params?: UriParams): string => {
-  const baseUrl = `https://${config.API_HOST}/api`;
+  const baseUrl = `https://${config.API_HOST}`;
   const uri = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
   
   if (!params || Object.keys(params).length === 0) {

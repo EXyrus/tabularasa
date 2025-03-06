@@ -1,20 +1,18 @@
 
 {
   "ENV": "local",
-  "HOST": "tabr.internal",
-  "API_HOST": "api.tabr.internal",
+  "HOST": "tabularasa.internal",
+  "API_HOST": "api.tabularasa.internal",
   "AUTH_ENABLED": true,
   "SENTRY": {
-    "dsn": "dsn"
-  },
+    "dsn": "https://b322a7f9cb69f0b14cf791d3ce8cec6c@o1186630.ingest.sentry.io/4506417065623552"
+},
   "CLOUDINARY": {
-    "cloudName": "tabr",
+    "cloudName": "tabularasa",
     "apiKey": "key",
     "apiSecret": "secret",
-    "profilePreset": "tabr.staging.verification",
-    "receiptPreset": "tabr.staging.alipay",
-    "blogPreset": "tabr.staging.blog",
-    "prefix": "res.cloudinary.com/orgname"
+    "institutionPreset": "tabularasa.staging.institutions",
+    "prefix": "res.cloudinary.com/epoh"
   },
   "IS_PROD": false,
   "remoteConfig": {

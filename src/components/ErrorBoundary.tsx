@@ -82,7 +82,7 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
 export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
   const { toast } = useToast();
   
-  const handleError = (error: Error) => {
+  const onError = (error: Error) => {
     toast({
       title: "An error occurred",
       description: "The application encountered an unexpected error",

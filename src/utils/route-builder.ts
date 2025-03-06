@@ -49,3 +49,18 @@ export const Routes = {
   finances: () => '/guardian/finances',
   notifications: () => '/guardian/notifications',
 };
+
+
+/**
+ * Chains multiple route segments into a single route.
+ * Ensures that each segment is properly separated by a single slash.
+ *
+ * @param routes An array of route segments
+ * @returns Combined route path
+ */
+export const createRouteChain = (...routes: string[]): string => {
+  return '/' + routes
+    .map(segment => segment.replace(/(^\/+|\/+$)/g, ''))
+    .filter(Boolean)
+    .join('/');
+};

@@ -12,9 +12,7 @@ export const initSentry = (): void => {
       dsn: config.SENTRY.dsn,
       integrations: [
         // Updated to use available integrations only
-        // @ts-ignore - Ignoring type errors as the integrations might be available at runtime
         new Sentry.BrowserTracing && new Sentry.BrowserTracing(),
-        // @ts-ignore - Ignoring type errors as the integrations might be available at runtime
         new Sentry.Replay && new Sentry.Replay(),
       ].filter(Boolean), // Filter out undefined integrations
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring

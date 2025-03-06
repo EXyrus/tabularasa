@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Set your API base URL here
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.tabr.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.tabularasa.app';
 
 // Types
 interface OrganizationNode {

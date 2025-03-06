@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 import { Form, Input, Button, Typography, Divider, Space } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
+import { AppType } from '@/types';
 
 const { Title, Text } = Typography;
 
-type AppType = 'vendor' | 'institution' | 'guardian';
 type FormType = 'login' | 'register' | 'forgotPassword' | 'resetPassword';
 
 interface AuthFormProps {
@@ -19,7 +19,8 @@ interface AuthFormProps {
 const AuthForm: React.FC<AuthFormProps> = ({ appType, formType, onSubmit, loading = false }) => {
   const [form] = Form.useForm();
   const { appType: routeAppType } = useParams<{ appType?: AppType }>();
-  
+
+
   // Reset form when appType or formType changes
   useEffect(() => {
     form.resetFields();

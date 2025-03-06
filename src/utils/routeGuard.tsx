@@ -2,11 +2,10 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import config from '../config';
+import config from '@/config';
+import { AppType } from '@/types';
 
-type AppType = 'vendor' | 'institution' | 'guardian';
-
-interface ProtectedRouteProps {
+type ProtectedRouteProps = {
   children: React.ReactNode;
   appType: AppType;
 }

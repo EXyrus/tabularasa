@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 export interface SelectOption {
   label: string;
   value: string | number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface SearchableSelectProps {
@@ -93,7 +93,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   }, [open]);
 
   // Find the selected option to display its label
-  const selectedOption = options.find(option => option.value === value);
+  // const selectedOption = options.find(option => option.value === value);
 
   return (
     <Select

@@ -20,7 +20,7 @@ const UpdateNotification = () => {
         
         toast({
           title: "New version available",
-          description: "A new version of TabR is available. Reload to update.",
+          description: "A new version of Tabula Rasa is available. Reload to update.",
           action: (
             <Button variant="outline" size="sm" onClick={handleUpdate}>
               Update now
@@ -48,8 +48,8 @@ const UpdateNotification = () => {
         
         // Show install prompt toast
         toast({
-          title: "Install TabR App",
-          description: "Add TabR to your home screen for easier access",
+          title: "Install Tabula Rasa App",
+          description: "Add Tabula Rasa to your home screen for easier access",
           action: (
             <Button variant="default" size="sm" onClick={handleInstall}>
               Install
@@ -74,7 +74,7 @@ const UpdateNotification = () => {
       setIsInstallable(false);
       toast({
         title: "Installation successful",
-        description: "TabR has been added to your home screen",
+        description: "Tabula Rasa has been added to your home screen",
         duration: 3000
       });
     }

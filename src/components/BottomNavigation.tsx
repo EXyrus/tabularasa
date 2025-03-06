@@ -13,7 +13,7 @@ import {
   ApartmentOutlined 
 } from '@ant-design/icons';
 
-type AppType = 'vendor' | 'institution' | 'guardian';
+
 
 interface BottomNavigationProps {
   appType: AppType;

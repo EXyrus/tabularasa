@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 const VendorProfile: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
 
   const handleUpdateProfile = async (data: any) => {
     setIsLoading(true);
@@ -27,9 +27,11 @@ const VendorProfile: React.FC = () => {
         description: 'Your profile has been updated successfully.',
       });
     } catch (error) {
+      const e = error as Error;
+
       toast({
         title: 'Update Failed',
-        description: 'There was an error updating your profile.',
+        description: e.message ?? 'There was an error updating your profile.',
         variant: 'destructive',
       });
     } finally {
