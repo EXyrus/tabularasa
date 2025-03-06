@@ -6,8 +6,8 @@ import {
     setLocalStorageItem
 } from 'helpers/local-storage';
 import { decodeTokenPayload, getTokenPayload } from 'helpers/token';
-import axios from 'overrides/axios';
-import { queryClient } from 'overrides/react-query';
+import axiosInstance as axios from '@/overrides';
+import { queryClient } from '@/overrides';
 import type {
     AdminLoginResponse,
     EmployeeUserResponse,
@@ -19,7 +19,7 @@ import type {
     UserForgotPasswordRequest,
     UserResetPasswordRequest
 } from 'types';
-import URIS from 'queries/uris.json';
+import URIS from './uris.json';
 
 export const useTokenQuery = () => {
     return useQuery({

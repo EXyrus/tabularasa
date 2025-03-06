@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import axios from 'overrides/axios';
-import { queryClient } from 'overrides/react-query';
+import axiosInstance as axios from '@/overrides';
+import { queryClient } from '@/overrides';
 import type {
     CreateInstitutionDetailsPayload,
     Institution,
