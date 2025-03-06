@@ -14,9 +14,10 @@ const initSentry = (): void => {
 
   Sentry.init({
     dsn: SENTRY_DSN,
+    // Use direct browser and replay integrations without using Integrations namespace
     integrations: [
-      new Sentry.Integrations.BrowserTracing(),
-      new Sentry.Integrations.Replay(),
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration(),
     ],
     // Performance Monitoring
     tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!

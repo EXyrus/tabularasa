@@ -19,11 +19,11 @@ if ('serviceWorker' in navigator) {
 }
 
 // Add PWA install prompt handler
-window.addEventListener('beforeinstallprompt', (e) => {
+window.addEventListener('beforeinstallprompt', (e: Event) => {
   // Prevent Chrome 67 and earlier from automatically showing the prompt
   e.preventDefault();
   // Stash the event so it can be triggered later
-  window.deferredPrompt = e;
+  window.deferredPrompt = e as BeforeInstallPromptEvent;
   
   // Show the install prompt to the user
   setTimeout(() => {
