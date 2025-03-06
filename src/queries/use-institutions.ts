@@ -1,7 +1,8 @@
+
 import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import axiosInstance as axios from '@/overrides';
+import axios from '@/overrides';
 import { queryClient } from '@/overrides';
 import type {
     CreateInstitutionDetailsPayload,
@@ -14,16 +15,16 @@ import type {
     InstitutionSettingsPayload,
     BankAccountResponse,
     BankAccount
-} from 'types';
-import type { FetchResponseError } from 'types/fetch';
+} from '@/types/institution';
+import type { FetchResponseError } from '@/types/responses';
 import URIS from './uris.json';
 
 export const useSignupRequest = () => {
     return useMutation({
         mutationFn: async (variables: {
-            fullNmae: string;
+            fullName: string;
             email: string;
-            institionName: string;
+            institutionName: string;
         }) => {
             const response = await axios.post(URIS.request, variables);
 
