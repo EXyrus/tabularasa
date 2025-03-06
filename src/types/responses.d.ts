@@ -1,4 +1,5 @@
 import type {
+    BankAccount,
     EmployeePayload,
     Gender,
     // Institution,
@@ -47,11 +48,11 @@ export type LoginResponse = {
 };
 
 export type InstitutionResponse = {
-    type: string;
-    id: string;
-    name: string;
-    logo: string;
-    status: 'pending' | 'active' | 'inactive';
+  type: string;
+  id: string;
+  name: string;
+  logo: string;
+  status: "pending" | "active" | "inactive";
 }[];
 
 export type InstitutionsResponse = {
@@ -121,12 +122,5 @@ export type SuspensionData = {
     notifyParent: boolean;
 };
 
-export type BankAccountResponse = {
-    id: string;
-    name: string;
-    accountNumber: string;
-    bankName: string;
-    accountType: string;
-    status: string;
-    createdAt?: string;
-};
+
+export type BankAccountResponse = BankAccount;

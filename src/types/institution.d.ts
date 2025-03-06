@@ -84,7 +84,6 @@ export type BankAccount = {
     isDefault?: boolean;
 };
 
-export type BankAccountResponse = BankAccount;
 
 // Event types
 export type Event = {
@@ -147,20 +146,3 @@ export type InstitutionSettingsPayload = {
     slug: string;
 };
 
-export type InstitutionResponse = {
-    type: string;
-    id: string;
-    name: string;
-    logo: string;
-    status: 'pending' | 'active' | 'inactive';
-}[];
-
-export type InstitutionsResponse = {
-    registered: number | string;
-    active: number | string;
-    inactive: number | string;
-    pending: number | string;
-    tertiary: number | string;
-    secondary: number | string;
-    primary: number | string;
-};
