@@ -1,4 +1,3 @@
-import { ErrorBoundary } from "@sentry/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute, PublicRoute } from "./utils/routeGuard";
@@ -40,6 +39,7 @@ import GuardianStudentProfile from "./pages/guardian/StudentProfile";
 import GuardianNotifications from "./pages/guardian/Notifications";
 import GuardianAccount from "./pages/guardian/Account";
 import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const App = () => (
   <AuthProvider>
