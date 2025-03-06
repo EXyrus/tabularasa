@@ -1,4 +1,4 @@
 
-export * from './axios.override';
-export * from './sentry.override';
-export * from './react-query.override';
+export { default as axios } from './axios.override';
+export { default as initSentry } from './sentry.override';
+export { default as queryClient } from './react-query.override';

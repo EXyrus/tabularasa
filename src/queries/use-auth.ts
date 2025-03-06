@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -6,8 +7,8 @@ import {
     setLocalStorageItem
 } from 'helpers/local-storage';
 import { decodeTokenPayload, getTokenPayload } from 'helpers/token';
-import axiosInstance as axios from '@/overrides';
-import { queryClient } from '@/overrides';
+import axios from '@/overrides/axios.override';
+import queryClient from '@/overrides/react-query.override';
 import type {
     AdminLoginResponse,
     EmployeeUserResponse,

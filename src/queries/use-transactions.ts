@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import axiosInstance as axios from '@/overrides';
-import { queryClient } from '@/overrides';
+import axios from '@/overrides/axios.override';
+import queryClient from '@/overrides/react-query.override';
 import type {
     Payment,
     SingleEmployeeResponse,
