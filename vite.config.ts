@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
+      //       port: 3000,
+      // host: isProdEnv ? "tabularasa.ng" : "tabularasa.internal",
       port: 8080,
       host: "localhost", // Changed from tabularasa.internal to localhost
       allowedHosts: ["tabularasa.ng", "tabularasa.internal", "localhost"],
