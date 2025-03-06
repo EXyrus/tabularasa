@@ -6,6 +6,7 @@ import BottomNavigation from '../../components/BottomNavigation';
 import { useAuth } from '../../context/AuthContext';
 import SearchableSelect from '../../components/SearchableSelect';
 import ListItemWithContext from '../../components/ListItemWithContext';
+import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -125,7 +126,7 @@ const InstitutionStudents: React.FC = () => {
       setEditingStudent(student);
       form.setFieldsValue({
         ...student,
-        admissionDate: student.admissionDate ? new Date(student.admissionDate) : undefined
+        admissionDate: student.admissionDate ? dayjs(student.admissionDate) : undefined
       });
     } else {
       setEditingStudent(null);
