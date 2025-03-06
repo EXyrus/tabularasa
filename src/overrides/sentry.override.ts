@@ -15,8 +15,8 @@ const initSentry = (): void => {
   Sentry.init({
     dsn: SENTRY_DSN,
     integrations: [
-      new Sentry.BrowserTracing(),
-      new Sentry.Replay(),
+      new Sentry.Integrations.BrowserTracing(),
+      new Sentry.Integrations.Replay(),
     ],
     // Performance Monitoring
     tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
