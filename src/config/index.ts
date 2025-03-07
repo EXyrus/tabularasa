@@ -1,66 +1,68 @@
+import merge from 'lodash/merge';
+import env from 'env';
+import a from './a.json';
+import base from './default.json';
+import dev from './dev.json';
+import int from './int.json';
+import prod from './prod.json';
+import qa from './qa.json';
+import staging from './staging.json';
 
-import defaultConfig from './default.json';
-import devConfig from './dev.json';
-import qaConfig from './qa.json';
-import prodConfig from './prod.json';
+const PREFIX = 'VITE_APP_';
 
-interface Config {
-  ENV: string;
-  HOST: string;
-  API_HOST: string;
-  AUTH_ENABLED: boolean;
-  SENTRY?: {
-    dsn: string;
-  };
-  CLOUDINARY?: {
-    cloudName: string;
-    apiKey: string;
-    apiSecret: string;
-    profilePreset: string;
-    receiptPreset: string;
-    blogPreset: string;
-    prefix: string;
-  };
-  IS_PROD: boolean;
-  remoteConfig?: {
-    pusher: string;
-  };
-  LOGGER: string;
-}
+const { hostname, port } = globalThis.location;
+let ENV = 'local';
 
-function getEnvironment(): string {
-  // Check hostname to determine environment
-  const hostname = window.location.hostname;
-  
-  if (hostname === 'tabularasa.ng') {
-    return 'production';
-  } else if (hostname === 'qa.tabularasa.ng') {
-    return 'qa';
-  } else {
-    return 'dev';
-  }
-}
+let override = {};
 
-function loadConfig(): Config {
-  const env = getEnvironment();
-  let envConfig: Partial<Config> = {};
-  
-  switch (env) {
-    case 'production':
-      envConfig = prodConfig;
-      break;
-    case 'qa':
-      envConfig = qaConfig;
-      break;
-    case 'dev':
+const isLocalhost = ['localhost', 'tabularasa.internal'].includes(hostname);
+
+switch (hostname) {
+    case 'dev.tabularasa.com.ng':
+        ENV = 'dev';
+        override = dev;
+        break;
+    case 'qa.tabularasa.com.ng':
+        ENV = 'qa';
+        override = qa;
+        break;
+    case 'int.tabularasa.com.ng':
+        ENV = 'int';
+        override = int;
+        break;
+    case 'a.tabularasa.com.ng':
+        ENV = 'a';
+        override = a;
+        break;
+    case 'staging.tabularasa.com.ng':
+        ENV = 'staging';
+        override = staging;
+        break;
+    case 'tabularasa.ng':
+        ENV = 'prod';
+        override = prod;
+        break;
     default:
-      envConfig = devConfig;
-      break;
-  }
-  
-  // Merge with default config
-  return { ...defaultConfig, ...envConfig } as Config;
+        if (!isLocalhost) {
+            override = dev;
+        }
+
+        if (!['3000'].includes(port) && !base.API_HOST) {
+            base.API_HOST = 'api.tabularasa.internal';
+        }
 }
 
-const config = loadConfig();
-export default config;
+const envConfig = Object.fromEntries(
+    Object.entries(env)
+        .filter(([key]) => {
+            return (key as string).startsWith(PREFIX);
+        })
+        .map(([key, value]: [string, string]) => {
+            return [key.replace(PREFIX, ''), value];
+        })
+);
+const config = merge({}, base, envConfig, override, {
+    ENV
+});
+
+export default Object.freeze(config) as typeof base;

@@ -1,0 +1,8 @@
+{
+    "API_HOST": "api.staging.tabularasa.com.ng",
+    "FIREBASE": {
+        "databaseURL": "https://epoh-music-staging.firebaseio.com",
+        "appId": "1:769604433565:web:c877d2911a37bf8ea80674",
+        "measurementId": "G-E14GLT0QN9"
+    }
+}

@@ -1,9 +1,3 @@
-
 {
-  "ENV": "dev",
-  "HOST": "localhost:8080",
-  "API_HOST": "api.dev.tabularasa.com.ng",
-  "AUTH_ENABLED": false,
-  "IS_PROD": false,
-  "LOGGER": "sentry"
+    "API_HOST": "api.dev.tabularasa.com.ng"
 }

@@ -1,236 +1,376 @@
+import type { UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
+import axios from 'overrides/axios';
+import { queryClient } from 'overrides/react-query';
+import type {
+    CreateInstitutionDetailsPayload,
+    Institution,
+    InstitutionDetailsPayload,
+    InstitutionResponse,
+    InstitutionStatusPayload,
+    InstitutionTheme,
+    InstitutionsResponse,
+    InstitutionSettingsPayload,
+    BankAccountResponse,
+    BankAccount
+} from 'types';
+import type { FetchResponseError } from 'types/fetch';
+import URIS from './uris.json';
 
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { BankAccount, BankAccountResponse } from '@/types';
-import { useToast } from '@/hooks/use-toast';
-import { axios } from '@/overrides/index';
-import uris from './uris.json';
+export const useSignupRequest = () => {
+    return useMutation({
+        mutationFn: async (variables: {
+            fullNmae: string;
+            email: string;
+            institionName: string;
+        }) => {
+            const response = await axios.post(URIS.request, variables);
 
-/**
- * Custom hook to fetch bank accounts for an institution
- */
+            return await response.data;
+        }
+    });
+};
+
+export const useInstitutions = () => {
+    return useQuery({
+        queryKey: ['get_institutions'],
+
+        queryFn: async () => {
+            const response = await axios.get<InstitutionResponse>(
+                URIS.institutions.index
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useInstitutionDetails = (id: string) => {
+    return useQuery({
+        queryKey: ['institution_details', id],
+
+        queryFn: async () => {
+            const response = await axios.get<Institution>(
+                `${URIS.institutions.index}/${id}`
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useInstitutionTheme = (slug: string, enabled: boolean) => {
+    return useQuery({
+        queryKey: ['institutionTheme', slug],
+
+        queryFn: async () => {
+            const url = `${URIS.index}/${slug}/theme`;
+            const response = await axios.get<InstitutionTheme>(url);
+
+            localStorage.setItem('institutionTheme', JSON.stringify(response));
+            localStorage.setItem('subdomain', slug);
+
+            return response.data;
+        },
+
+        enabled
+    });
+};
+
+export const useUpdateInstitutionSettings = () => {
+    return useMutation<
+        Institution,
+        AxiosError<FetchResponseError>,
+        InstitutionSettingsPayload
+    >({
+        mutationFn: async (variables: InstitutionSettingsPayload) => {
+            const formData = new FormData();
+
+            formData.append('id', variables.id?.toString() ?? '');
+            formData.append('color', variables.color ?? '');
+            formData.append('slug', variables.slug ?? '');
+
+            if (variables.logo) {
+                formData.append('logo', variables.logo);
+            }
+
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
+
+            const response = await axios.post<Institution>(
+                `${URIS.institutions.index}/${variables.id}/customize`,
+                formData,
+                config
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useCreateInstitution = () => {
+    return useMutation<
+        CreateInstitutionDetailsPayload,
+        AxiosError<FetchResponseError>,
+        CreateInstitutionDetailsPayload
+    >({
+        mutationFn: async (variables: CreateInstitutionDetailsPayload) => {
+            const response = await axios.post<CreateInstitutionDetailsPayload>(
+                `${URIS.institutions.index}`,
+                variables
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useDeleteInstitution = (
+    options?: UseMutationOptions<
+        Institution,
+        AxiosError<FetchResponseError>,
+        InstitutionStatusPayload
+    >
+) => {
+    return useMutation({
+        ...options,
+        mutationFn: async (variables: InstitutionStatusPayload) => {
+            const response = await axios.delete<Institution>(
+                `${URIS.institutions.index}/${variables.id}`
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useInstitutionStatistics = () => {
+    return useQuery({
+        queryKey: ['institutions_statistics'],
+
+        queryFn: async () => {
+            const response = await axios.get<InstitutionsResponse>(
+                URIS.institutions.stats
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useUpdateInstitutionDetails = () => {
+    return useMutation<
+        Institution,
+        AxiosError<FetchResponseError>,
+        InstitutionDetailsPayload
+    >({
+        mutationFn: async variables => {
+            const response = await axios.put<Institution>(
+                `${URIS.institutions.index}/${variables.id}/update-details`,
+                variables
+            );
+
+            return response.data;
+        }
+    });
+};
+
+export const useUpdateInstitutionStatus = () => {
+    return useMutation<
+        Institution,
+        AxiosError<FetchResponseError>,
+        InstitutionStatusPayload
+    >({
+        mutationFn: async (variables: InstitutionStatusPayload) => {
+            const response = await axios.put<Institution>(
+                `${URIS.institutions.index}/${variables.id}/update-status`,
+                variables
+            );
+
+            return response.data;
+        },
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['institution_details']
+            });
+        }
+    });
+};
+
+export const useEditInstitutionRoles = () => {
+    const institution = JSON.parse(
+        localStorage.getItem('institutionTheme') ?? '{}'
+    );
+
+    const editRoleMutation = useMutation({
+        mutationFn: async (params: { roleId: string; newName: string }) => {
+            const { roleId, newName } = params;
+
+            await axios.patch(
+                `${URIS.institutions.index}/${institution.data.id}/roles/${roleId}`,
+                { newName }
+            );
+        },
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['roles']
+            });
+        }
+    });
+
+    const deleteRoleMutation = useMutation({
+        mutationFn: async (roleId: string) => {
+            await axios.delete(
+                `${URIS.institutions.index}/${institution.data.id}/roles/${roleId}`
+            );
+        },
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['roles']
+            });
+        }
+    });
+
+    const editRole = async (roleId: string, newName: string) => {
+        await editRoleMutation.mutateAsync({ roleId, newName });
+    };
+
+    const deleteRole = async (roleId: string) => {
+        await deleteRoleMutation.mutateAsync(roleId);
+    };
+
+    return { editRole, deleteRole };
+};
+
+export const useAddRolePermissions = () => {
+    const institution = JSON.parse(
+        localStorage.getItem('institutionTheme') ?? '{}'
+    );
+
+    const addPermissionToRoleMutation = useMutation({
+        mutationFn: async (params: {
+            roleId: string;
+            permissionIds: string[];
+        }) => {
+            const { roleId, permissionIds } = params;
+
+            await axios.post(
+                `${URIS.institutions.index}/${institution.data.id}/roles/${roleId}/add-role-permissions`,
+                { permissionIds: permissionIds }
+            );
+        },
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['roles']
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['permissions']
+            });
+        }
+    });
+
+    const addPermissions = async (roleId: string, permissionIds: string[]) => {
+        await addPermissionToRoleMutation.mutateAsync({
+            roleId,
+            permissionIds
+        });
+    };
+
+    return { addPermissions };
+};
+
+export const useActivateInstitution = () => {
+    return useMutation({
+        mutationFn: async (variables: { userId: string; token: string }) => {
+            await axios.post(`${URIS.institutions.index}/activate`, variables);
+        }
+    });
+};
+
 export const useGetBankAccounts = () => {
-  return useQuery({
-    queryKey: ['bank_accounts'],
-    queryFn: async () => {
-      try {
-        // Mock data for development - in production this would fetch from the API
-        const mockBankAccounts: BankAccount[] = [
-          {
-            id: '1',
-            bank: 'Chase Bank',
-            accountNumber: '1234567890',
-            accountName: 'School Operations Account',
-            accountType: 'checking',
-            isDefault: true
-          },
-          {
-            id: '2',
-            bank: 'Bank of America',
-            accountNumber: '0987654321',
-            accountName: 'School Development Fund',
-            accountType: 'savings',
-            isDefault: false
-          },
-          {
-            id: '3',
-            bank: 'Wells Fargo',
-            accountNumber: '5678901234',
-            accountName: 'Student Activities Account',
-            accountType: 'business',
-            isDefault: false
-          }
-        ];
-        
-        return mockBankAccounts;
-      } catch (error: any) {
-        console.error('Error fetching bank accounts:', error);
-        throw new Error(error.message || 'Failed to fetch bank accounts');
-      }
-    },
-    retry: 1,
-  });
+    const institution = JSON.parse(
+        localStorage.getItem('institutionTheme') ?? '{}'
+    );
+
+    return useQuery({
+        queryKey: ['bank_accounts', institution.data.id],
+        queryFn: async () => {
+            const response = await axios.get<BankAccountResponse[]>(
+                `${URIS.institutions.index}/${institution.data.id}/bank-accounts`
+            );
+
+            return response.data;
+        }
+    });
 };
 
-/**
- * Custom hook to add a bank account
- */
 export const useAddBankAccount = () => {
-  const { toast } = useToast();
-  
-  return useMutation({
-    mutationFn: async (newAccount: Omit<BankAccount, 'id'> & { password?: string }) => {
-      try {
-        // This would be an API call in production
-        console.log('Adding bank account:', newAccount);
-        
-        // Mock creating a new account with an ID
-        const createdAccount: BankAccount = {
-          id: Math.random().toString(36).substring(2, 11),
-          bank: newAccount.bank,
-          accountNumber: newAccount.accountNumber,
-          accountName: newAccount.accountName,
-          accountType: newAccount.accountType,
-          isDefault: false
-        };
-        
-        return createdAccount;
-      } catch (error: any) {
-        console.error('Error adding bank account:', error);
-        throw new Error(error.message || 'Failed to add bank account');
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Bank account added successfully",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to add bank account: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });
+    const institution = JSON.parse(
+        localStorage.getItem('institutionTheme') ?? '{}'
+    );
+
+    return useMutation({
+        mutationFn: async (variables: {
+            bank: string;
+            accountNumber: string;
+            accountName: string;
+            accountType: string;
+            password: string;
+        }) => {
+            const response = await axios.post<
+                BankAccount & { password: string }
+            >(
+                `${URIS.institutions.index}/${institution.data.id}/bank-accounts`,
+                variables
+            );
+
+            return response.data;
+        }
+    });
 };
 
-/**
- * Custom hook to update a bank account
- */
 export const useUpdateBankAccount = () => {
-  const { toast } = useToast();
-  
-  return useMutation({
-    mutationFn: async (updatedAccount: BankAccount) => {
-      try {
-        // This would be an API call in production
-        console.log('Updating bank account:', updatedAccount);
-        
-        return updatedAccount;
-      } catch (error: any) {
-        console.error('Error updating bank account:', error);
-        throw new Error(error.message || 'Failed to update bank account');
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Bank account updated successfully",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to update bank account: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });
+    const institution = JSON.parse(
+        localStorage.getItem('institutionTheme') ?? '{}'
+    );
+
+    return useMutation({
+        mutationFn: async (variables: {
+            id: string;
+            bank: string;
+            accountNumber: string;
+            accountName: string;
+            accountType: string;
+        }) => {
+            const response = await axios.put<BankAccount>(
+                `${URIS.institutions.index}/${institution.data.id}/bank-accounts/${variables.id}`,
+                variables
+            );
+
+            return response.data;
+        }
+    });
 };
 
-/**
- * Custom hook to delete a bank account
- */
 export const useDeleteBankAccount = () => {
-  const { toast } = useToast();
-  
-  return useMutation({
-    mutationFn: async (id: string) => {
-      try {
-        // This would be an API call in production
-        console.log('Deleting bank account with ID:', id);
-        
-        return id;
-      } catch (error: any) {
-        console.error('Error deleting bank account:', error);
-        throw new Error(error.message || 'Failed to delete bank account');
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Bank account deleted successfully",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to delete bank account: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });
+    const institution = JSON.parse(
+        localStorage.getItem('institutionTheme') ?? '{}'
+    );
+
+    return useMutation({
+        mutationFn: async (bankAccountId: string) => {
+            await axios.delete(
+                `${URIS.institutions.index}/${institution.data.id}/bank-accounts/${bankAccountId}`
+            );
+        }
+    });
 };
 
-/**
- * Custom hook to fetch institution details
- */
-export const useGetInstitutionDetails = (id: string) => {
-  return useQuery({
-    queryKey: ['institution', id],
-    queryFn: async () => {
-      try {
-        // Mock data for development - in production this would fetch from the API
-        return {
-          id,
-          name: 'Springfield Elementary',
-          email: 'admin@springfield.edu',
-          phoneNumber: '555-123-4567',
-          type: 'primary',
-          status: 'active',
-          studentsCount: 450,
-          employeesCount: 35,
-          settings: {
-            logo: 'https://example.com/logo.png',
-            color: '#4A90E2',
-            slug: 'springfield-elementary'
-          },
-          modules: [
-            { id: '1', name: 'Academics', permissions: [] },
-            { id: '2', name: 'Finance', permissions: [] },
-            { id: '3', name: 'HR', permissions: [] }
-          ]
-        };
-      } catch (error: any) {
-        console.error('Error fetching institution details:', error);
-        throw new Error(error.message || 'Failed to load institution details');
-      }
-    },
-    retry: 1
-  });
-};
-
-/**
- * Custom hook to update institution details
- */
-export const useUpdateInstitution = () => {
-  const { toast } = useToast();
-  
-  return useMutation({
-    mutationFn: async (data: any) => {
-      try {
-        // This would be an API call in production
-        console.log('Updating institution:', data);
-        
-        return data;
-      } catch (error: any) {
-        console.error('Error updating institution:', error);
-        throw new Error(error.message || 'Failed to update institution');
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Institution updated successfully",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to update institution: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });
-};

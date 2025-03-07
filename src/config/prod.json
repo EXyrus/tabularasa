@@ -1,9 +1,16 @@
-
 {
-  "ENV": "production",
-  "HOST": "tabularasa.ng",
-  "API_HOST": "api.tabularasa.ng",
-  "AUTH_ENABLED": true,
-  "IS_PROD": true,
-  "LOGGER": "sentry"
+    "API_HOST": "api.tabularasa.ng",
+    "CHROMECAST_APP_ID": "4431C03C",
+    "CLOUDINARY_INSTITUTION_PRESET": "prod.institutions",
+    "CLOUDINARY_PROFILE_PRESET": "prod.users.profile",
+    "CONTENT_HOST": "content.epoh.ng",
+    "FIREBASE": {
+        "databaseURL": "https://epoh-music-prod.firebaseio.com",
+        "minimumFetchIntervalMillis": 900000,
+        "appId": "1:769604433565:web:bd1aef6b4e521894a80674",
+        "measurementId": "G-MCGYRDBBET"
+    },
+    "IS_PROD": true,
+    "PAYPAL_CLIENT_ID": "Ad4i7s1-jdttU5eli8HxE4H09a6yPGhZ59zJ2I6orhQ9t-gCS44ifpKU4IC_1tfLzP9MEz-mOqWbgr0_",
+    "PAYSTACK_PK": "pk_live_22a99f0daf634e8d5fb8143b5c156a7d0b0123b7"
 }

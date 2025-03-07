@@ -1,22 +1,21 @@
-
 {
-  "ENV": "local",
-  "HOST": "tabularasa.internal",
-  "API_HOST": "api.tabularasa.internal",
-  "AUTH_ENABLED": true,
-  "SENTRY": {
-    "dsn": "https://b322a7f9cb69f0b14cf791d3ce8cec6c@o1186630.ingest.sentry.io/4506417065623552"
-},
-  "CLOUDINARY": {
-    "cloudName": "tabularasa",
-    "apiKey": "key",
-    "apiSecret": "secret",
-    "institutionPreset": "tabularasa.staging.institutions",
-    "prefix": "res.cloudinary.com/epoh"
-  },
-  "IS_PROD": false,
-  "remoteConfig": {
-    "pusher": "false"
-  },
-  "LOGGER": "console"
+    "ENV": "local",
+    "API_HOST": "",
+    "CLOUDINARY_INSTITUTION_PRESET": "tabularasa.non-prod.institutions",
+    "CLOUDINARY_PROFILE_PRESET": "staging.users.profile",
+    "CDN_PREFIX": "res.cloudinary.com/mmm",
+    "FIREBASE": {
+        "apiKey": "",
+        "authDomain": "",
+        "projectId": "",
+        "storageBucket": "",
+        "messagingSenderId": "",
+        "appId": "",
+        "minimumFetchIntervalMillis": 300000
+    },
+    "SENTRY": {
+        "dsn": "https://b322a7f9cb69f0b14cf791d3ce8cec6c@o1186630.ingest.sentry.io/4506417065623552"
+    },
+    "IS_PROD": false,
+    "PAYSTACK_PK": ""
 }

@@ -1,9 +1,7 @@
-
 {
-  "ENV": "qa",
-  "HOST": "qa.tabularasa.ng",
-  "API_HOST": "api.qa.tabularasa.ng",
-  "AUTH_ENABLED": true,
-  "IS_PROD": false,
-  "LOGGER": "sentry"
+    "API_HOST": "api.qa.tabularasa.com.ng",
+    "FIREBASE": {
+        "databaseURL": "https://epoh-music-qa.firebaseio.com",
+        "appId": "1:520263220577:web:261a323b512933dcdb9920"
+    }
 }

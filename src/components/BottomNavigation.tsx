@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -11,7 +12,8 @@ import {
   CalendarOutlined,
   ApartmentOutlined 
 } from '@ant-design/icons';
-import { AppType } from '@/types/app';
+
+
 
 interface BottomNavigationProps {
   appType: AppType;

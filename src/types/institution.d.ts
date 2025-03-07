@@ -1,5 +1,3 @@
-
-// Update the Institution type definitions to include more comprehensive fields
 export type Organization = {
     id: number;
     name: string;
@@ -21,8 +19,6 @@ export type Institution = {
     settings?: Settings;
     modules?: Module[];
     organization?: Organization;
-    studentsCount?: number;
-    employeesCount?: number;
 };
 
 export type Settings = {
@@ -74,75 +70,3 @@ export type InstitutionRole = {
     name: string;
     permissions: Permission[];
 };
-
-export type BankAccount = {
-    id: string;
-    bank: string;
-    accountNumber: string;
-    accountName: string;
-    accountType: string;
-    isDefault?: boolean;
-};
-
-
-// Event types
-export type Event = {
-    id: string;
-    title: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    location?: string;
-    allDay: boolean;
-    createdBy: string;
-    recipientGroups: RecipientGroup[];
-};
-
-export type RecipientGroup = {
-    id: string;
-    name: string;
-    type: 'staff' | 'guardian' | 'student' | 'all';
-    description?: string;
-    members: number; // Count of members in this group
-};
-
-// Finance types
-export type FinanceTransaction = {
-    id: string;
-    amount: number;
-    date: string;
-    description: string;
-    type: 'income' | 'expense';
-    category: string;
-    paymentMethod: string;
-    reference?: string;
-    status: 'pending' | 'completed' | 'failed';
-};
-
-// Payload types for institution operations
-export type CreateInstitutionDetailsPayload = {
-    name: string;
-    email: string;
-    phoneNumber: string;
-    type: string;
-};
-
-export type InstitutionDetailsPayload = {
-    id: string;
-    name: string;
-    email: string;
-    phoneNumber: string;
-    type: string;
-};
-
-export type InstitutionStatusPayload = {
-    id: string;
-    status: 'active' | 'inactive' | 'pending';
-};
-
-export type InstitutionSettingsPayload = {
-    logo: string;
-    color: string;
-    slug: string;
-};
-

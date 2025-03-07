@@ -13,7 +13,7 @@
         "password": {
             "update": "/users/account/update-password",
             "forgot": "/users/forgot-password",
-            "reset": "/users/   reset-password"
+            "reset": "/users/reset-password"
         }
     },
     "institutions": {
