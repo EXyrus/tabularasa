@@ -1,39 +1,25 @@
 
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { componentTagger } from "lovable-tagger";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const isProdEnv = mode === "production";
-
-  return {
-    server: {
-      //       port: 3000,
-      // host: isProdEnv ? "tabularasa.ng" : "tabularasa.internal",
-      port: 8080,
-      host: "localhost", // Changed from tabularasa.internal to localhost
-      allowedHosts: ["tabularasa.ng", "tabularasa.internal", "localhost"],
-    },
-    plugins: [
-      react(),
-      // sentryVitePlugin({
-      //   org: "xyrus-code",
-      //   project: process.env.npm_package_name,
-      //   telemetry: false,
-      //   release: {
-      //     name: `${process.env.npm_package_name}@${process.env.npm_package_version}`,
-      //   },
-      //   authToken: process.env.SENTRY_AUTH_TOKEN,
-      // }),
-      mode === 'development' &&
-      componentTagger(),
-    ].filter(Boolean),
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-      },
-    },
-  };
+export default defineConfig({
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    sentryVitePlugin({
+      org: "tabula-rasa",
+      project: "school-management-system",
+      // Auth token can be obtained from https://sentry.io/settings/account/api/auth-tokens/
+      // authToken: process.env.SENTRY_AUTH_TOKEN,
+    }),
+  ],
+  server: {
+    port: 8080
+  },
+  build: {
+    sourcemap: true
+  }
 });

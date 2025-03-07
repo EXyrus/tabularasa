@@ -1,21 +1,5 @@
+
 {
-    "ENV": "local",
-    "API_HOST": "",
-    "CLOUDINARY_INSTITUTION_PRESET": "tabularasa.non-prod.institutions",
-    "CLOUDINARY_PROFILE_PRESET": "staging.users.profile",
-    "CDN_PREFIX": "res.cloudinary.com/mmm",
-    "FIREBASE": {
-        "apiKey": "",
-        "authDomain": "",
-        "projectId": "",
-        "storageBucket": "",
-        "messagingSenderId": "",
-        "appId": "",
-        "minimumFetchIntervalMillis": 300000
-    },
-    "SENTRY": {
-        "dsn": "https://b322a7f9cb69f0b14cf791d3ce8cec6c@o1186630.ingest.sentry.io/4506417065623552"
-    },
-    "IS_PROD": false,
-    "PAYSTACK_PK": ""
+    "API_HOST": "api.tabularasa.com.ng",
+    "AUTH_ENABLED": false
 }

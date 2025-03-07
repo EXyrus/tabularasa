@@ -1,3 +1,5 @@
+
 {
-    "API_HOST": "api.int.tabularasa.com.ng"
+    "API_HOST": "api.int.tabularasa.com.ng",
+    "AUTH_ENABLED": true
 }

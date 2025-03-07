@@ -1,45 +1,52 @@
-import type { EmployeeUserResponse } from './responses';
-import type { User, UserRole } from './users';
 
-export type LoginCredentials = {
-    email: string;
-    password: string;
-    remember: boolean;
-};
+export type AppType = 'vendor' | 'institution' | 'guardian';
 
-export type RegisterDetails = {
-    firstName: string;
-    lastLame: string;
-    email: string;
-    phoneNumber: string;
-    password: string;
-    passwordConfirmation: string;
-};
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
 
-export type AuthProviderType = {
-    isAuthenticated: boolean;
-    user: User | null;
-    signin(user: User): Promise<void>;
-    signout(): Promise<void>;
-};
+export interface TokenResponse {
+  token: string;
+  payload: string;
+}
 
-export type UserResetPasswordRequest = {
-    token: string;
-    password: string;
-    confirmed: string;
-    email: string;
-};
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  role: string;
+  appType: AppType;
+}
 
-export type UserForgotPasswordRequest = {
-    email: string;
-};
+export interface AdminLoginResponse {
+  user: User;
+  payload: string;
+}
 
-export type TokenResponse = {
-    user: User;
-    payload: string;
-};
+export interface InstitutionLoginResponse {
+  user: User;
+  payload: string;
+}
 
-export type TokenPayload = {
-    role: UserRole;
-    token: string;
-};
+export interface EmployeeUserResponse extends User {
+  institutionId: string;
+}
+
+export interface UserRole {
+  id: string;
+  name: string;
+  permissions: string[];
+}
+
+export interface UserForgotPasswordRequest {
+  email: string;
+}
+
+export interface UserResetPasswordRequest {
+  email?: string;
+  password: string;
+  confirmPassword: string;
+  resetCode: string;
+}

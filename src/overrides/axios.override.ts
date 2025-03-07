@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import config from '@/config';
+import { getLocalStorageItem } from '@/helpers/local-storage';
 
 // Create an instance of axios with default configuration
 const axiosInstance = axios.create({
@@ -14,7 +15,7 @@ const axiosInstance = axios.create({
 // Request interceptor for API calls
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('sms_auth_token');
+    const token = getLocalStorageItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -37,9 +38,9 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       
-      // Logout user on authentication error
-      localStorage.removeItem('sms_auth_token');
-      localStorage.removeItem('sms_user_data');
+      // Clear auth data on authentication error
+      localStorage.removeItem('token');
+      localStorage.removeItem('tokenRegistered');
       
       // Redirect to login page
       window.location.href = '/login';
