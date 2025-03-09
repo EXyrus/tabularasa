@@ -1,5 +1,6 @@
 
 {
     "API_HOST": "api.tabularasa.com.ng",
-    "AUTH_ENABLED": false
+    "AUTH_ENABLED": false,
+    "PAYSTACK_PK": "pk_test_your_paystack_key_here"
 }

@@ -50,3 +50,9 @@ export interface UserResetPasswordRequest {
   confirmPassword: string;
   resetCode: string;
 }
+
+export interface TokenPayload {
+  token: string;
+  exp: number;
+  [key: string]: any;
+}

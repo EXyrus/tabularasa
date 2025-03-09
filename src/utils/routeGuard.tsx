@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import config from '@/config';
-import { AppType } from '@/types';
+import type { AppType } from '@/types/app-type';
 
 type ProtectedRouteProps = {
   children: React.ReactNode;

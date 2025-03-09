@@ -1,4 +1,5 @@
-import env from 'env';
+
+import env from '../env';
 
 export const isTestEnv = () => {
     return env.NODE_ENV === 'test';
@@ -13,5 +14,5 @@ export const isDevEnv = () => {
 };
 
 export const isCypress = () => {
-    return typeof globalThis.parent?.Cypress !== 'undefined';
+    return typeof (window as any).Cypress !== 'undefined';
 };

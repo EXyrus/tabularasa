@@ -1,8 +1,9 @@
+
 import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import axios from 'overrides/axios';
-import { queryClient } from 'overrides/react-query';
+import { axios } from '@/overrides';
+import { queryClient } from '@/overrides';
 import type {
     CreateInstitutionDetailsPayload,
     Institution,
@@ -11,11 +12,10 @@ import type {
     InstitutionStatusPayload,
     InstitutionTheme,
     InstitutionsResponse,
-    InstitutionSettingsPayload,
-    BankAccountResponse,
-    BankAccount
-} from 'types';
-import type { FetchResponseError } from 'types/fetch';
+    InstitutionSettingsPayload
+} from '@/types';
+import type { BankAccount, BankAccountResponse } from '@/types/bank-account';
+import type { FetchResponseError } from '@/types/fetch';
 import URIS from './uris.json';
 
 export const useSignupRequest = () => {

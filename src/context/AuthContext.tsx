@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+
+import React, { createContext, useState, useEffect } from 'react';
 import config from '../config';
 import { useLogin, useLogout, useTokenQuery, useForgotPassword } from '@/queries/use-auth';
-import type { AppType, User } from '@/types/auth';
+import type { AppType } from '@/types/app-type';
+import type { User } from '@/types/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -14,7 +16,7 @@ interface AuthContextType {
   resetPassword: (data: any, appType: AppType) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -230,8 +232,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+// Export the useAuth hook directly from this file to maintain backwards compatibility
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

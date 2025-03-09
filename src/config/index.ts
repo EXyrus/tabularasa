@@ -1,5 +1,6 @@
+
 import merge from 'lodash/merge';
-import env from 'env';
+import env from '../env';
 import a from './a.json';
 import base from './default.json';
 import dev from './dev.json';
