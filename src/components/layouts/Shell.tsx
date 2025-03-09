@@ -1,11 +1,12 @@
+
 import { Spin } from 'antd';
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
 import type { Location } from 'react-router-dom';
 import { Outlet, useLocation } from 'react-router-dom';
-import ErrorBoundary from 'components/global/ErrorBoundary';
-import ReloadPrompt from 'components/ReloadPrompt';
-import type { LocationState } from 'types';
+import ErrorBoundary from '../global/ErrorBoundary';
+import ReloadPrompt from '../ReloadPrompt';
+import type { LocationState } from '@/types/location';
 
 type Props = {
     children?: ReactNode;

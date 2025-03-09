@@ -22,3 +22,13 @@ export interface PaystackProps {
   text?: string;
   disabled?: boolean;
 }
+
+export interface Transaction {
+  id: string;
+  amount: number;
+  referenceNumber: string;
+  status?: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

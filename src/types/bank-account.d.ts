@@ -20,3 +20,11 @@ export interface BankAccountResponse {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface BankAccountRequest {
+  bank: string;
+  accountNumber: string;
+  accountName: string;
+  accountType: string;
+  password?: string;
+}

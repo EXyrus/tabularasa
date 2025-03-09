@@ -1,8 +1,9 @@
+
 import { usePaystackPayment } from 'react-paystack';
 import { App, Button } from 'antd';
 import config from '@/config';
 import { useAuth } from '@/hooks/useAuth';
-import type { Paystack, Transaction } from '@/types';
+import type { Paystack, Transaction } from '@/types/paystack';
 import { Currencies } from '@/enums/currencies';
 
 const options = {
@@ -31,8 +32,8 @@ const PaystackButton = ({
         ...options,
         amount: Number(transaction.amount),
         email: user?.email,
-        firstname: user?.firstName,
-        lastname: user?.lastName,
+        firstname: user?.firstName || user?.name?.split(' ')[0] || '',
+        lastname: user?.lastName || user?.name?.split(' ')[1] || '',
         reference: transaction.referenceNumber,
         currency
     });

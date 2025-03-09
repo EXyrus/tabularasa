@@ -1,8 +1,9 @@
+
 import { HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import type { ReactNode } from 'react';
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from 'hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 
 type Props = {
     children?: ReactNode;
