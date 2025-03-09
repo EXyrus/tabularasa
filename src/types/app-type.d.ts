@@ -1,2 +1,2 @@
 
-export type AppType = 'vendor' | 'institution' | 'guardian';
+export type AppType = 'vendor' | 'institution' | 'guardian' | 'student';

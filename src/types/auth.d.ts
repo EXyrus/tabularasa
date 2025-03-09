@@ -1,60 +1,36 @@
 
-export type AppType = 'vendor' | 'institution' | 'guardian';
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface TokenResponse {
-  token: string;
-  payload: string;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  firstName?: string;
-  lastName?: string;
-  email: string;
-  avatar?: string;
-  role: string;
-  appType: AppType;
-}
-
-export interface AdminLoginResponse {
-  user: User;
-  payload: string;
-}
-
-export interface InstitutionLoginResponse {
-  user: User;
-  payload: string;
-}
-
-export interface EmployeeUserResponse extends User {
-  institutionId: string;
-}
-
-export interface UserRole {
-  id: string;
-  name: string;
-  permissions: string[];
-}
-
-export interface UserForgotPasswordRequest {
-  email: string;
-}
-
-export interface UserResetPasswordRequest {
-  email?: string;
-  password: string;
-  confirmPassword: string;
-  resetCode: string;
-}
+import { User, UserRole } from './user';
 
 export interface TokenPayload {
   token: string;
-  exp: number;
-  [key: string]: any;
+  refreshToken?: string;
+  user?: User;
+  expiresIn?: number;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+  appType?: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+  refreshToken?: string;
+  expiresIn?: number;
+}
+
+export interface AdminLoginResponse extends LoginResponse {}
+export interface InstitutionLoginResponse extends LoginResponse {}
+export interface EmployeeUserResponse extends LoginResponse {}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  confirmPassword: string;
 }

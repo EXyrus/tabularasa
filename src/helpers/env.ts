@@ -1,32 +1,21 @@
 
 /**
- * Returns the current environment name
- * @returns The current environment name (production, development, etc.)
+ * Checks if the app is running in Cypress test environment
  */
-export function getEnvironment(): string {
-  return import.meta.env.MODE || 'development';
-}
+export const isCypress = (): boolean => {
+  return typeof window !== 'undefined' && window.Cypress !== undefined;
+};
 
 /**
- * Checks if the current environment is production
- * @returns True if the current environment is production
+ * Checks if the app is running in a development environment
  */
-export function isProduction(): boolean {
-  return getEnvironment() === 'production';
-}
+export const isDevelopment = (): boolean => {
+  return import.meta.env.MODE === 'development';
+};
 
 /**
- * Checks if the current environment is development
- * @returns True if the current environment is development
+ * Checks if the app is running in a production environment
  */
-export function isDevelopment(): boolean {
-  return getEnvironment() === 'development';
-}
-
-/**
- * Checks if the current environment is test
- * @returns True if the current environment is test
- */
-export function isTest(): boolean {
-  return getEnvironment() === 'test';
-}
+export const isProduction = (): boolean => {
+  return import.meta.env.MODE === 'production';
+};

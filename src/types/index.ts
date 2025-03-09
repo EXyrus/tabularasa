@@ -1,7 +1,4 @@
 
-// Only include custom exports from each file
-// Avoid re-exporting the same names that come from multiple files
-
 // Base types
 export * from './app';
 
