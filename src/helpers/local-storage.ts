@@ -1,4 +1,5 @@
-import * as Sentry from 'overrides/sentry';
+
+import * as Sentry from '@/overrides/sentry.override';
 
 export const setLocalStorageItem = (key: string, value: string) => {
     try {

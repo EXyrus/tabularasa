@@ -8,6 +8,7 @@ export interface BankAccount {
   institutionId: string;
   createdAt: string;
   updatedAt: string;
+  isDefault?: boolean;
 }
 
 export interface BankAccountResponse {
@@ -19,6 +20,7 @@ export interface BankAccountResponse {
   institutionId: string;
   createdAt: string;
   updatedAt: string;
+  isDefault?: boolean;
 }
 
 export interface BankAccountRequest {

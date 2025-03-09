@@ -1,6 +1,7 @@
+
 import { ComponentType } from 'react';
 import type { A } from 'ts-toolbelt';
-import { UserRole } from './users';
+import type { UserRole } from './users';
 
 export type AppType = 'vendor' | 'institution' | 'guardian' | 'student';
 
@@ -45,3 +46,14 @@ export type RouteConfig = {
 export type LocationState = object;
 
 export type AppScope = 'public' | 'vendor' | 'institution' | 'student';
+
+export interface Organization {
+  id: string;
+  name: string;
+  type: string;
+  parent?: string;
+}
+
+export interface OrganizationNode extends Organization {
+  children?: OrganizationNode[];
+}

@@ -1,18 +1,24 @@
-import type { Organization } from 'types';
 
-export const flattenOrgTree = (org: Organization): Organization[] => {
-    const flattened: Organization[] = [];
+import { Organization, OrganizationNode } from '@/types';
 
-    const traverse = (org: Organization) => {
-        // Add the current organization
-        flattened.push({ ...org, organizations: [] });
-        // Recursively process child organizations
-        for (const child of org.organizations) {
-            traverse(child);
-        }
-    };
+export const flattenOrganizationTree = (tree: OrganizationNode): Organization[] => {
+  const result: Organization[] = [];
 
-    traverse(org);
+  function traverse(node: OrganizationNode) {
+    result.push({
+      id: node.id,
+      name: node.name,
+      type: node.type,
+      parent: node.parent,
+    });
 
-    return flattened;
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(traverse);
+    }
+  }
+
+  traverse(tree);
+  return result;
 };
+
+export default flattenOrganizationTree;

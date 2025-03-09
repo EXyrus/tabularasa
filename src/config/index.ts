@@ -1,6 +1,5 @@
 
 import merge from 'lodash/merge';
-import env from '../env';
 import a from './a.json';
 import base from './default.json';
 import dev from './dev.json';
@@ -10,15 +9,16 @@ import qa from './qa.json';
 import staging from './staging.json';
 
 const PREFIX = 'VITE_APP_';
-
 const { hostname, port } = globalThis.location;
 let ENV = 'local';
-
 let override = {};
 
-const isLocalhost = ['localhost', 'tabularasa.internal'].includes(hostname);
+const isLocalhost = [
+    'localhost',
+    'tabularasa.internal'
+].includes(hostname);
 
-switch (hostname) {
+switch(hostname) {
     case 'dev.tabularasa.com.ng':
         ENV = 'dev';
         override = dev;
@@ -47,23 +47,27 @@ switch (hostname) {
         if (!isLocalhost) {
             override = dev;
         }
-
         if (!['3000'].includes(port) && !base.API_HOST) {
             base.API_HOST = 'api.tabularasa.internal';
         }
 }
 
+// Get environment variables from import.meta.env instead of using an env module
+const envVariables = import.meta.env;
 const envConfig = Object.fromEntries(
-    Object.entries(env)
-        .filter(([key]) => {
-            return (key as string).startsWith(PREFIX);
-        })
-        .map(([key, value]: [string, string]) => {
-            return [key.replace(PREFIX, ''), value];
-        })
+  Object.entries(envVariables).filter(([key]) => {
+    return key.startsWith(PREFIX);
+  }).map(([key, value]) => {
+    return [
+      key.replace(PREFIX, ''),
+      value
+    ];
+  })
 );
+
 const config = merge({}, base, envConfig, override, {
-    ENV
+    ENV,
+    CDN_PREFIX: 'https://cdn.tabularasa.com.ng'
 });
 
-export default Object.freeze(config) as typeof base;
+export default Object.freeze(config);

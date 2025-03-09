@@ -1,26 +1,31 @@
-import type { FormikErrors } from 'formik';
-import type { ServerErrors } from 'types/fetch';
 
-const mapServerErrorsToFormikErrors = <T>(
-    errors: ServerErrors
-): FormikErrors<T> => {
-    return Object.keys(errors).reduce((result, field) => {
-        return {
-            ...result,
-            [field]: errors[field][0]
-        };
-    }, {});
+import { toast } from '@/components/ui/use-toast';
+import type { FetchResponseError } from '@/types/fetch';
+
+export const checkServerErrors = (errors: FetchResponseError) => {
+  if (errors.errors) {
+    Object.entries(errors.errors).forEach(([field, messages]) => {
+      messages.forEach((message) => {
+        toast({
+          title: `Error in ${field}`,
+          description: message,
+          variant: 'destructive',
+        });
+      });
+    });
+    return true;
+  }
+
+  if (errors.message) {
+    toast({
+      title: 'Error',
+      description: errors.message,
+      variant: 'destructive',
+    });
+    return true;
+  }
+
+  return false;
 };
 
-export const checkServerErrors = <T>(
-    errors: ServerErrors,
-    onError: (errors: FormikErrors<T>) => void
-) => {
-    if (errors) {
-        const formikErrors = mapServerErrorsToFormikErrors<T>(errors);
-
-        if (Object.keys(formikErrors).length) {
-            onError(formikErrors);
-        }
-    }
-};
+export default checkServerErrors;

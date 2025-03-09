@@ -1,25 +1,25 @@
+
 import config from '@/config';
-// import type { User } from 'types';
-import { gravatarUrl } from './url';
 
-export const getCloudinaryImage = (file: string) => {
-    if (file) {
-        return `//${config.CDN_PREFIX}/c_crop,g_custom/${file}`;
-    }
+/**
+ * Converts a relative image path to a full CDN URL
+ * @param path - Relative path to the image
+ * @returns Full CDN URL to the image
+ */
+export function getImageUrl(path: string): string {
+  // If the path is already a full URL, return it
+  if (path.startsWith('http')) {
+    return path;
+  }
 
-    return getPlaceholderImage(file);
-};
+  // If the path is relative, prefix it with the CDN URL
+  return `${config.CDN_PREFIX || ''}${path.startsWith('/') ? '' : '/'}${path}`;
+}
 
-export const getUserImage = (image: string, email: string, size = 40) => {
-    if (image) {
-        return getCloudinaryImage(image);
-    }
-
-    return gravatarUrl(email, {
-        size
-    });
-};
-
-export const getPlaceholderImage = (fileName: string) => {
-    return `https://placehold.co/400x400?text=${fileName}`;
-};
+/**
+ * Returns a placeholder image URL when the actual image is not available
+ * @returns Placeholder image URL
+ */
+export function getPlaceholderImageUrl(): string {
+  return '/placeholder.svg';
+}

@@ -1,18 +1,32 @@
 
-import env from '../env';
+/**
+ * Returns the current environment name
+ * @returns The current environment name (production, development, etc.)
+ */
+export function getEnvironment(): string {
+  return import.meta.env.MODE || 'development';
+}
 
-export const isTestEnv = () => {
-    return env.NODE_ENV === 'test';
-};
+/**
+ * Checks if the current environment is production
+ * @returns True if the current environment is production
+ */
+export function isProduction(): boolean {
+  return getEnvironment() === 'production';
+}
 
-export const isProdEnv = () => {
-    return env.NODE_ENV === 'production';
-};
+/**
+ * Checks if the current environment is development
+ * @returns True if the current environment is development
+ */
+export function isDevelopment(): boolean {
+  return getEnvironment() === 'development';
+}
 
-export const isDevEnv = () => {
-    return env.NODE_ENV === 'development';
-};
-
-export const isCypress = () => {
-    return typeof (window as any).Cypress !== 'undefined';
-};
+/**
+ * Checks if the current environment is test
+ * @returns True if the current environment is test
+ */
+export function isTest(): boolean {
+  return getEnvironment() === 'test';
+}

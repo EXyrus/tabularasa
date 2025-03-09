@@ -1,5 +1,6 @@
-import type { TokenPayload } from 'types';
-import * as Sentry from 'overrides/sentry';
+
+import type { TokenPayload } from '@/types';
+import * as Sentry from '@/overrides/sentry.override';
 import { setLocalStorageItem } from './local-storage';
 
 export const decodeTokenPayload = (payload: string) => {

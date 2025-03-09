@@ -6,8 +6,8 @@ import {
     setLocalStorageItem
 } from '@/helpers/local-storage';
 import { decodeTokenPayload, getTokenPayload } from '@/helpers/token';
-import {axios} from '@/overrides';
-import { queryClient } from '@/overrides';
+import axios from '@/overrides/axios.override';
+import { queryClient } from '@/overrides/react-query.override';
 import type {
     AdminLoginResponse,
     EmployeeUserResponse,
@@ -46,8 +46,6 @@ export const useTokenQuery = () => {
 
             const response = await axios.get<TokenResponse>(tokenURI);
 
-            // const tokenPayload = getTokenPayload(response.data.payload);
-
             return response.data;
         },
         retry: false
@@ -59,8 +57,8 @@ const csrf = async () => {
 };
 
 export const useLogin = () => {
-    const [user, setUser] = useState<User | EmployeeUserResponse | null>();
-    const [userRole, setUserRole] = useState<UserRole>();
+    const [user, setUser] = useState<User | EmployeeUserResponse | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
 
     const loginMutation = useMutation<User, Error, LoginCredentials>({
         mutationFn: async credentials => {
@@ -83,7 +81,6 @@ export const useLogin = () => {
             if (user) {
                 setUser(user);
                 setUserRole(user.role);
-
                 removeLocalStorageItem('subdomain');
             }
 

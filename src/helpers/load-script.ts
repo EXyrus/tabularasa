@@ -1,43 +1,31 @@
-import { captureException } from 'overrides/sentry';
 
-export const loadScript = (url: string, key: string) => {
-    const id = `${key}-script`;
-    let script: HTMLScriptElement = document.getElementById(
-        id
-    ) as HTMLScriptElement;
+import * as Sentry from '@/overrides/sentry.override';
 
-    return new Promise<string | void>((resolve, reject) => {
-        const onScriptLoad = () => {
-            (script as HTMLScriptElement).dataset.loaded = 'true';
-            resolve();
-        };
+export function loadScript(src: string, async = true, defer = true) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve(true);
+        return;
+      }
 
-        if (script) {
-            if (script.dataset.loaded === 'true') {
-                resolve();
-            } else {
-                script.addEventListener('load', onScriptLoad);
-            }
-        } else {
-            script = document.createElement('script');
-            script.id = id;
-            script.async = true;
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = async;
+      script.defer = defer;
 
-            script.onerror = (e: Event | string) => {
-                const message = `The script ${url} didn't load correctly.`;
+      script.onload = () => {
+        resolve(true);
+      };
 
-                captureException(e, {
-                    extra: {
-                        message
-                    }
-                });
+      script.onerror = () => {
+        reject(new Error(`Failed to load ${src}`));
+      };
 
-                reject(e);
-            };
-            script.addEventListener('load', onScriptLoad);
-
-            document.head.appendChild(script);
-            script.src = url;
-        }
-    });
-};
+      document.head.appendChild(script);
+    } catch (error) {
+      Sentry.captureException(error);
+      reject(error);
+    }
+  });
+}

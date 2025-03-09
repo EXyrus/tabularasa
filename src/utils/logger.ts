@@ -1,21 +1,19 @@
-import logger from 'js-logger';
-import { isProdEnv, isTestEnv } from 'helpers/env';
 
-// Log messages will be written to the window's console.
-logger.useDefaults();
-logger.setHandler(function logHandler() {
-    // Send messages to a custom logging endpoint for analysis.
-    if (isProdEnv()) {
-        return;
-    }
+import Logger from 'js-logger';
+import { getEnvironment } from '@/helpers/env';
+
+// Configure logger
+Logger.useDefaults({
+  defaultLevel: getEnvironment() === 'production' ? Logger.ERROR : Logger.DEBUG,
+  formatter: function (messages, context) {
+    messages.unshift(`[${context.name}] ${new Date().toISOString()}`);
+  }
 });
 
-export const axiosLogger = logger.get('axios');
+// Create a named logger
+export const createLogger = (name: string) => {
+  return Logger.get(name);
+};
 
-if (isTestEnv()) {
-    logger.setLevel(logger.OFF);
-} else if (isProdEnv()) {
-    axiosLogger.setLevel(logger.OFF);
-}
-
-export default logger;
+// Export default logger
+export default Logger;
