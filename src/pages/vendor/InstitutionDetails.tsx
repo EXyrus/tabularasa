@@ -12,7 +12,7 @@ import {
   useDeleteInstitution
 } from '@/queries/use-institutions';
 import { useToast } from '@/hooks/use-toast';
-import type { Institution, InstitutionStatusPayload, InstitutionDetailsPayload } from '@/types';
+import type { InstitutionStatusPayload, InstitutionDetailsPayload } from '@/types';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -38,6 +38,8 @@ const InstitutionDetails: React.FC = () => {
       editForm.setFieldsValue({
         name: institution.name,
         institutionType: institution.type,
+        email: institution.email,
+        phoneNumber: institution.phoneNumber
       });
     }
   }, [institution, editForm]);
@@ -52,7 +54,13 @@ const InstitutionDetails: React.FC = () => {
 
   const handleStatusChange = async (status: 'active' | 'inactive' | 'pending') => {
     try {
-      await updateStatusMutation.mutateAsync({ id: institution.id, status });
+      const payload: InstitutionStatusPayload = { 
+        id: institution.id, 
+        status 
+      };
+      
+      await updateStatusMutation.mutateAsync(payload);
+      
       toast({
         title: "Status Updated",
         description: `Institution status changed to ${status}`,
@@ -74,6 +82,7 @@ const InstitutionDetails: React.FC = () => {
         title: "Details Updated",
         description: "Institution details updated successfully",
       });
+      setActiveTab('details');
     } catch (error) {
       toast({
         variant: "destructive",
@@ -85,7 +94,13 @@ const InstitutionDetails: React.FC = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteInstitutionMutation.mutateAsync({ id: institution.id, status: institution.status });
+      const payload: InstitutionStatusPayload = { 
+        id: institution.id, 
+        status: institution.status
+      };
+      
+      await deleteInstitutionMutation.mutateAsync(payload);
+      
       setIsDeleteModalVisible(false);
       toast({
         title: "Institution Deleted",
@@ -173,7 +188,15 @@ const InstitutionDetails: React.FC = () => {
         <Form
           form={editForm}
           layout="vertical"
-          onFinish={handleEditSubmit}
+          onFinish={(values) => {
+            handleEditSubmit({
+              id: institution.id,
+              name: values.name,
+              institutionType: values.institutionType,
+              email: values.email,
+              phoneNumber: values.phoneNumber
+            });
+          }}
         >
           <Form.Item
             name="name"
@@ -191,7 +214,25 @@ const InstitutionDetails: React.FC = () => {
               <Option value="primary">Primary School</Option>
               <Option value="secondary">Secondary School</Option>
               <Option value="tertiary">Tertiary Institution</Option>
+              <Option value="vocational">Vocational Institution</Option>
             </Select>
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email Address"
+            rules={[
+              { required: true, message: 'Please enter email address' },
+              { type: 'email', message: 'Please enter a valid email' }
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="phoneNumber"
+            label="Phone Number"
+            rules={[{ required: true, message: 'Please enter phone number' }]}
+          >
+            <Input />
           </Form.Item>
           <Form.Item>
             <div className="flex justify-end gap-2">

@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Building, Users, School, ArrowRight } from 'lucide-react';
+import { useInstitutions, useInstitutionStatistics } from '@/queries/use-institutions';
 
 const { Title, Text } = Typography;
 
@@ -15,21 +16,41 @@ const VendorDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  // Mock data for statistics
+  // Use real data from queries
+  const { data: institutionsData, isLoading: isLoadingInstitutions } = useInstitutions();
+  const { data: statsData, isLoading: isLoadingStats } = useInstitutionStatistics();
+  
+  // Get institutions or default to empty array
+  const institutions = institutionsData?.institutions || [];
+  
+  // Create stats from real data or fallback to placeholder
   const stats = [
-    { title: 'Total Institutions', value: 248, icon: <Building className="h-6 w-6" />, color: 'text-blue-500' },
-    { title: 'Total Users', value: 12489, icon: <Users className="h-6 w-6" />, color: 'text-purple-500' },
-    { title: 'Active Schools', value: 189, icon: <School className="h-6 w-6" />, color: 'text-green-500' },
+    { 
+      title: 'Total Institutions', 
+      value: statsData?.total || institutions.length || 0, 
+      icon: <Building className="h-6 w-6" />, 
+      color: 'text-blue-500' 
+    },
+    { 
+      title: 'Active Institutions', 
+      value: institutions.filter(i => i.status === 'active').length || 0, 
+      icon: <School className="h-6 w-6" />, 
+      color: 'text-green-500' 
+    },
+    { 
+      title: 'Pending Approval', 
+      value: institutions.filter(i => i.status === 'pending').length || 0, 
+      icon: <Users className="h-6 w-6" />, 
+      color: 'text-purple-500' 
+    },
   ];
   
-  // Mock data for recent institutions
-  const recentInstitutions = [
-    { id: 1, name: 'Springfield Elementary', students: 450, status: 'Active', joined: '2023-05-12' },
-    { id: 2, name: 'Westfield High School', students: 820, status: 'Active', joined: '2023-05-10' },
-    { id: 3, name: 'Oakridge Academy', students: 340, status: 'Pending', joined: '2023-05-09' },
-    { id: 4, name: 'Riverside Middle School', students: 560, status: 'Active', joined: '2023-05-08' },
-  ];
+  // Get most recent institutions
+  const recentInstitutions = institutions
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 4);
   
+  // Table columns configuration
   const columns = [
     {
       title: 'Institution Name',
@@ -37,9 +58,9 @@ const VendorDashboard: React.FC = () => {
       key: 'name',
     },
     {
-      title: 'Students',
-      dataIndex: 'students',
-      key: 'students',
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: 'Status',
@@ -47,16 +68,18 @@ const VendorDashboard: React.FC = () => {
       key: 'status',
       render: (status: string) => (
         <span className={`px-2 py-1 rounded-full text-xs ${
-          status === 'Active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+          status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 
+          status === 'inactive' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
         }`}>
-          {status}
+          {status.charAt(0).toUpperCase() + status.slice(1)}
         </span>
       ),
     },
     {
-      title: 'Joined',
-      dataIndex: 'joined',
-      key: 'joined',
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => new Date(date).toLocaleDateString(),
     },
   ];
 
@@ -84,25 +107,34 @@ const VendorDashboard: React.FC = () => {
         
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.title}</p>
-                  <p className="text-3xl font-bold mt-1 dark:text-white">{stat.value.toLocaleString()}</p>
-                </div>
-                <div className={`${stat.color} dark:text-white p-3 bg-gray-100 dark:bg-gray-700 rounded-full`}>
-                  {stat.icon}
-                </div>
+          {isLoadingStats ? (
+            Array(3).fill(0).map((_, index) => (
+              <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 animate-pulse">
+                <div className="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
+                <div className="h-8 w-16 bg-gray-300 dark:bg-gray-600 rounded"></div>
               </div>
-              {index === 0 && (
-                <div className="mt-2 flex items-center text-green-500">
-                  <ArrowUpOutlined />
-                  <span className="ml-1 text-sm">3.2% from last week</span>
+            ))
+          ) : (
+            stats.map((stat, index) => (
+              <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{stat.title}</p>
+                    <p className="text-3xl font-bold mt-1 dark:text-white">{stat.value.toLocaleString()}</p>
+                  </div>
+                  <div className={`${stat.color} dark:text-white p-3 bg-gray-100 dark:bg-gray-700 rounded-full`}>
+                    {stat.icon}
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+                {index === 0 && (
+                  <div className="mt-2 flex items-center text-green-500">
+                    <ArrowUpOutlined />
+                    <span className="ml-1 text-sm">Trending upward</span>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
         
         {/* Recent Institutions */}
@@ -118,15 +150,21 @@ const VendorDashboard: React.FC = () => {
             </Button>
           </div>
           
-          <div className="overflow-x-auto">
-            <Table 
-              dataSource={recentInstitutions} 
-              columns={columns} 
-              pagination={false} 
-              rowKey="id"
-              className="dark:!bg-gray-800 [&_.ant-table-cell]:dark:!text-white [&_.ant-table-row:hover_.ant-table-cell]:dark:!bg-gray-700"
-            />
-          </div>
+          {isLoadingInstitutions ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table 
+                dataSource={recentInstitutions} 
+                columns={columns} 
+                pagination={false} 
+                rowKey="id"
+                className="dark:!bg-gray-800 [&_.ant-table-cell]:dark:!text-white [&_.ant-table-row:hover_.ant-table-cell]:dark:!bg-gray-700"
+              />
+            </div>
+          )}
         </div>
       </div>
       

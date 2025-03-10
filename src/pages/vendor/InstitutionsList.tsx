@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, PlusCircle, Building, ArrowUpDown, MoreHorizontal, Check, X, AlertTriangle, Mail, BellRing, Pencil, Trash2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -25,21 +24,8 @@ import { useToast } from '@/hooks/use-toast';
 import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/context/AuthContext';
-
-// Mock function to fetch institutions - would be replaced with an API call
-const fetchInstitutions = async () => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  return [
-    { id: 1, name: 'Springfield Elementary', slug: 'springfield-elementary', status: 'active', adminEmail: 'principal@springfield.edu', studentsCount: 450, employeesCount: 35, createdAt: '2023-01-15' },
-    { id: 2, name: 'Westfield High School', slug: 'westfield-high', status: 'active', adminEmail: 'principal@westfield.edu', studentsCount: 820, employeesCount: 65, createdAt: '2023-02-20' },
-    { id: 3, name: 'Oakridge Academy', slug: 'oakridge-academy', status: 'suspended', adminEmail: 'admin@oakridge.edu', studentsCount: 340, employeesCount: 28, createdAt: '2023-03-05' },
-    { id: 4, name: 'Riverside Middle School', slug: 'riverside-middle', status: 'active', adminEmail: 'principal@riverside.edu', studentsCount: 560, employeesCount: 42, createdAt: '2023-04-10' },
-    { id: 5, name: 'Meadowbrook Elementary', slug: 'meadowbrook-elementary', status: 'pending', adminEmail: 'admin@meadowbrook.edu', studentsCount: 390, employeesCount: 31, createdAt: '2023-05-18' },
-    { id: 6, name: 'Lakeside Preparatory', slug: 'lakeside-prep', status: 'active', adminEmail: 'headmaster@lakesideprep.edu', studentsCount: 280, employeesCount: 25, createdAt: '2023-06-22' },
-  ];
-};
+import { useInstitutions, useUpdateInstitutionStatus, useDeleteInstitution } from '@/queries/use-institutions';
+import type { InstitutionStatusPayload } from '@/types';
 
 const InstitutionsList: React.FC = () => {
   const { user } = useAuth();
@@ -49,28 +35,47 @@ const InstitutionsList: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedInstitution, setSelectedInstitution] = useState<any>(null);
   
-  const { data: institutions = [], isLoading } = useQuery({
-    queryKey: ['institutions'],
-    queryFn: fetchInstitutions,
-  });
+  // Use the real query instead of mock data
+  const { data: institutionsData, isLoading } = useInstitutions();
+  const updateStatusMutation = useUpdateInstitutionStatus();
+  const deleteInstitutionMutation = useDeleteInstitution();
+  
+  // Safely access institutions data with fallback to empty array
+  const institutions = institutionsData?.institutions || [];
   
   const filteredInstitutions = institutions.filter(
-    (institution) => institution.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    institution.slug.toLowerCase().includes(searchQuery.toLowerCase())
+    (institution) => 
+      institution.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      institution.slug.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
-  const handleStatusToggle = (id: number, currentStatus: string) => {
-    const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
-    // This would be an API call to update the status
-    toast({
-      title: `Institution ${newStatus === 'active' ? 'activated' : 'suspended'}`,
-      description: `The institution has been ${newStatus === 'active' ? 'activated' : 'suspended'} successfully.`,
-      variant: newStatus === 'active' ? 'default' : 'destructive',
-    });
+  const handleStatusToggle = async (id: string, currentStatus: string) => {
+    try {
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      
+      const payload: InstitutionStatusPayload = {
+        id: id,
+        status: newStatus as 'active' | 'inactive' | 'pending'
+      };
+      
+      await updateStatusMutation.mutateAsync(payload);
+      
+      toast({
+        title: `Institution ${newStatus === 'active' ? 'activated' : 'suspended'}`,
+        description: `The institution has been ${newStatus === 'active' ? 'activated' : 'suspended'} successfully.`,
+        variant: newStatus === 'active' ? 'default' : 'destructive',
+      });
+    } catch (error) {
+      toast({
+        title: "Status Update Failed",
+        description: "There was an error updating the institution status.",
+        variant: "destructive",
+      });
+    }
   };
   
-  const handleEdit = (id: number) => {
-    navigate(`/vendor/institutions/${id}/edit`);
+  const handleEdit = (id: string) => {
+    navigate(`/vendor/institutions/${id}`);
   };
   
   const openDeleteDialog = (institution: any) => {
@@ -78,14 +83,31 @@ const InstitutionsList: React.FC = () => {
     setDeleteDialogOpen(true);
   };
   
-  const handleDelete = () => {
-    // This would be an API call to delete the institution
-    toast({
-      title: "Institution deleted",
-      description: `${selectedInstitution?.name} has been deleted.`,
-      variant: "destructive",
-    });
-    setDeleteDialogOpen(false);
+  const handleDelete = async () => {
+    if (!selectedInstitution) return;
+    
+    try {
+      const payload: InstitutionStatusPayload = {
+        id: selectedInstitution.id,
+        status: selectedInstitution.status
+      };
+      
+      await deleteInstitutionMutation.mutateAsync(payload);
+      
+      toast({
+        title: "Institution deleted",
+        description: `${selectedInstitution?.name} has been deleted.`,
+        variant: "destructive",
+      });
+      
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      toast({
+        title: "Delete Failed",
+        description: "There was an error deleting the institution.",
+        variant: "destructive",
+      });
+    }
   };
   
   const handleSendEmail = (email: string) => {
@@ -96,7 +118,7 @@ const InstitutionsList: React.FC = () => {
     });
   };
   
-  const handleSendNotification = (id: number) => {
+  const handleSendNotification = (id: string) => {
     // This would send a notification to the institution admin
     toast({
       title: "Notification sent",
@@ -148,9 +170,9 @@ const InstitutionsList: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[300px]">Institution</TableHead>
-                    <TableHead>Students</TableHead>
-                    <TableHead>Employees</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Created At</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -171,8 +193,6 @@ const InstitutionsList: React.FC = () => {
                             <div className="text-sm text-gray-500 dark:text-gray-400">{institution.slug}</div>
                           </div>
                         </TableCell>
-                        <TableCell>{institution.studentsCount}</TableCell>
-                        <TableCell>{institution.employeesCount}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Switch 
@@ -181,12 +201,14 @@ const InstitutionsList: React.FC = () => {
                             />
                             <span className={`text-sm ${
                               institution.status === 'active' ? 'text-green-600 dark:text-green-400' : 
-                              institution.status === 'suspended' ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'
+                              institution.status === 'inactive' ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'
                             }`}>
                               {institution.status.charAt(0).toUpperCase() + institution.status.slice(1)}
                             </span>
                           </div>
                         </TableCell>
+                        <TableCell>{institution.type}</TableCell>
+                        <TableCell>{new Date(institution.createdAt).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -204,7 +226,7 @@ const InstitutionsList: React.FC = () => {
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Edit Details
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleSendEmail(institution.adminEmail)}>
+                              <DropdownMenuItem onClick={() => handleSendEmail(institution.email)}>
                                 <Mail className="mr-2 h-4 w-4" />
                                 Email Admin
                               </DropdownMenuItem>

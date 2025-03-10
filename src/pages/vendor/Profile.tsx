@@ -6,16 +6,23 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ProfileForm from '@/components/profile/ProfileForm';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useUpdatePasswordMutation } from '@/queries/use-auth';
+import type { UpdatePasswordPayload } from '@/types';
 
 const VendorProfile: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Use the update password mutation 
+  const { updatePassword } = useUpdatePasswordMutation();
 
   const handleUpdateProfile = async (data: any) => {
     setIsLoading(true);
     try {
-      // Simulate API call
+      // API call would be here 
+      // For now simulate an API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Update local storage with updated user data
@@ -37,6 +44,35 @@ const VendorProfile: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const handleChangePassword = async () => {
+    // In a real application, you would open a modal or form here
+    // For demonstration purposes, we'll just show a toast
+    toast({
+      title: 'Change Password',
+      description: 'Password change feature is coming soon.',
+    });
+    
+    // In a real implementation, you would do something like:
+    // const passwordData: UpdatePasswordPayload = {
+    //   oldPassword: 'current-password',
+    //   newPassword: 'new-password',
+    //   passwordConfirmation: 'new-password',
+    // };
+    // try {
+    //   await updatePassword(passwordData);
+    //   toast({
+    //     title: 'Password Updated',
+    //     description: 'Your password has been changed successfully.',
+    //   });
+    // } catch (error) {
+    //   toast({
+    //     variant: 'destructive',
+    //     title: 'Error',
+    //     description: 'Failed to update password.',
+    //   });
+    // }
   };
 
   if (!user) {
@@ -61,15 +97,13 @@ const VendorProfile: React.FC = () => {
             <CardContent className="pt-6">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium">Account Settings</h3>
-                <button 
+                <Button 
+                  variant="outline"
                   className="text-blue-600 hover:text-blue-800 text-sm"
-                  onClick={() => toast({ 
-                    title: 'Coming Soon', 
-                    description: 'This feature will be available soon.' 
-                  })}
+                  onClick={handleChangePassword}
                 >
                   Change Password
-                </button>
+                </Button>
               </div>
             </CardContent>
           </Card>
