@@ -35,7 +35,7 @@ const InstitutionDetails: React.FC = () => {
     if (institution) {
       editForm.setFieldsValue({
         name: institution.name,
-        type: institution.type,
+        institutionType: institution.type,
       });
     }
   }, [institution, editForm]);

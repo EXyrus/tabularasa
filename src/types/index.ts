@@ -12,13 +12,13 @@ export * from './bank-account';
 export * from './contexts';
 
 // Event types
-export * from './event';
+export type { Event, RecipientGroup } from './event';
 
 // Fetch related types
 export * from './fetch';
 
 // Finance types
-export { 
+export type { 
   FinanceTransaction,
   Paystack,
   Transaction 
@@ -31,16 +31,20 @@ export * from './institution';
 export * from './payloads';
 
 // Response types
-export { 
+export type { 
   AdminLoginResponse,
   EmployeeUserResponse,
   InstitutionLoginResponse,
   LoginResponse,
+  LoginCredentials,
+  TokenResponse,
+  ForgotPasswordRequest,
+  ResetPasswordRequest
 } from './auth';
 
-export { BankAccountResponse } from './bank-account';
+export type { BankAccountResponse } from './bank-account';
 
-export { EmployeePayload } from './payloads';
+export type { EmployeePayload } from './payloads';
 
 // Service worker types
 export * from './service-worker';
@@ -53,3 +57,25 @@ export * from './user';
 
 // Utility types
 export * from './utilities';
+
+// Explicitly add the institution types needed
+export type { InstitutionResponse, InstitutionsResponse } from './institution';
+
+// Add or export types for InstitutionStatusPayload and InstitutionDetailsPayload
+export interface InstitutionStatusPayload {
+  id: string;
+  status: 'active' | 'inactive' | 'pending';
+}
+
+export interface InstitutionDetailsPayload {
+  id: string;
+  name?: string;
+  institutionType?: string;
+}
+
+export interface CreateInstitutionDetailsPayload {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  type: string;
+}

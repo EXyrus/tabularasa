@@ -1,7 +1,23 @@
 
-import { Role, Permission } from './auth';
-import { AppType } from './app';
+import { AppType } from "./app";
 import { BankAccount } from './bank-account';
+
+export interface Permission {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Role {
+  id: string;
+  name: string;
+  description: string;
+  permissions: Permission[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface Institution {
   id: string;
@@ -46,38 +62,14 @@ export interface Module {
   updatedAt: string;
 }
 
-export interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  institutionId: string;
-  createdAt: string;
-  updatedAt: string;
+// Response types
+export interface InstitutionResponse {
+  institution: Institution;
 }
 
-export interface RecipientGroup {
-  id: string;
-  name: string;
-  description: string;
-  institutionId: string;
-  recipients: string[];
-  createdAt: string;
-  updatedAt: string;
+export interface InstitutionsResponse {
+  institutions: Institution[];
+  total: number;
 }
 
-export interface FinanceTransaction {
-  id: string;
-  amount: number;
-  description: string;
-  date: string;
-  type: 'income' | 'expense';
-  category: string;
-  institutionId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export { BankAccount };
+export type { BankAccount };

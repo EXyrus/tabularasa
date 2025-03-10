@@ -1,14 +1,26 @@
 
-import { localStoragePersister } from '../persisters';
-import { type PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { queryClient } from '@/overrides/react-query.override';
 
+// Create a persister
+const localStoragePersister = createSyncStoragePersister({
+  storage: window.localStorage,
+  key: 'TABULA_RASA_QUERY_CACHE',
+  throttleTime: 1000,
+});
+
+// Create the persist options
 export const persistOptions: PersistQueryClientOptions = {
   persister: localStoragePersister,
+  queryClient: queryClient,
   dehydrateOptions: {
     shouldDehydrateQuery: ({ queryKey }) => {
-      return !queryKey.includes('temp') && !queryKey.includes('transient');
+      // Only persist specific queries
+      return (
+        Array.isArray(queryKey) &&
+        (queryKey[0] === 'institutionTheme' || queryKey[0] === 'user')
+      );
     },
   },
 };
-
-export { localStoragePersister };
