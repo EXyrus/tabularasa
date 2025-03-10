@@ -7,7 +7,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient } from '@/overrides/react-query.override';
 import * as Sentry from '@sentry/react';
-import { localStoragePersister } from '@/queries/persisters';
+import { persistOptions } from '@/queries/persisters/index';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 interface AppWrapperProps {
@@ -18,7 +18,7 @@ const AppWrapper = ({ children }: AppWrapperProps) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: localStoragePersister }}
+      persistOptions={persistOptions}
     >
       <ThemeProvider>
         <TooltipProvider>

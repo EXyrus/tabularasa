@@ -1,19 +1,16 @@
 
 import Logger from 'js-logger';
-import { getEnvironment } from '@/helpers/env';
+import { isDevelopment, isTest } from '@/helpers/env';
 
-// Configure logger
+// Configure the logger
 Logger.useDefaults({
-  defaultLevel: getEnvironment() === 'production' ? Logger.ERROR : Logger.DEBUG,
+  defaultLevel: isDevelopment() || isTest() ? Logger.DEBUG : Logger.WARN,
   formatter: function (messages, context) {
-    messages.unshift(`[${context.name}] ${new Date().toISOString()}`);
+    messages.unshift(new Date().toISOString() + ' ' + context.name + ':');
   }
 });
 
-// Create a named logger
-export const createLogger = (name: string) => {
-  return Logger.get(name);
-};
+// Create and export the logger
+const logger = Logger.get('app');
 
-// Export default logger
-export default Logger;
+export default logger;

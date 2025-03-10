@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -69,9 +70,7 @@ export const useLogin = () => {
                 credentials
             );
 
-            const { user, payload } = response.data;
-
-            const token = getTokenPayload(payload)?.token;
+            const { user, token } = response.data;
 
             if (token) {
                 setLocalStorageItem('token', token);
@@ -116,9 +115,7 @@ export const useInstitutionLogin = () => {
                 credentials
             );
 
-            const { user, payload } = response.data;
-
-            const token = getTokenPayload(payload)?.token;
+            const { user, token } = response.data;
 
             if (token) {
                 setLocalStorageItem('token', token);
@@ -134,7 +131,7 @@ export const useInstitutionLogin = () => {
 
         onSuccess: data => {
             if (data) {
-                const token = decodeTokenPayload(data?.payload)?.token;
+                const token = data.token;
 
                 if (token) {
                     setLocalStorageItem('token', token);

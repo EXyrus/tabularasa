@@ -12,7 +12,7 @@ import {
   CalendarOutlined,
   ApartmentOutlined 
 } from '@ant-design/icons';
-
+import { AppType } from '@/types/app';
 
 
 interface BottomNavigationProps {
@@ -44,6 +44,13 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ appType }) => {
       { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
       { icon: <DollarOutlined />, label: 'Finances', path: `${basePath}/finances` },
       { icon: <TeamOutlined />, label: 'Students', path: `${basePath}/students` },
+      { icon: <UserOutlined />, label: 'Profile', path: `${basePath}/profile` },
+      { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
+    ],
+    student: [
+      { icon: <HomeOutlined />, label: 'Home', path: `${basePath}/dashboard` },
+      { icon: <DollarOutlined />, label: 'Finances', path: `${basePath}/finances` },
+      { icon: <FileTextOutlined />, label: 'Courses', path: `${basePath}/courses` },
       { icon: <UserOutlined />, label: 'Profile', path: `${basePath}/profile` },
       { icon: <SettingOutlined />, label: 'Settings', path: `${basePath}/settings` },
     ],

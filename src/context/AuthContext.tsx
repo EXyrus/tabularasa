@@ -2,8 +2,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import config from '../config';
 import { useLogin, useLogout, useTokenQuery, useForgotPassword } from '@/queries/use-auth';
-import type { AppType } from '@/types/app-type';
-import type { User } from '@/types/auth';
+import type { AppType } from '@/types/app';
+import type { User } from '@/types/user';
 
 interface AuthContextType {
   user: User | null;
