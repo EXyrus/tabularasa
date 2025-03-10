@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Descriptions, Badge, Tabs, Space, Modal, Form, Input, Select } from 'antd';
+import { Card, Typography, Button, Tabs, Space, Modal, Form, Input, Select } from 'antd';
 import { EditOutlined, UserAddOutlined, DeleteOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { InstitutionDetailsCard } from '@/components/institutions/InstitutionDetailsCard';
+import { EditInstitutionForm } from '@/components/institutions/EditInstitutionForm';
 import { 
   useInstitutionDetails, 
   useUpdateInstitutionStatus,
@@ -23,6 +24,7 @@ const InstitutionDetails: React.FC = () => {
   const { toast } = useToast();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
   const [editForm] = Form.useForm();
   
   // Queries and Mutations
@@ -66,10 +68,7 @@ const InstitutionDetails: React.FC = () => {
 
   const handleEditSubmit = async (values: InstitutionDetailsPayload) => {
     try {
-      await updateDetailsMutation.mutateAsync({
-        id: institution.id,
-        ...values
-      });
+      await updateDetailsMutation.mutateAsync(values);
       setIsEditModalVisible(false);
       toast({
         title: "Details Updated",
@@ -86,7 +85,7 @@ const InstitutionDetails: React.FC = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteInstitutionMutation.mutateAsync({ id: institution.id });
+      await deleteInstitutionMutation.mutateAsync({ id: institution.id, status: institution.status });
       setIsDeleteModalVisible(false);
       toast({
         title: "Institution Deleted",
@@ -123,7 +122,22 @@ const InstitutionDetails: React.FC = () => {
         </Space>
       </div>
 
-      <InstitutionDetailsCard institution={institution} />
+      <Tabs 
+        activeKey={activeTab} 
+        onChange={setActiveTab}
+        className="mb-6"
+      >
+        <TabPane tab="Details" key="details">
+          <InstitutionDetailsCard institution={institution} />
+        </TabPane>
+        <TabPane tab="Edit" key="edit">
+          <EditInstitutionForm 
+            institution={institution} 
+            onSubmit={handleEditSubmit}
+            isLoading={updateDetailsMutation.isPending}
+          />
+        </TabPane>
+      </Tabs>
       
       <Card className="mt-6">
         <Title level={4}>Status Management</Title>

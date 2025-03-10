@@ -4,13 +4,15 @@ import type { Employee } from './user';
 
 export type InstitutionStatusPayload = {
     id: string;
-    status?: 'active' | 'pending' | 'inactive';
+    status: 'active' | 'pending' | 'inactive';
 };
 
 export type InstitutionDetailsPayload = {
     id: string;
     name?: string;
-    institutionType: string;
+    institutionType?: string;
+    email?: string;
+    phoneNumber?: string;
 };
 
 export type CreateInstitutionDetailsPayload = {

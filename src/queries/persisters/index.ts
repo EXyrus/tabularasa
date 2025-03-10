@@ -7,7 +7,6 @@ import { queryClient } from '@/overrides/react-query.override';
 const localStoragePersister = createSyncStoragePersister({
   storage: window.localStorage,
   key: 'TABULA_RASA_QUERY_CACHE',
-  throttleTime: 1000,
 });
 
 // Create the persist options

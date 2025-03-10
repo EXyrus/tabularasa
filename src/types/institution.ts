@@ -62,6 +62,33 @@ export interface Module {
   updatedAt: string;
 }
 
+// Event and RecipientGroup types
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  allDay?: boolean;
+  type?: string;
+}
+
+export interface RecipientGroup {
+  id: string;
+  name: string;
+  type?: string;
+}
+
+// Finance types
+export interface FinanceTransaction {
+  id: string;
+  amount: number;
+  description: string;
+  date: string;
+  paymentMethod?: string;
+}
+
 // Response types
 export interface InstitutionResponse {
   institution: Institution;
