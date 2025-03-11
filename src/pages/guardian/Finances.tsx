@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Typography, Card, List, Tag, Button, Badge, Divider, Space } from 'antd';
 import { DollarOutlined, CheckOutlined, ClockCircleOutlined } from '@ant-design/icons';
@@ -20,59 +19,65 @@ interface FeeItem {
 
 const GuardianFinances: React.FC = () => {
   const { user } = useAuth();
-  
+
   // Mock data for fees
   const fees: FeeItem[] = [
-    { 
-      id: 'FEE001', 
-      title: 'School Fees - Term 1', 
-      amount: 500, 
-      dueDate: '2023-09-15', 
-      status: 'paid', 
+    {
+      id: 'FEE001',
+      title: 'School Fees - Term 1',
+      amount: 500,
+      dueDate: '2023-09-15',
+      status: 'paid',
       student: 'Emma Smith',
-      description: 'Regular school fees for the first term of the academic year.'
+      description: 'Regular school fees for the first term of the academic year.',
     },
-    { 
-      id: 'FEE002', 
-      title: 'School Fees - Term 2', 
-      amount: 500, 
-      dueDate: '2024-01-10', 
-      status: 'pending', 
+    {
+      id: 'FEE002',
+      title: 'School Fees - Term 2',
+      amount: 500,
+      dueDate: '2024-01-10',
+      status: 'pending',
       student: 'Emma Smith',
-      description: 'Regular school fees for the second term of the academic year.'
+      description: 'Regular school fees for the second term of the academic year.',
     },
-    { 
-      id: 'FEE003', 
-      title: 'Field Trip - Museum', 
-      amount: 25, 
-      dueDate: '2023-05-10', 
-      status: 'overdue', 
+    {
+      id: 'FEE003',
+      title: 'Field Trip - Museum',
+      amount: 25,
+      dueDate: '2023-05-10',
+      status: 'overdue',
       student: 'Noah Smith',
-      description: 'Fee for the upcoming educational trip to the Science Museum.'
+      description: 'Fee for the upcoming educational trip to the Science Museum.',
     },
-    { 
-      id: 'FEE004', 
-      title: 'Extracurricular - Swimming', 
-      amount: 120, 
-      dueDate: '2023-06-01', 
-      status: 'pending', 
+    {
+      id: 'FEE004',
+      title: 'Extracurricular - Swimming',
+      amount: 120,
+      dueDate: '2023-06-01',
+      status: 'pending',
       student: 'Noah Smith',
-      description: 'Fee for the swimming lessons for the current term.'
+      description: 'Fee for the swimming lessons for the current term.',
     },
   ];
 
   const getTotalAmount = (status: 'paid' | 'pending' | 'overdue') => {
-    return fees
-      .filter(fee => fee.status === status)
-      .reduce((total, fee) => total + fee.amount, 0);
+    return fees.filter(fee => fee.status === status).reduce((total, fee) => total + fee.amount, 0);
   };
 
   const getStatusTag = (status: 'paid' | 'pending' | 'overdue') => {
-    switch(status) {
+    switch (status) {
       case 'paid':
-        return <Tag color="success"><CheckOutlined /> Paid</Tag>;
+        return (
+          <Tag color="success">
+            <CheckOutlined /> Paid
+          </Tag>
+        );
       case 'pending':
-        return <Tag color="processing"><ClockCircleOutlined /> Pending</Tag>;
+        return (
+          <Tag color="processing">
+            <ClockCircleOutlined /> Pending
+          </Tag>
+        );
       case 'overdue':
         return <Tag color="error">Overdue</Tag>;
       default:
@@ -82,18 +87,20 @@ const GuardianFinances: React.FC = () => {
 
   return (
     <>
-      <HeaderBar 
-        appType="guardian" 
-        userName={user?.name || 'Guardian User'} 
-        userAvatar={user?.avatar} 
+      <HeaderBar
+        appType="guardian"
+        userName={user?.name || 'Guardian User'}
+        userAvatar={user?.photo}
       />
-      
+
       <div className="page-container pt-20 pb-24 animate-fade-in">
         <div className="mb-6">
-          <Title level={4} className="!mb-1">Finances</Title>
+          <Title level={4} className="!mb-1">
+            Finances
+          </Title>
           <Text type="secondary">Manage your children's school fees and payments</Text>
         </div>
-        
+
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Card className="shadow-sm">
@@ -103,11 +110,13 @@ const GuardianFinances: React.FC = () => {
               </div>
               <div>
                 <Text type="secondary">Paid Fees</Text>
-                <Title level={4} className="!mb-0">${getTotalAmount('paid')}</Title>
+                <Title level={4} className="!mb-0">
+                  ${getTotalAmount('paid')}
+                </Title>
               </div>
             </div>
           </Card>
-          
+
           <Card className="shadow-sm">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-blue-100 mr-4">
@@ -115,11 +124,13 @@ const GuardianFinances: React.FC = () => {
               </div>
               <div>
                 <Text type="secondary">Pending Fees</Text>
-                <Title level={4} className="!mb-0">${getTotalAmount('pending')}</Title>
+                <Title level={4} className="!mb-0">
+                  ${getTotalAmount('pending')}
+                </Title>
               </div>
             </div>
           </Card>
-          
+
           <Card className="shadow-sm">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-red-100 mr-4">
@@ -127,20 +138,24 @@ const GuardianFinances: React.FC = () => {
               </div>
               <div>
                 <Text type="secondary">Overdue Fees</Text>
-                <Title level={4} className="!mb-0">${getTotalAmount('overdue')}</Title>
+                <Title level={4} className="!mb-0">
+                  ${getTotalAmount('overdue')}
+                </Title>
               </div>
             </div>
           </Card>
         </div>
-        
+
         {/* Fee List */}
         <Card className="shadow-sm">
-          <Title level={5} className="!mb-4">Fee Details</Title>
-          
+          <Title level={5} className="!mb-4">
+            Fee Details
+          </Title>
+
           <List
             itemLayout="vertical"
             dataSource={fees}
-            renderItem={(item) => (
+            renderItem={item => (
               <List.Item
                 key={item.id}
                 extra={
@@ -154,11 +169,17 @@ const GuardianFinances: React.FC = () => {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div>
                     <div className="flex items-center mb-1">
-                      <Text strong className="mr-2">{item.title}</Text>
+                      <Text strong className="mr-2">
+                        {item.title}
+                      </Text>
                       {getStatusTag(item.status)}
                     </div>
-                    <Text type="secondary" className="block mb-1">Amount: ${item.amount}</Text>
-                    <Text type="secondary" className="block mb-1">Due Date: {item.dueDate}</Text>
+                    <Text type="secondary" className="block mb-1">
+                      Amount: ${item.amount}
+                    </Text>
+                    <Text type="secondary" className="block mb-1">
+                      Due Date: {item.dueDate}
+                    </Text>
                     <Badge color="blue" text={`Student: ${item.student}`} className="block mb-1" />
                     <Text className="text-gray-500">{item.description}</Text>
                   </div>
@@ -168,7 +189,7 @@ const GuardianFinances: React.FC = () => {
           />
         </Card>
       </div>
-      
+
       <BottomNavigation appType="guardian" />
     </>
   );

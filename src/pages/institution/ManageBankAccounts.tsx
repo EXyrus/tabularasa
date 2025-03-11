@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
-import { 
-  Card, 
-  Button, 
-  Table, 
-  Modal, 
-  Form, 
-  Input, 
-  Select, 
-  Typography, 
-  Popconfirm, 
+import {
+  Card,
+  Button,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Typography,
+  Popconfirm,
   Alert,
   Empty,
-  Spin
+  Spin,
 } from 'antd';
-import { 
-  PlusOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
-  BankOutlined, 
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  BankOutlined,
   CreditCardOutlined,
-  LockOutlined
+  LockOutlined,
 } from '@ant-design/icons';
 import { useQueryClient } from '@tanstack/react-query';
-import { 
-  useGetBankAccounts, 
-  useAddBankAccount, 
-  useUpdateBankAccount, 
-  useDeleteBankAccount 
+import {
+  useGetBankAccounts,
+  useAddBankAccount,
+  useUpdateBankAccount,
+  useDeleteBankAccount,
 } from '@/queries/use-institutions';
 import { useToast } from '@/hooks/use-toast';
 import HeaderBar from '@/components/HeaderBar';
@@ -48,19 +48,14 @@ const ManageBankAccounts: React.FC = () => {
   const [newAccount, setNewAccount] = useState<Omit<BankAccount, 'id'> | null>(null);
 
   // Get bank accounts
-  const { 
-    data: bankAccounts = [], 
-    isLoading, 
-    isError, 
-    error 
-  } = useGetBankAccounts();
+  const { data: bankAccounts = [], isLoading, isError, error } = useGetBankAccounts();
 
   // Add bank account mutation
   const addBankAccountMutation = useAddBankAccount();
-  
+
   // Update bank account mutation
   const updateBankAccountMutation = useUpdateBankAccount();
-  
+
   // Delete bank account mutation
   const deleteBankAccountMutation = useDeleteBankAccount();
 
@@ -71,7 +66,7 @@ const ManageBankAccounts: React.FC = () => {
         bank: account.bank,
         accountNumber: account.accountNumber,
         accountName: account.accountName,
-        accountType: account.accountType
+        accountType: account.accountType,
       });
     } else {
       setEditingAccount(null);
@@ -94,25 +89,25 @@ const ManageBankAccounts: React.FC = () => {
       updateBankAccountMutation.mutate(
         {
           id: editingAccount.id,
-          ...values
+          ...values,
         },
         {
           onSuccess: () => {
             setIsModalVisible(false);
             toast({
-              title: "Success",
-              description: "Bank account updated successfully",
-              variant: "default",
+              title: 'Success',
+              description: 'Bank account updated successfully',
+              variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['bank_accounts'] });
           },
           onError: (error: any) => {
             toast({
-              title: "Error",
+              title: 'Error',
               description: `Failed to update bank account: ${error.message}`,
-              variant: "destructive",
+              variant: 'destructive',
             });
-          }
+          },
         }
       );
     } else {
@@ -127,7 +122,7 @@ const ManageBankAccounts: React.FC = () => {
       addBankAccountMutation.mutate(
         {
           ...newAccount,
-          password: values.password
+          password: values.password,
         },
         {
           onSuccess: () => {
@@ -136,19 +131,19 @@ const ManageBankAccounts: React.FC = () => {
             setNewAccount(null);
             passwordForm.resetFields();
             toast({
-              title: "Success",
-              description: "Bank account added successfully",
-              variant: "default",
+              title: 'Success',
+              description: 'Bank account added successfully',
+              variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['bank_accounts'] });
           },
           onError: (error: any) => {
             toast({
-              title: "Error",
+              title: 'Error',
               description: `Failed to add bank account: ${error.message}`,
-              variant: "destructive",
+              variant: 'destructive',
             });
-          }
+          },
         }
       );
     }
@@ -158,19 +153,19 @@ const ManageBankAccounts: React.FC = () => {
     deleteBankAccountMutation.mutate(id, {
       onSuccess: () => {
         toast({
-          title: "Success",
-          description: "Bank account deleted successfully",
-          variant: "default",
+          title: 'Success',
+          description: 'Bank account deleted successfully',
+          variant: 'default',
         });
         queryClient.invalidateQueries({ queryKey: ['bank_accounts'] });
       },
       onError: (error: any) => {
         toast({
-          title: "Error",
+          title: 'Error',
           description: `Failed to delete bank account: ${error.message}`,
-          variant: "destructive",
+          variant: 'destructive',
         });
-      }
+      },
     });
   };
 
@@ -186,12 +181,12 @@ const ManageBankAccounts: React.FC = () => {
           </div>
           <span className="font-medium">{text}</span>
         </div>
-      )
+      ),
     },
     {
       title: 'Account Name',
       dataIndex: 'accountName',
-      key: 'accountName'
+      key: 'accountName',
     },
     {
       title: 'Account Number',
@@ -202,69 +197,65 @@ const ManageBankAccounts: React.FC = () => {
         const visible = text.slice(-4);
         const masked = '*'.repeat(text.length - 4);
         return <span>{masked + visible}</span>;
-      }
+      },
     },
     {
       title: 'Account Type',
       dataIndex: 'accountType',
       key: 'accountType',
-      render: (text: string) => (
-        <span className="capitalize">{text}</span>
-      )
+      render: (text: string) => <span className="capitalize">{text}</span>,
     },
     {
       title: 'Status',
       key: 'status',
       render: (_: any, record: BankAccount) => (
-        <span className={`px-2 py-1 rounded-full text-xs ${
-          record.isDefault 
-            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-        }`}>
+        <span
+          className={`px-2 py-1 rounded-full text-xs ${
+            record.isDefault
+              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+          }`}
+        >
           {record.isDefault ? 'Default' : 'Active'}
         </span>
-      )
+      ),
     },
     {
       title: 'Action',
       key: 'action',
       render: (_: any, record: BankAccount) => (
         <div className="flex space-x-2">
-          <Button
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => showModal(record)}
-          />
+          <Button icon={<EditOutlined />} size="small" onClick={() => showModal(record)} />
           <Popconfirm
             title="Are you sure you want to delete this account?"
             onConfirm={() => handleDelete(record.id)}
             okText="Yes"
             cancelText="No"
           >
-            <Button
-              icon={<DeleteOutlined />}
-              size="small"
-              danger
-            />
+            <Button icon={<DeleteOutlined />} size="small" danger />
           </Popconfirm>
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <div className="page-container pt-20 animate-fade-in bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <HeaderBar 
-        appType="institution" 
-        userName={user?.name || 'Institution User'} 
-        userAvatar={user?.avatar}
+      <HeaderBar
+        appType="institution"
+        userName={user?.name || 'Institution User'}
+        userAvatar={user?.photo}
       />
-      
+
       <div className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <Title level={4} className="!mb-1 dark:text-white">Manage Bank Accounts</Title>
-            <Text className="text-gray-500 dark:text-gray-400">Add and manage your institution's bank accounts</Text>
+            <Title level={4} className="!mb-1 dark:text-white">
+              Manage Bank Accounts
+            </Title>
+            <Text className="text-gray-500 dark:text-gray-400">
+              Add and manage your institution's bank accounts
+            </Text>
           </div>
           <Button
             type="primary"
@@ -275,46 +266,48 @@ const ManageBankAccounts: React.FC = () => {
             Add Bank Account
           </Button>
         </div>
-        
+
         <Card className="mb-8 shadow-sm dark:bg-gray-800 dark:text-white">
           {isLoading ? (
             <div className="flex justify-center items-center py-10">
               <Spin size="large" />
             </div>
           ) : isError ? (
-            <Alert 
-              message="Error" 
+            <Alert
+              message="Error"
               description={`Failed to load bank accounts: ${(error as Error)?.message}`}
-              type="error" 
-              showIcon 
+              type="error"
+              showIcon
             />
           ) : bankAccounts.length === 0 ? (
-            <Empty 
-              description="No bank accounts found" 
-              image={Empty.PRESENTED_IMAGE_SIMPLE} 
+            <Empty
+              description="No bank accounts found"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
               className="py-8 dark:text-gray-400"
             />
           ) : (
-            <Table 
-              columns={columns} 
-              dataSource={bankAccounts} 
+            <Table
+              columns={columns}
+              dataSource={bankAccounts}
               rowKey="id"
               pagination={{ pageSize: 10 }}
               className="dark:text-gray-300"
             />
           )}
         </Card>
-        
+
         <Card className="mb-6 dark:bg-gray-800 dark:text-white">
           <div className="flex items-start">
             <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full mr-4">
               <LockOutlined className="text-blue-600 dark:text-blue-300 text-xl" />
             </div>
             <div>
-              <Title level={5} className="!mb-1 dark:text-white">Bank Account Security</Title>
+              <Title level={5} className="!mb-1 dark:text-white">
+                Bank Account Security
+              </Title>
               <Text className="text-gray-600 dark:text-gray-400 block mb-2">
-                Your bank account details are securely stored and encrypted. 
-                When adding a new account, you'll need to verify with your password.
+                Your bank account details are securely stored and encrypted. When adding a new
+                account, you'll need to verify with your password.
               </Text>
               <ul className="list-disc pl-5 text-gray-600 dark:text-gray-400">
                 <li>Bank account numbers are partially masked for security</li>
@@ -325,10 +318,10 @@ const ManageBankAccounts: React.FC = () => {
           </div>
         </Card>
       </div>
-      
+
       {/* Modal for adding/editing bank accounts */}
       <Modal
-        title={editingAccount ? "Edit Bank Account" : "Add Bank Account"}
+        title={editingAccount ? 'Edit Bank Account' : 'Add Bank Account'}
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -336,21 +329,17 @@ const ManageBankAccounts: React.FC = () => {
           <Button key="back" onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
+          <Button
+            key="submit"
+            type="primary"
             loading={updateBankAccountMutation.isPending}
             onClick={handleOk}
           >
             {editingAccount ? 'Update' : 'Continue'}
-          </Button>
+          </Button>,
         ]}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleFormSubmit}
-        >
+        <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
           <Form.Item
             name="bank"
             label="Bank Name"
@@ -358,7 +347,7 @@ const ManageBankAccounts: React.FC = () => {
           >
             <Input prefix={<BankOutlined />} placeholder="e.g., Chase Bank" />
           </Form.Item>
-          
+
           <Form.Item
             name="accountName"
             label="Account Name"
@@ -366,18 +355,15 @@ const ManageBankAccounts: React.FC = () => {
           >
             <Input placeholder="e.g., Acme School" />
           </Form.Item>
-          
+
           <Form.Item
             name="accountNumber"
             label="Account Number"
             rules={[{ required: true, message: 'Please enter the account number' }]}
           >
-            <Input 
-              prefix={<CreditCardOutlined />} 
-              placeholder="Account number" 
-            />
+            <Input prefix={<CreditCardOutlined />} placeholder="Account number" />
           </Form.Item>
-          
+
           <Form.Item
             name="accountType"
             label="Account Type"
@@ -391,7 +377,7 @@ const ManageBankAccounts: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      
+
       {/* Modal for password confirmation when adding new account */}
       <Modal
         title="Confirm Your Password"
@@ -401,8 +387,8 @@ const ManageBankAccounts: React.FC = () => {
           passwordForm.resetFields();
         }}
         footer={[
-          <Button 
-            key="back" 
+          <Button
+            key="back"
             onClick={() => {
               setConfirmPasswordVisible(false);
               passwordForm.resetFields();
@@ -410,14 +396,14 @@ const ManageBankAccounts: React.FC = () => {
           >
             Cancel
           </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
+          <Button
+            key="submit"
+            type="primary"
             loading={addBankAccountMutation.isPending}
             onClick={() => passwordForm.submit()}
           >
             Confirm
-          </Button>
+          </Button>,
         ]}
       >
         <Alert
@@ -427,21 +413,14 @@ const ManageBankAccounts: React.FC = () => {
           showIcon
           className="mb-4"
         />
-        
-        <Form
-          form={passwordForm}
-          layout="vertical"
-          onFinish={handlePasswordSubmit}
-        >
+
+        <Form form={passwordForm} layout="vertical" onFinish={handlePasswordSubmit}>
           <Form.Item
             name="password"
             label="Password"
             rules={[{ required: true, message: 'Please enter your password' }]}
           >
-            <Input.Password 
-              prefix={<LockOutlined />}
-              placeholder="Enter your password" 
-            />
+            <Input.Password prefix={<LockOutlined />} placeholder="Enter your password" />
           </Form.Item>
         </Form>
       </Modal>

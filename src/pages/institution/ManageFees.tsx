@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,21 +7,15 @@ import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -57,26 +50,74 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const fetchFees = async () => {
   await new Promise(resolve => setTimeout(resolve, 800));
   return [
-    { id: 1, name: 'Tuition Fee', amount: 5000, description: 'Basic tuition fee for the semester', category: 'tuition', frequency: 'semester', dueDate: '2023-09-15' },
-    { id: 2, name: 'Library Fee', amount: 200, description: 'Access to library facilities', category: 'facility', frequency: 'annual', dueDate: '2023-08-30' },
-    { id: 3, name: 'Transportation Fee', amount: 1200, description: 'School bus service fee', category: 'service', frequency: 'monthly', dueDate: '2023-09-05' },
-    { id: 4, name: 'Sports Fee', amount: 450, description: 'Access to sports facilities', category: 'facility', frequency: 'semester', dueDate: '2023-09-15' },
-    { id: 5, name: 'Computer Lab Fee', amount: 350, description: 'Access to computer labs', category: 'facility', frequency: 'semester', dueDate: '2023-09-15' },
-    { id: 6, name: 'Examination Fee', amount: 300, description: 'End-of-term examination fee', category: 'academic', frequency: 'semester', dueDate: '2023-10-20' },
+    {
+      id: 1,
+      name: 'Tuition Fee',
+      amount: 5000,
+      description: 'Basic tuition fee for the semester',
+      category: 'tuition',
+      frequency: 'semester',
+      dueDate: '2023-09-15',
+    },
+    {
+      id: 2,
+      name: 'Library Fee',
+      amount: 200,
+      description: 'Access to library facilities',
+      category: 'facility',
+      frequency: 'annual',
+      dueDate: '2023-08-30',
+    },
+    {
+      id: 3,
+      name: 'Transportation Fee',
+      amount: 1200,
+      description: 'School bus service fee',
+      category: 'service',
+      frequency: 'monthly',
+      dueDate: '2023-09-05',
+    },
+    {
+      id: 4,
+      name: 'Sports Fee',
+      amount: 450,
+      description: 'Access to sports facilities',
+      category: 'facility',
+      frequency: 'semester',
+      dueDate: '2023-09-15',
+    },
+    {
+      id: 5,
+      name: 'Computer Lab Fee',
+      amount: 350,
+      description: 'Access to computer labs',
+      category: 'facility',
+      frequency: 'semester',
+      dueDate: '2023-09-15',
+    },
+    {
+      id: 6,
+      name: 'Examination Fee',
+      amount: 300,
+      description: 'End-of-term examination fee',
+      category: 'academic',
+      frequency: 'semester',
+      dueDate: '2023-10-20',
+    },
   ];
 };
 
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Fee name must be at least 2 characters" }),
-  amount: z.coerce.number().positive({ message: "Amount must be a positive number" }),
-  description: z.string().min(5, { message: "Description must be at least 5 characters" }),
+  name: z.string().min(2, { message: 'Fee name must be at least 2 characters' }),
+  amount: z.coerce.number().positive({ message: 'Amount must be a positive number' }),
+  description: z.string().min(5, { message: 'Description must be at least 5 characters' }),
   category: z.string({
-    required_error: "Please select a category",
+    required_error: 'Please select a category',
   }),
   frequency: z.string({
-    required_error: "Please select a frequency",
+    required_error: 'Please select a frequency',
   }),
-  dueDate: z.string().min(1, { message: "Please select a due date" }),
+  dueDate: z.string().min(1, { message: 'Please select a due date' }),
 });
 
 const ManageFees: React.FC = () => {
@@ -87,41 +128,42 @@ const ManageFees: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFee, setSelectedFee] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const { data: fees = [], isLoading } = useQuery({
     queryKey: ['fees'],
     queryFn: fetchFees,
   });
-  
-  const filteredFees = fees.filter(fee => 
-    fee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    fee.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    fee.category.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredFees = fees.filter(
+    fee =>
+      fee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      fee.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      fee.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: '',
       amount: 0,
-      description: "",
-      category: "",
-      frequency: "",
-      dueDate: "",
+      description: '',
+      category: '',
+      frequency: '',
+      dueDate: '',
     },
   });
-  
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (isEditing) {
       // This would be an API call to update the fee
       toast({
-        title: "Fee updated",
+        title: 'Fee updated',
         description: `${values.name} has been updated successfully.`,
       });
     } else {
       // This would be an API call to create a new fee
       toast({
-        title: "Fee created",
+        title: 'Fee created',
         description: `${values.name} has been created successfully.`,
       });
     }
@@ -129,7 +171,7 @@ const ManageFees: React.FC = () => {
     form.reset();
     setIsEditing(false);
   };
-  
+
   const handleEditFee = (fee: any) => {
     setIsEditing(true);
     setSelectedFee(fee);
@@ -143,42 +185,38 @@ const ManageFees: React.FC = () => {
     });
     setOpen(true);
   };
-  
+
   const handleDeleteFee = (fee: any) => {
     // This would be an API call to delete the fee
     toast({
-      title: "Fee deleted",
+      title: 'Fee deleted',
       description: `${fee.name} has been deleted successfully.`,
-      variant: "destructive",
+      variant: 'destructive',
     });
   };
-  
+
   const openNewFeeDialog = () => {
     setIsEditing(false);
     form.reset({
-      name: "",
+      name: '',
       amount: 0,
-      description: "",
-      category: "",
-      frequency: "",
-      dueDate: "",
+      description: '',
+      category: '',
+      frequency: '',
+      dueDate: '',
     });
     setOpen(true);
   };
 
   return (
     <>
-      <HeaderBar 
-        appType="institution" 
-        userName={user?.name || 'Admin'} 
-        userAvatar={user?.avatar} 
-      />
-      
+      <HeaderBar appType="institution" userName={user?.name || 'Admin'} userAvatar={user?.photo} />
+
       <div className="page-container pt-20 pb-20 px-4 animate-fade-in">
         <div className="flex items-center mb-6">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => navigate('/institution/control-panel')}
             className="mr-2"
           >
@@ -187,24 +225,28 @@ const ManageFees: React.FC = () => {
           </Button>
           <div>
             <h1 className="text-2xl font-bold mb-1 dark:text-white">Manage Fees</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Create and manage institution fee structure</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Create and manage institution fee structure
+            </p>
           </div>
         </div>
-        
+
         <Card className="mb-8 border border-gray-200 dark:border-gray-700">
           <CardHeader className="pb-3">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <CardTitle className="text-xl dark:text-white">Fee Structure</CardTitle>
-                <CardDescription className="dark:text-gray-400">Manage existing fees or create new ones</CardDescription>
+                <CardDescription className="dark:text-gray-400">
+                  Manage existing fees or create new ones
+                </CardDescription>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div className="relative w-full sm:w-auto">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
+                  <Input
                     placeholder="Search fees..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-10 w-full"
                   />
                 </div>
@@ -236,45 +278,57 @@ const ManageFees: React.FC = () => {
                   <TableBody>
                     {filteredFees.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell
+                          colSpan={6}
+                          className="text-center py-8 text-gray-500 dark:text-gray-400"
+                        >
                           <Receipt className="h-12 w-12 mx-auto mb-2 opacity-20" />
                           <p>No fees found</p>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredFees.map((fee) => (
+                      filteredFees.map(fee => (
                         <TableRow key={fee.id}>
                           <TableCell>
                             <div>
                               <div className="font-medium dark:text-white">{fee.name}</div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400">{fee.description}</div>
+                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                {fee.description}
+                              </div>
                             </div>
                           </TableCell>
-                          <TableCell className="dark:text-white">₹{fee.amount.toLocaleString()}</TableCell>
+                          <TableCell className="dark:text-white">
+                            ₹{fee.amount.toLocaleString()}
+                          </TableCell>
                           <TableCell>
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              fee.category === 'tuition' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                              fee.category === 'facility' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                              fee.category === 'service' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' :
-                              'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                            }`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs ${
+                                fee.category === 'tuition'
+                                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                  : fee.category === 'facility'
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                    : fee.category === 'service'
+                                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+                                      : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                              }`}
+                            >
                               {fee.category.charAt(0).toUpperCase() + fee.category.slice(1)}
                             </span>
                           </TableCell>
-                          <TableCell className="capitalize dark:text-white">{fee.frequency}</TableCell>
-                          <TableCell className="dark:text-white">{new Date(fee.dueDate).toLocaleDateString()}</TableCell>
+                          <TableCell className="capitalize dark:text-white">
+                            {fee.frequency}
+                          </TableCell>
+                          <TableCell className="dark:text-white">
+                            {new Date(fee.dueDate).toLocaleDateString()}
+                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => handleEditFee(fee)}
-                              >
+                              <Button variant="ghost" size="sm" onClick={() => handleEditFee(fee)}>
                                 <Edit className="h-4 w-4" />
                                 <span className="sr-only">Edit</span>
                               </Button>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => handleDeleteFee(fee)}
                                 className="text-red-500 hover:text-red-700 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900"
@@ -294,7 +348,7 @@ const ManageFees: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
@@ -303,12 +357,12 @@ const ManageFees: React.FC = () => {
               {isEditing ? 'Edit Fee' : 'Add New Fee'}
             </DialogTitle>
             <DialogDescription className="dark:text-gray-400">
-              {isEditing 
-                ? 'Update the fee details below.' 
+              {isEditing
+                ? 'Update the fee details below.'
                 : 'Fill in the details to create a new fee.'}
             </DialogDescription>
           </DialogHeader>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -318,13 +372,17 @@ const ManageFees: React.FC = () => {
                   <FormItem>
                     <FormLabel>Fee Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Tuition Fee, Library Fee" {...field} className="dark:bg-gray-800 dark:border-gray-700" />
+                      <Input
+                        placeholder="e.g. Tuition Fee, Library Fee"
+                        {...field}
+                        className="dark:bg-gray-800 dark:border-gray-700"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="amount"
@@ -332,18 +390,18 @@ const ManageFees: React.FC = () => {
                   <FormItem>
                     <FormLabel>Amount (₹)</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0.00" 
+                      <Input
+                        type="number"
+                        placeholder="0.00"
                         {...field}
-                        className="dark:bg-gray-800 dark:border-gray-700" 
+                        className="dark:bg-gray-800 dark:border-gray-700"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="description"
@@ -351,17 +409,17 @@ const ManageFees: React.FC = () => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Describe the purpose of this fee" 
-                        {...field} 
-                        className="resize-none dark:bg-gray-800 dark:border-gray-700" 
+                      <Textarea
+                        placeholder="Describe the purpose of this fee"
+                        {...field}
+                        className="resize-none dark:bg-gray-800 dark:border-gray-700"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -387,7 +445,7 @@ const ManageFees: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="frequency"
@@ -413,7 +471,7 @@ const ManageFees: React.FC = () => {
                   )}
                 />
               </div>
-              
+
               <FormField
                 control={form.control}
                 name="dueDate"
@@ -421,30 +479,28 @@ const ManageFees: React.FC = () => {
                   <FormItem>
                     <FormLabel>Due Date</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="date" 
+                      <Input
+                        type="date"
                         {...field}
-                        className="dark:bg-gray-800 dark:border-gray-700" 
+                        className="dark:bg-gray-800 dark:border-gray-700"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit">
-                  {isEditing ? 'Update Fee' : 'Create Fee'}
-                </Button>
+                <Button type="submit">{isEditing ? 'Update Fee' : 'Create Fee'}</Button>
               </DialogFooter>
             </form>
           </Form>
         </DialogContent>
       </Dialog>
-      
+
       <BottomNavigation appType="institution" />
     </>
   );

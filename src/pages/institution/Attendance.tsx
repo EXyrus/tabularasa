@@ -1,7 +1,11 @@
-
 import React, { useState } from 'react';
 import { Typography, Card, Radio, Table, Button, DatePicker, Tag, Space, Alert } from 'antd';
-import { CalendarOutlined, CheckCircleOutlined, CloseCircleOutlined, SaveOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SaveOutlined,
+} from '@ant-design/icons';
 import HeaderBar from '../../components/HeaderBar';
 import BottomNavigation from '../../components/BottomNavigation';
 import { useAuth } from '../../context/AuthContext';
@@ -35,10 +39,10 @@ const AttendancePage: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const handleStatusChange = (value: string, studentId: string) => {
-    setStudentsData(prev => 
-      prev.map(student => 
-        student.id === studentId 
-          ? { ...student, status: value as 'present' | 'absent' | 'late' } 
+    setStudentsData(prev =>
+      prev.map(student =>
+        student.id === studentId
+          ? { ...student, status: value as 'present' | 'absent' | 'late' }
           : student
       )
     );
@@ -47,7 +51,7 @@ const AttendancePage: React.FC = () => {
   const handleSaveAttendance = () => {
     // In a real app, this would make an API call to save the attendance data
     console.log('Saving attendance for', selectedDate.format('YYYY-MM-DD'), studentsData);
-    
+
     // Show success message
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
@@ -74,9 +78,9 @@ const AttendancePage: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       render: (_: any, record: StudentAttendance) => (
-        <Radio.Group 
-          value={record.status} 
-          onChange={(e) => handleStatusChange(e.target.value, record.id)}
+        <Radio.Group
+          value={record.status}
+          onChange={e => handleStatusChange(e.target.value, record.id)}
           buttonStyle="solid"
         >
           <Radio.Button value="present">
@@ -93,58 +97,66 @@ const AttendancePage: React.FC = () => {
     },
   ];
 
-  const filteredStudents = classFilter === 'all' 
-    ? studentsData 
-    : studentsData.filter(student => student.class === classFilter);
+  const filteredStudents =
+    classFilter === 'all'
+      ? studentsData
+      : studentsData.filter(student => student.class === classFilter);
 
-  const classSummary = studentsData.reduce((acc, student) => {
-    if (!acc[student.class]) {
-      acc[student.class] = { total: 0, present: 0, absent: 0, late: 0 };
-    }
-    acc[student.class].total++;
-    if (student.status) acc[student.class][student.status]++;
-    return acc;
-  }, {} as Record<string, { total: number, present: number, absent: number, late: number }>);
+  const classSummary = studentsData.reduce(
+    (acc, student) => {
+      if (!acc[student.class]) {
+        acc[student.class] = { total: 0, present: 0, absent: 0, late: 0 };
+      }
+      acc[student.class].total++;
+      if (student.status) acc[student.class][student.status]++;
+      return acc;
+    },
+    {} as Record<string, { total: number; present: number; absent: number; late: number }>
+  );
 
   return (
     <>
-      <HeaderBar 
-        appType="institution" 
-        userName={user?.name || 'Institution User'} 
-        userAvatar={user?.avatar} 
+      <HeaderBar
+        appType="institution"
+        userName={user?.name || 'Institution User'}
+        userAvatar={user?.photo}
       />
-      
+
       <div className="page-container pt-20 pb-24 animate-fade-in">
         <div className="mb-6">
-          <Title level={4} className="!mb-1">Student Attendance</Title>
+          <Title level={4} className="!mb-1">
+            Student Attendance
+          </Title>
           <Text type="secondary">Mark and view daily attendance records</Text>
         </div>
 
         {saveSuccess && (
-          <Alert 
-            message="Attendance saved successfully!" 
-            type="success" 
-            showIcon 
-            className="mb-4" 
-            closable 
+          <Alert
+            message="Attendance saved successfully!"
+            type="success"
+            showIcon
+            className="mb-4"
+            closable
           />
         )}
-        
+
         <Card className="mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="mb-4 md:mb-0">
               <Text strong>Select Date:</Text>
-              <DatePicker 
-                value={selectedDate} 
-                onChange={(date) => date && setSelectedDate(date)} 
+              <DatePicker
+                value={selectedDate}
+                onChange={date => date && setSelectedDate(date)}
                 className="ml-2"
                 allowClear={false}
               />
             </div>
-            
+
             <div>
-              <Text strong className="mr-2">Filter by Class:</Text>
-              <Radio.Group value={classFilter} onChange={(e) => setClassFilter(e.target.value)}>
+              <Text strong className="mr-2">
+                Filter by Class:
+              </Text>
+              <Radio.Group value={classFilter} onChange={e => setClassFilter(e.target.value)}>
                 <Radio.Button value="all">All</Radio.Button>
                 <Radio.Button value="5A">5A</Radio.Button>
                 <Radio.Button value="5B">5B</Radio.Button>
@@ -152,13 +164,15 @@ const AttendancePage: React.FC = () => {
             </div>
           </div>
         </Card>
-        
+
         <div className="mb-6">
           <Title level={5}>Class Summary</Title>
           <div className="flex flex-wrap gap-4">
             {Object.entries(classSummary).map(([className, stats]) => (
               <Card key={className} className="flex-1 min-w-[200px]">
-                <Title level={5} className="!mb-2">Class {className}</Title>
+                <Title level={5} className="!mb-2">
+                  Class {className}
+                </Title>
                 <div className="flex gap-2 flex-wrap">
                   <Tag color="default">Total: {stats.total}</Tag>
                   <Tag color="success">Present: {stats.present}</Tag>
@@ -169,21 +183,21 @@ const AttendancePage: React.FC = () => {
             ))}
           </div>
         </div>
-        
+
         <Card>
-          <Table 
-            dataSource={filteredStudents} 
-            columns={columns} 
+          <Table
+            dataSource={filteredStudents}
+            columns={columns}
             pagination={false}
             rowKey="id"
             scroll={{ x: true }}
           />
-          
+
           <div className="mt-4 flex justify-end">
-            <Button 
-              type="primary" 
-              icon={<SaveOutlined />} 
-              onClick={handleSaveAttendance} 
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              onClick={handleSaveAttendance}
               size="large"
               className="bg-sms-blue"
             >
@@ -192,7 +206,7 @@ const AttendancePage: React.FC = () => {
           </div>
         </Card>
       </div>
-      
+
       <BottomNavigation appType="institution" />
     </>
   );

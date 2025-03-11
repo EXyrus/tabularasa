@@ -1,10 +1,24 @@
-
 import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -127,14 +141,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
       <CardContent>
         <div className="flex justify-center mb-6">
           <Avatar className="h-24 w-24">
-            {userData?.avatar ? (
-              <img src={userData.avatar} alt={userData.name} />
+            {userData?.photo ? (
+              <img src={userData.photo} alt={userData.name} />
             ) : (
               <User className="h-12 w-12" />
             )}
           </Avatar>
         </div>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <FormField
@@ -150,7 +164,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="email"
@@ -164,7 +178,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="phone"
@@ -178,13 +192,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 </FormItem>
               )}
             />
-            
+
             {/* Render fields specific to app type */}
             {appType === 'vendor' && (
               <>
                 <FormField
                   control={form.control}
-                  name={"companyName" as keyof z.infer<typeof formSchema>}
+                  name={'companyName' as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Company Name</FormLabel>
@@ -195,10 +209,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
-                  name={"website" as keyof z.infer<typeof formSchema>}
+                  name={'website' as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Website</FormLabel>
@@ -211,12 +225,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 />
               </>
             )}
-            
+
             {appType === 'institution' && (
               <>
                 <FormField
                   control={form.control}
-                  name={"position" as keyof z.infer<typeof formSchema>}
+                  name={'position' as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Position</FormLabel>
@@ -227,10 +241,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
-                  name={"department" as keyof z.infer<typeof formSchema>}
+                  name={'department' as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Department</FormLabel>
@@ -243,12 +257,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 />
               </>
             )}
-            
+
             {appType === 'guardian' && (
               <>
                 <FormField
                   control={form.control}
-                  name={"address" as keyof z.infer<typeof formSchema>}
+                  name={'address' as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Address</FormLabel>
@@ -259,10 +273,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
-                  name={"relationship" as keyof z.infer<typeof formSchema>}
+                  name={'relationship' as keyof z.infer<typeof formSchema>}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Relationship to Student</FormLabel>
@@ -275,9 +289,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
                 />
               </>
             )}
-            
+
             <div className="pt-4">
-              <Button type="submit" className="w-full">Save Changes</Button>
+              <Button type="submit" className="w-full">
+                Save Changes
+              </Button>
             </div>
           </form>
         </Form>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -24,7 +23,7 @@ const GuardianStudentProfile: React.FC = () => {
       try {
         // Mock API call - in a real app, this would fetch from a backend
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Mock student data
         const mockStudent = {
           id: studentId,
@@ -44,9 +43,9 @@ const GuardianStudentProfile: React.FC = () => {
             { id: 1, subject: 'Mathematics', grade: 'A', score: '92/100' },
             { id: 2, subject: 'Science', grade: 'B+', score: '88/100' },
             { id: 3, subject: 'English', grade: 'A-', score: '90/100' },
-          ]
+          ],
         };
-        
+
         setStudent(mockStudent);
       } catch (error) {
         toast({
@@ -75,17 +74,15 @@ const GuardianStudentProfile: React.FC = () => {
       <div className="min-h-screen flex flex-col items-center justify-center px-4">
         <h2 className="text-2xl font-bold mb-2">Student Not Found</h2>
         <p className="text-gray-600 mb-6">Could not find the requested student information.</p>
-        <Button onClick={() => navigate('/guardian/students')}>
-          Back to Students
-        </Button>
+        <Button onClick={() => navigate('/guardian/students')}>Back to Students</Button>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <HeaderBar appType="guardian" userName={user?.name || ''} userAvatar={user?.avatar} />
-      
+      <HeaderBar appType="guardian" userName={user?.name || ''} userAvatar={user?.photo} />
+
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
         <div className="flex items-center mb-6">
           <Button
@@ -98,19 +95,21 @@ const GuardianStudentProfile: React.FC = () => {
           </Button>
           <h1 className="text-2xl font-bold">Student Information</h1>
         </div>
-        
+
         <Card className="mb-6">
           <CardHeader className="pb-0">
             <div className="flex flex-col items-center">
               <Avatar className="h-24 w-24 mb-4">
-                {student.avatar ? (
-                  <img src={student.avatar} alt={student.name} />
+                {student.photo ? (
+                  <img src={student.photo} alt={student.name} />
                 ) : (
                   <User className="h-12 w-12" />
                 )}
               </Avatar>
               <CardTitle className="text-center">{student.name}</CardTitle>
-              <p className="text-sm text-gray-500 mt-1">{student.grade} - Section {student.section}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {student.grade} - Section {student.section}
+              </p>
               <p className="text-sm text-gray-500">{student.school}</p>
             </div>
           </CardHeader>
@@ -120,12 +119,12 @@ const GuardianStudentProfile: React.FC = () => {
                 <CalendarDays className="h-4 w-4 mr-2 text-gray-500" />
                 <span>DOB: {new Date(student.dateOfBirth).toLocaleDateString()}</span>
               </div>
-              
+
               <div className="flex items-center">
                 <Book className="h-4 w-4 mr-2 text-gray-500" />
                 <span>Admission Number: {student.admissionNumber}</span>
               </div>
-              
+
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-2 text-gray-500" />
                 <span>Attendance: {student.attendanceRate}</span>
@@ -133,7 +132,7 @@ const GuardianStudentProfile: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <div className="grid gap-6">
           <Card>
             <CardHeader>
@@ -153,14 +152,16 @@ const GuardianStudentProfile: React.FC = () => {
                     </div>
                   </div>
                 ))}
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   className="w-full mt-4"
-                  onClick={() => toast({ 
-                    title: 'Coming Soon', 
-                    description: 'Full academic report will be available soon.' 
-                  })}
+                  onClick={() =>
+                    toast({
+                      title: 'Coming Soon',
+                      description: 'Full academic report will be available soon.',
+                    })
+                  }
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   View Full Academic Report
@@ -168,7 +169,7 @@ const GuardianStudentProfile: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Upcoming Events</CardTitle>
@@ -192,7 +193,7 @@ const GuardianStudentProfile: React.FC = () => {
           </Card>
         </div>
       </div>
-      
+
       <BottomNavigation appType="guardian" />
     </div>
   );

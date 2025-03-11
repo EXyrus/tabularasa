@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -24,7 +23,7 @@ const EmployeeProfile: React.FC = () => {
       try {
         // Mock API call - in a real app, this would fetch from a backend
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Mock employee data
         const mockEmployee = {
           id: employeeId,
@@ -39,7 +38,7 @@ const EmployeeProfile: React.FC = () => {
           joinDate: '2019-08-15',
           employmentStatus: 'Active',
         };
-        
+
         setEmployee(mockEmployee);
       } catch (error) {
         toast({
@@ -68,17 +67,15 @@ const EmployeeProfile: React.FC = () => {
       <div className="min-h-screen flex flex-col items-center justify-center px-4">
         <h2 className="text-2xl font-bold mb-2">Employee Not Found</h2>
         <p className="text-gray-600 mb-6">Could not find the requested employee information.</p>
-        <Button onClick={() => navigate('/institution/employees')}>
-          Back to Employees
-        </Button>
+        <Button onClick={() => navigate('/institution/employees')}>Back to Employees</Button>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <HeaderBar appType="institution" userName={user?.name || ''} userAvatar={user?.avatar} />
-      
+      <HeaderBar appType="institution" userName={user?.name || ''} userAvatar={user?.photo} />
+
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
         <div className="flex items-center mb-6">
           <Button
@@ -91,13 +88,13 @@ const EmployeeProfile: React.FC = () => {
           </Button>
           <h1 className="text-2xl font-bold">Employee Profile</h1>
         </div>
-        
+
         <Card className="mb-6">
           <CardHeader className="pb-0">
             <div className="flex flex-col items-center">
               <Avatar className="h-24 w-24 mb-4">
-                {employee.avatar ? (
-                  <img src={employee.avatar} alt={employee.name} />
+                {employee.photo ? (
+                  <img src={employee.photo} alt={employee.name} />
                 ) : (
                   <User className="h-12 w-12" />
                 )}
@@ -112,22 +109,22 @@ const EmployeeProfile: React.FC = () => {
                 <Mail className="h-4 w-4 mr-2 text-gray-500" />
                 <span>{employee.email}</span>
               </div>
-              
+
               <div className="flex items-center">
                 <Phone className="h-4 w-4 mr-2 text-gray-500" />
                 <span>{employee.phone}</span>
               </div>
-              
+
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-2 text-gray-500" />
                 <span>{employee.address}</span>
               </div>
-              
+
               <div className="flex items-center">
                 <Briefcase className="h-4 w-4 mr-2 text-gray-500" />
                 <span>{employee.department}</span>
               </div>
-              
+
               <div className="flex items-center">
                 <GraduationCap className="h-4 w-4 mr-2 text-gray-500" />
                 <span>{employee.education}</span>
@@ -135,7 +132,7 @@ const EmployeeProfile: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardHeader>
@@ -156,30 +153,34 @@ const EmployeeProfile: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Actions</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full"
-                  onClick={() => toast({ 
-                    title: 'Coming Soon', 
-                    description: 'This feature will be available soon.' 
-                  })}
+                  onClick={() =>
+                    toast({
+                      title: 'Coming Soon',
+                      description: 'This feature will be available soon.',
+                    })
+                  }
                 >
                   Send Message
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full"
-                  onClick={() => toast({ 
-                    title: 'Coming Soon', 
-                    description: 'This feature will be available soon.' 
-                  })}
+                  onClick={() =>
+                    toast({
+                      title: 'Coming Soon',
+                      description: 'This feature will be available soon.',
+                    })
+                  }
                 >
                   View Schedule
                 </Button>
@@ -188,7 +189,7 @@ const EmployeeProfile: React.FC = () => {
           </Card>
         </div>
       </div>
-      
+
       <BottomNavigation appType="institution" />
     </div>
   );

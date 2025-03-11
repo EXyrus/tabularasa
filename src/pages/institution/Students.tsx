@@ -6,7 +6,7 @@ import BottomNavigation from '../../components/BottomNavigation';
 import { useAuth } from '../../context/AuthContext';
 import SearchableSelect from '../../components/SearchableSelect';
 import ListItemWithContext from '../../components/ListItemWithContext';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -31,13 +31,13 @@ const InstitutionStudents: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [form] = Form.useForm();
-  
+
   const [students, setStudents] = useState<Student[]>([
-    { 
-      id: '1', 
-      name: 'John Doe', 
-      age: 15, 
-      grade: '10', 
+    {
+      id: '1',
+      name: 'John Doe',
+      age: 15,
+      grade: '10',
       section: 'A',
       gender: 'Male',
       contactNo: '123-456-7890',
@@ -45,13 +45,13 @@ const InstitutionStudents: React.FC = () => {
       address: '123 Main St, Anytown',
       guardianName: 'Jane Doe',
       admissionDate: '2022-08-15',
-      photo: 'https://randomuser.me/api/portraits/men/1.jpg'
+      photo: 'https://randomuser.me/api/portraits/men/1.jpg',
     },
-    { 
-      id: '2', 
-      name: 'Alice Smith', 
-      age: 14, 
-      grade: '9', 
+    {
+      id: '2',
+      name: 'Alice Smith',
+      age: 14,
+      grade: '9',
       section: 'B',
       gender: 'Female',
       contactNo: '234-567-8901',
@@ -59,13 +59,13 @@ const InstitutionStudents: React.FC = () => {
       address: '456 Oak St, Anytown',
       guardianName: 'Bob Smith',
       admissionDate: '2021-08-10',
-      photo: 'https://randomuser.me/api/portraits/women/1.jpg'
+      photo: 'https://randomuser.me/api/portraits/women/1.jpg',
     },
-    { 
-      id: '3', 
-      name: 'David Wilson', 
-      age: 16, 
-      grade: '11', 
+    {
+      id: '3',
+      name: 'David Wilson',
+      age: 16,
+      grade: '11',
       section: 'A',
       gender: 'Male',
       contactNo: '345-678-9012',
@@ -73,13 +73,13 @@ const InstitutionStudents: React.FC = () => {
       address: '789 Pine St, Anytown',
       guardianName: 'Sarah Wilson',
       admissionDate: '2020-08-20',
-      photo: 'https://randomuser.me/api/portraits/men/2.jpg'
+      photo: 'https://randomuser.me/api/portraits/men/2.jpg',
     },
-    { 
-      id: '4', 
-      name: 'Emma Brown', 
-      age: 13, 
-      grade: '8', 
+    {
+      id: '4',
+      name: 'Emma Brown',
+      age: 13,
+      grade: '8',
       section: 'C',
       gender: 'Female',
       contactNo: '456-789-0123',
@@ -87,13 +87,13 @@ const InstitutionStudents: React.FC = () => {
       address: '101 Elm St, Anytown',
       guardianName: 'Michael Brown',
       admissionDate: '2022-08-05',
-      photo: 'https://randomuser.me/api/portraits/women/2.jpg'
+      photo: 'https://randomuser.me/api/portraits/women/2.jpg',
     },
-    { 
-      id: '5', 
-      name: 'James Johnson', 
-      age: 17, 
-      grade: '12', 
+    {
+      id: '5',
+      name: 'James Johnson',
+      age: 17,
+      grade: '12',
       section: 'A',
       gender: 'Male',
       contactNo: '567-890-1234',
@@ -101,32 +101,33 @@ const InstitutionStudents: React.FC = () => {
       address: '202 Maple St, Anytown',
       guardianName: 'Linda Johnson',
       admissionDate: '2019-08-25',
-      photo: 'https://randomuser.me/api/portraits/men/3.jpg'
+      photo: 'https://randomuser.me/api/portraits/men/3.jpg',
     },
   ]);
-  
+
   const [filteredStudents, setFilteredStudents] = useState(students);
-  
+
   const handleSearch = (value: string) => {
     if (!value) {
       setFilteredStudents(students);
       return;
     }
-    
-    const filtered = students.filter(student => 
-      student.name.toLowerCase().includes(value.toLowerCase()) ||
-      student.grade.includes(value) ||
-      student.section.toLowerCase().includes(value.toLowerCase())
+
+    const filtered = students.filter(
+      student =>
+        student.name.toLowerCase().includes(value.toLowerCase()) ||
+        student.grade.includes(value) ||
+        student.section.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredStudents(filtered);
   };
-  
+
   const showModal = (student?: Student) => {
     if (student) {
       setEditingStudent(student);
       form.setFieldsValue({
         ...student,
-        admissionDate: student.admissionDate ? dayjs(student.admissionDate) : undefined
+        admissionDate: student.admissionDate ? dayjs(student.admissionDate) : undefined,
       });
     } else {
       setEditingStudent(null);
@@ -134,21 +135,21 @@ const InstitutionStudents: React.FC = () => {
     }
     setIsModalVisible(true);
   };
-  
+
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
   };
-  
+
   const handleSubmit = (values: any) => {
     const formattedValues = {
       ...values,
       admissionDate: values.admissionDate?.format('YYYY-MM-DD'),
-      id: editingStudent ? editingStudent.id : `${students.length + 1}`
+      id: editingStudent ? editingStudent.id : `${students.length + 1}`,
     };
-    
+
     if (editingStudent) {
-      const updatedStudents = students.map(student => 
+      const updatedStudents = students.map(student =>
         student.id === editingStudent.id ? formattedValues : student
       );
       setStudents(updatedStudents);
@@ -158,41 +159,43 @@ const InstitutionStudents: React.FC = () => {
       setStudents(newStudents);
       setFilteredStudents(newStudents);
     }
-    
+
     setIsModalVisible(false);
     form.resetFields();
   };
-  
+
   const handleDelete = (id: string) => {
     const updatedStudents = students.filter(student => student.id !== id);
     setStudents(updatedStudents);
     setFilteredStudents(updatedStudents);
   };
-  
+
   return (
     <>
-      <HeaderBar 
-        appType="institution" 
-        userName={user?.name || 'Institution User'} 
-        userAvatar={user?.avatar} 
+      <HeaderBar
+        appType="institution"
+        userName={user?.name || 'Institution User'}
+        userAvatar={user?.photo}
       />
-      
+
       <div className="page-container pt-20 animate-fade-in">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <Title level={4} className="!mb-1">Students</Title>
+            <Title level={4} className="!mb-1">
+              Students
+            </Title>
             <Text type="secondary">Manage student records</Text>
           </div>
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />} 
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
             onClick={() => showModal()}
             className="bg-sms-institution"
           >
             Add Student
           </Button>
         </div>
-        
+
         <Card className="mb-6">
           <div className="mb-4">
             <SearchableSelect
@@ -201,9 +204,9 @@ const InstitutionStudents: React.FC = () => {
               className="w-full"
               options={students.map(student => ({
                 value: student.id,
-                label: `${student.name} (Grade ${student.grade}-${student.section})`
+                label: `${student.name} (Grade ${student.grade}-${student.section})`,
               }))}
-              onChange={(value) => {
+              onChange={value => {
                 if (value) {
                   const selected = students.find(s => s.id === value);
                   setFilteredStudents(selected ? [selected] : []);
@@ -214,16 +217,16 @@ const InstitutionStudents: React.FC = () => {
               allowClear
             />
           </div>
-          
+
           {filteredStudents.map(student => (
             <ListItemWithContext
               key={student.id}
               menuItems={[
                 { label: 'View Details', key: 'view' },
                 { label: 'Edit Student', key: 'edit' },
-                { label: 'Delete Student', key: 'delete', danger: true }
+                { label: 'Delete Student', key: 'delete', danger: true },
               ]}
-              onMenuClick={(key) => {
+              onMenuClick={key => {
                 if (key === 'edit') {
                   showModal(student);
                 } else if (key === 'delete') {
@@ -235,15 +238,17 @@ const InstitutionStudents: React.FC = () => {
             >
               <div className="flex items-center w-full py-2">
                 <div className="flex-shrink-0 mr-4">
-                  <img 
-                    src={student.photo || 'https://randomuser.me/api/portraits/lego/1.jpg'} 
+                  <img
+                    src={student.photo || 'https://randomuser.me/api/portraits/lego/1.jpg'}
                     alt={student.name}
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 </div>
                 <div className="flex-grow">
                   <div className="font-medium">{student.name}</div>
-                  <div className="text-gray-500">Grade {student.grade}-{student.section} | {student.age} yrs</div>
+                  <div className="text-gray-500">
+                    Grade {student.grade}-{student.section} | {student.age} yrs
+                  </div>
                 </div>
                 <div className="text-right">
                   <div>{student.guardianName}</div>
@@ -252,7 +257,7 @@ const InstitutionStudents: React.FC = () => {
               </div>
             </ListItemWithContext>
           ))}
-          
+
           {filteredStudents.length === 0 && (
             <div className="text-center py-8">
               <Text type="secondary">No students found</Text>
@@ -260,7 +265,7 @@ const InstitutionStudents: React.FC = () => {
           )}
         </Card>
       </div>
-      
+
       <Modal
         title={editingStudent ? 'Edit Student' : 'Add New Student'}
         open={isModalVisible}
@@ -268,11 +273,7 @@ const InstitutionStudents: React.FC = () => {
         footer={null}
         width={700}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-        >
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -293,7 +294,7 @@ const InstitutionStudents: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Row gutter={16}>
             <Col span={8}>
               <Form.Item
@@ -303,7 +304,9 @@ const InstitutionStudents: React.FC = () => {
               >
                 <Select>
                   {[...Array(12)].map((_, i) => (
-                    <Option key={i + 1} value={`${i + 1}`}>{i + 1}</Option>
+                    <Option key={i + 1} value={`${i + 1}`}>
+                      {i + 1}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -336,7 +339,7 @@ const InstitutionStudents: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -353,14 +356,14 @@ const InstitutionStudents: React.FC = () => {
                 label="Email"
                 rules={[
                   { required: true, message: 'Please enter email' },
-                  { type: 'email', message: 'Please enter a valid email' }
+                  { type: 'email', message: 'Please enter a valid email' },
                 ]}
               >
                 <Input />
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Form.Item
             name="address"
             label="Address"
@@ -368,7 +371,7 @@ const InstitutionStudents: React.FC = () => {
           >
             <Input.TextArea rows={2} />
           </Form.Item>
-          
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -389,7 +392,7 @@ const InstitutionStudents: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Form.Item>
             <div className="flex justify-end">
               <Button onClick={handleCancel} className="mr-2">
@@ -402,7 +405,7 @@ const InstitutionStudents: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      
+
       <BottomNavigation appType="institution" />
     </>
   );

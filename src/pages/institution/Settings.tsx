@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import HeaderBar from '@/components/HeaderBar';
@@ -10,7 +9,7 @@ const InstitutionSettings: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Initial settings from localStorage or defaults
   const [settings, setSettings] = useState(() => {
     const savedSettings = localStorage.getItem('sms_settings_institution');
@@ -30,18 +29,18 @@ const InstitutionSettings: React.FC = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Save settings to localStorage
       localStorage.setItem('sms_settings_institution', JSON.stringify(data));
       setSettings(data);
-      
+
       // Apply dark mode if needed
       if (data.darkMode) {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
-      
+
       toast({
         title: 'Settings Updated',
         description: 'Your settings have been updated successfully.',
@@ -67,25 +66,29 @@ const InstitutionSettings: React.FC = () => {
   }, []);
 
   if (!user) {
-    return <div className="flex items-center justify-center min-h-screen dark:bg-gray-900 dark:text-white">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen dark:bg-gray-900 dark:text-white">
+        Loading...
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
-      <HeaderBar appType="institution" userName={user?.name || ''} userAvatar={user?.avatar} />
-      
+      <HeaderBar appType="institution" userName={user?.name || ''} userAvatar={user?.photo} />
+
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
         <h1 className="text-2xl font-bold mb-6 dark:text-white">Settings</h1>
-        
+
         <div className="grid gap-6">
-          <SettingsForm 
-            appType="institution" 
-            initialSettings={settings} 
-            onSubmit={handleUpdateSettings} 
+          <SettingsForm
+            appType="institution"
+            initialSettings={settings}
+            onSubmit={handleUpdateSettings}
           />
         </div>
       </div>
-      
+
       <BottomNavigation appType="institution" />
     </div>
   );

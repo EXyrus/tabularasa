@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import HeaderBar from '@/components/HeaderBar';
@@ -17,11 +16,11 @@ const GuardianProfile: React.FC = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Update local storage with updated user data
       const updatedUser = { ...user, ...data };
       localStorage.setItem('sms_user_data', JSON.stringify(updatedUser));
-      
+
       toast({
         title: 'Profile Updated',
         description: 'Your profile has been updated successfully.',
@@ -43,28 +42,26 @@ const GuardianProfile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <HeaderBar appType="guardian" userName={user?.name || ''} userAvatar={user?.avatar} />
-      
+      <HeaderBar appType="guardian" userName={user?.name || ''} userAvatar={user?.photo} />
+
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
         <h1 className="text-2xl font-bold mb-6">Your Profile</h1>
-        
+
         <div className="grid gap-6">
-          <ProfileForm 
-            appType="guardian" 
-            userData={user} 
-            onSubmit={handleUpdateProfile} 
-          />
-          
+          <ProfileForm appType="guardian" userData={user} onSubmit={handleUpdateProfile} />
+
           <Card>
             <CardContent className="pt-6">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium">Account Settings</h3>
-                <button 
+                <button
                   className="text-blue-600 hover:text-blue-800 text-sm"
-                  onClick={() => toast({ 
-                    title: 'Coming Soon', 
-                    description: 'This feature will be available soon.' 
-                  })}
+                  onClick={() =>
+                    toast({
+                      title: 'Coming Soon',
+                      description: 'This feature will be available soon.',
+                    })
+                  }
                 >
                   Change Password
                 </button>
@@ -73,7 +70,7 @@ const GuardianProfile: React.FC = () => {
           </Card>
         </div>
       </div>
-      
+
       <BottomNavigation appType="guardian" />
     </div>
   );

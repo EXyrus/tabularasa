@@ -8,21 +8,15 @@ import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -58,11 +52,63 @@ import { createRouteChain } from '@/utils/route-builder';
 const fetchPayments = async () => {
   await new Promise(resolve => setTimeout(resolve, 800));
   return [
-    { id: 1, studentName: 'John Doe', studentId: 'ST-001', feeId: 1, feeName: 'Tuition Fee', amount: 5000, dueDate: '2023-09-15', status: 'pending', createdAt: '2023-08-20' },
-    { id: 2, studentName: 'Emily Smith', studentId: 'ST-002', feeId: 2, feeName: 'Library Fee', amount: 200, dueDate: '2023-08-30', status: 'paid', createdAt: '2023-08-22', paidAt: '2023-08-25' },
-    { id: 3, studentName: 'David Wilson', studentId: 'ST-003', feeId: 1, feeName: 'Tuition Fee', amount: 5000, dueDate: '2023-09-15', status: 'overdue', createdAt: '2023-08-15' },
-    { id: 4, studentName: 'Sophia Brown', studentId: 'ST-004', feeId: 3, feeName: 'Transportation Fee', amount: 1200, dueDate: '2023-09-05', status: 'pending', createdAt: '2023-08-26' },
-    { id: 5, studentName: 'James Johnson', studentId: 'ST-005', feeId: 4, feeName: 'Sports Fee', amount: 450, dueDate: '2023-09-15', status: 'paid', createdAt: '2023-08-10', paidAt: '2023-08-12' },
+    {
+      id: 1,
+      studentName: 'John Doe',
+      studentId: 'ST-001',
+      feeId: 1,
+      feeName: 'Tuition Fee',
+      amount: 5000,
+      dueDate: '2023-09-15',
+      status: 'pending',
+      createdAt: '2023-08-20',
+    },
+    {
+      id: 2,
+      studentName: 'Emily Smith',
+      studentId: 'ST-002',
+      feeId: 2,
+      feeName: 'Library Fee',
+      amount: 200,
+      dueDate: '2023-08-30',
+      status: 'paid',
+      createdAt: '2023-08-22',
+      paidAt: '2023-08-25',
+    },
+    {
+      id: 3,
+      studentName: 'David Wilson',
+      studentId: 'ST-003',
+      feeId: 1,
+      feeName: 'Tuition Fee',
+      amount: 5000,
+      dueDate: '2023-09-15',
+      status: 'overdue',
+      createdAt: '2023-08-15',
+    },
+    {
+      id: 4,
+      studentName: 'Sophia Brown',
+      studentId: 'ST-004',
+      feeId: 3,
+      feeName: 'Transportation Fee',
+      amount: 1200,
+      dueDate: '2023-09-05',
+      status: 'pending',
+      createdAt: '2023-08-26',
+    },
+    {
+      id: 5,
+      studentName: 'James Johnson',
+      studentId: 'ST-005',
+      feeId: 4,
+      feeName: 'Sports Fee',
+      amount: 450,
+      dueDate: '2023-09-15',
+      status: 'paid',
+      createdAt: '2023-08-10',
+      paidAt: '2023-08-12',
+    },
   ];
 };
 
@@ -92,13 +138,13 @@ const fetchFees = async () => {
 
 const formSchema = z.object({
   studentId: z.string({
-    required_error: "Please select a student",
+    required_error: 'Please select a student',
   }),
   feeId: z.string({
-    required_error: "Please select a fee",
+    required_error: 'Please select a fee',
   }),
-  amount: z.coerce.number().positive({ message: "Amount must be a positive number" }),
-  dueDate: z.string().min(1, { message: "Please select a due date" }),
+  amount: z.coerce.number().positive({ message: 'Amount must be a positive number' }),
+  dueDate: z.string().min(1, { message: 'Please select a due date' }),
   notes: z.string().optional(),
 });
 
@@ -108,97 +154,96 @@ const ManagePayments: React.FC = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const { data: payments = [], isLoading: paymentsLoading } = useQuery({
     queryKey: ['payments'],
     queryFn: fetchPayments,
   });
-  
+
   const { data: students = [], isLoading: studentsLoading } = useQuery({
     queryKey: ['students'],
     queryFn: fetchStudents,
   });
-  
+
   const { data: fees = [], isLoading: feesLoading } = useQuery({
     queryKey: ['fees'],
     queryFn: fetchFees,
   });
-  
-  const filteredPayments = payments.filter(payment => 
-    payment.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    payment.studentId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    payment.feeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    payment.status.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredPayments = payments.filter(
+    payment =>
+      payment.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      payment.studentId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      payment.feeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      payment.status.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      studentId: "",
-      feeId: "",
+      studentId: '',
+      feeId: '',
       amount: 0,
-      dueDate: "",
-      notes: "",
+      dueDate: '',
+      notes: '',
     },
   });
-  
+
   // Update amount when fee is selected
-  const watchFeeId = form.watch("feeId");
+  const watchFeeId = form.watch('feeId');
   React.useEffect(() => {
     if (watchFeeId) {
       const selectedFee = fees.find(fee => fee.id.toString() === watchFeeId);
       if (selectedFee) {
-        form.setValue("amount", selectedFee.amount);
+        form.setValue('amount', selectedFee.amount);
       }
     }
   }, [watchFeeId, fees, form]);
-  
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // This would be an API call to create a new payment
     const selectedStudent = students.find(student => student.id === values.studentId);
     const selectedFee = fees.find(fee => fee.id.toString() === values.feeId);
-    
+
     toast({
-      title: "Payment created",
+      title: 'Payment created',
       description: `Payment for ${selectedStudent?.name} (${selectedFee?.name}) has been created successfully.`,
     });
-    
+
     setOpen(false);
     form.reset();
   };
-  
+
   const handleViewPayment = (paymentId: number) => {
     navigate(createRouteChain('institution')('control-panel')('payments')(`${paymentId}`));
   };
-  
+
   const handleViewReceipt = (paymentId: number) => {
-    navigate(createRouteChain('institution')('control-panel')('payments')(`${paymentId}`)('receipt'));
+    navigate(
+      createRouteChain('institution')('control-panel')('payments')(`${paymentId}`)('receipt')
+    );
   };
-  
+
   const openNewPaymentDialog = () => {
     form.reset({
-      studentId: "",
-      feeId: "",
+      studentId: '',
+      feeId: '',
       amount: 0,
-      dueDate: "",
-      notes: "",
+      dueDate: '',
+      notes: '',
     });
     setOpen(true);
   };
 
   return (
     <>
-      <HeaderBar 
-        appType="institution" 
-        userName={user?.name || 'Admin'} 
-        userAvatar={user?.avatar} 
-      />
-      
+      <HeaderBar appType="institution" userName={user?.name || 'Admin'} userAvatar={user?.photo} />
+
       <div className="page-container pt-20 pb-20 px-4 animate-fade-in">
         <div className="flex items-center mb-6">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => navigate('/institution/control-panel')}
             className="mr-2"
           >
@@ -207,24 +252,28 @@ const ManagePayments: React.FC = () => {
           </Button>
           <div>
             <h1 className="text-2xl font-bold mb-1 dark:text-white">Manage Payments</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Create and track student fee payments</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Create and track student fee payments
+            </p>
           </div>
         </div>
-        
+
         <Card className="mb-8 border border-gray-200 dark:border-gray-700">
           <CardHeader className="pb-3">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <CardTitle className="text-xl dark:text-white">Payments</CardTitle>
-                <CardDescription className="dark:text-gray-400">Create and manage student payments</CardDescription>
+                <CardDescription className="dark:text-gray-400">
+                  Create and manage student payments
+                </CardDescription>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div className="relative w-full sm:w-auto">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
+                  <Input
                     placeholder="Search payments..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-10 w-full"
                   />
                 </div>
@@ -256,45 +305,60 @@ const ManagePayments: React.FC = () => {
                   <TableBody>
                     {filteredPayments.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell
+                          colSpan={6}
+                          className="text-center py-8 text-gray-500 dark:text-gray-400"
+                        >
                           <CreditCard className="h-12 w-12 mx-auto mb-2 opacity-20" />
                           <p>No payments found</p>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredPayments.map((payment) => (
+                      filteredPayments.map(payment => (
                         <TableRow key={payment.id}>
                           <TableCell>
                             <div>
-                              <div className="font-medium dark:text-white">{payment.studentName}</div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400">{payment.studentId}</div>
+                              <div className="font-medium dark:text-white">
+                                {payment.studentName}
+                              </div>
+                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                {payment.studentId}
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell className="dark:text-white">{payment.feeName}</TableCell>
-                          <TableCell className="dark:text-white">₹{payment.amount.toLocaleString()}</TableCell>
-                          <TableCell className="dark:text-white">{new Date(payment.dueDate).toLocaleDateString()}</TableCell>
+                          <TableCell className="dark:text-white">
+                            ₹{payment.amount.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="dark:text-white">
+                            {new Date(payment.dueDate).toLocaleDateString()}
+                          </TableCell>
                           <TableCell>
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              payment.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                              payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                              'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                            }`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs ${
+                                payment.status === 'paid'
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                  : payment.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                              }`}
+                            >
                               {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
                             </span>
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
+                              <Button
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => handleViewPayment(payment.id)}
                               >
                                 <Eye className="h-4 w-4" />
                                 <span className="sr-only">View</span>
                               </Button>
                               {payment.status === 'paid' && (
-                                <Button 
-                                  variant="ghost" 
+                                <Button
+                                  variant="ghost"
                                   size="sm"
                                   onClick={() => handleViewReceipt(payment.id)}
                                 >
@@ -314,7 +378,7 @@ const ManagePayments: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
@@ -326,7 +390,7 @@ const ManagePayments: React.FC = () => {
               Create a new payment for a student to pay
             </DialogDescription>
           </DialogHeader>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -347,7 +411,7 @@ const ManagePayments: React.FC = () => {
                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                           </div>
                         ) : (
-                          students.map((student) => (
+                          students.map(student => (
                             <SelectItem key={student.id} value={student.id}>
                               {student.name} ({student.grade} {student.section})
                             </SelectItem>
@@ -359,7 +423,7 @@ const ManagePayments: React.FC = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="feeId"
@@ -378,7 +442,7 @@ const ManagePayments: React.FC = () => {
                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                           </div>
                         ) : (
-                          fees.map((fee) => (
+                          fees.map(fee => (
                             <SelectItem key={fee.id} value={fee.id.toString()}>
                               {fee.name} (₹{fee.amount})
                             </SelectItem>
@@ -390,7 +454,7 @@ const ManagePayments: React.FC = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="amount"
@@ -398,20 +462,21 @@ const ManagePayments: React.FC = () => {
                   <FormItem>
                     <FormLabel>Amount (₹)</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         {...field}
-                        className="dark:bg-gray-800 dark:border-gray-700" 
+                        className="dark:bg-gray-800 dark:border-gray-700"
                       />
                     </FormControl>
                     <FormDescription className="text-xs dark:text-gray-400">
-                      This is auto-filled based on the fee type selected, but you can modify it if needed.
+                      This is auto-filled based on the fee type selected, but you can modify it if
+                      needed.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="dueDate"
@@ -419,17 +484,17 @@ const ManagePayments: React.FC = () => {
                   <FormItem>
                     <FormLabel>Due Date</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="date" 
+                      <Input
+                        type="date"
                         {...field}
-                        className="dark:bg-gray-800 dark:border-gray-700" 
+                        className="dark:bg-gray-800 dark:border-gray-700"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="notes"
@@ -437,30 +502,28 @@ const ManagePayments: React.FC = () => {
                   <FormItem>
                     <FormLabel>Notes (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Any additional notes about this payment" 
-                        {...field} 
-                        className="resize-none dark:bg-gray-800 dark:border-gray-700" 
+                      <Textarea
+                        placeholder="Any additional notes about this payment"
+                        {...field}
+                        className="resize-none dark:bg-gray-800 dark:border-gray-700"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit">
-                  Create Payment
-                </Button>
+                <Button type="submit">Create Payment</Button>
               </DialogFooter>
             </form>
           </Form>
         </DialogContent>
       </Dialog>
-      
+
       <BottomNavigation appType="institution" />
     </>
   );

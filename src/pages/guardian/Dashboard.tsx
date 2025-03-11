@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Typography, Card, Row, Col, List, Avatar, Badge, Progress, Space } from 'antd';
 import { BookOutlined, CalendarOutlined, NotificationOutlined } from '@ant-design/icons';
@@ -10,71 +9,90 @@ const { Title, Text } = Typography;
 
 const GuardianDashboard: React.FC = () => {
   const { user } = useAuth();
-  
+
   // Mock data for children
   const children = [
-    { 
-      id: 1, 
-      name: 'Emma Smith', 
-      grade: '5th Grade', 
+    {
+      id: 1,
+      name: 'Emma Smith',
+      grade: '5th Grade',
       teacher: 'Ms. Johnson',
       avatar: 'https://randomuser.me/api/portraits/women/90.jpg',
       attendance: 98,
-      nextClass: 'Mathematics'
+      nextClass: 'Mathematics',
     },
-    { 
-      id: 2, 
-      name: 'Noah Smith', 
-      grade: '3rd Grade', 
+    {
+      id: 2,
+      name: 'Noah Smith',
+      grade: '3rd Grade',
       teacher: 'Mr. Davis',
       avatar: 'https://randomuser.me/api/portraits/men/90.jpg',
       attendance: 95,
-      nextClass: 'Science'
-    }
+      nextClass: 'Science',
+    },
   ];
-  
+
   // Mock data for upcoming events
   const upcomingEvents = [
     { id: 1, title: 'Science Project Due', date: '2023-05-15', child: 'Emma Smith' },
     { id: 2, title: 'Field Trip to Museum', date: '2023-05-18', child: 'Noah Smith' },
     { id: 3, title: 'Parent-Teacher Meeting', date: '2023-05-20', child: 'All Children' },
   ];
-  
+
   // Mock data for announcements
   const announcements = [
-    { id: 1, title: 'School Closed for Memorial Day', time: '2 days ago', content: 'The school will be closed on Monday, May 29th for Memorial Day.' },
-    { id: 2, title: 'Summer Program Registration Open', time: '3 days ago', content: 'Registration for the summer enrichment program is now open. Visit the school website to register.' },
+    {
+      id: 1,
+      title: 'School Closed for Memorial Day',
+      time: '2 days ago',
+      content: 'The school will be closed on Monday, May 29th for Memorial Day.',
+    },
+    {
+      id: 2,
+      title: 'Summer Program Registration Open',
+      time: '3 days ago',
+      content:
+        'Registration for the summer enrichment program is now open. Visit the school website to register.',
+    },
   ];
 
   return (
     <>
-      <HeaderBar 
-        appType="guardian" 
-        userName={user?.name || 'Guardian User'} 
-        userAvatar={user?.avatar} 
+      <HeaderBar
+        appType="guardian"
+        userName={user?.name || 'Guardian User'}
+        userAvatar={user?.photo}
       />
-      
+
       <div className="page-container pt-20 animate-fade-in">
         <div className="mb-8">
-          <Title level={4} className="!mb-1">Guardian Dashboard</Title>
+          <Title level={4} className="!mb-1">
+            Guardian Dashboard
+          </Title>
           <Text type="secondary">Overview of your children's activities and performance</Text>
         </div>
-        
+
         {/* Children Cards */}
         <div className="mb-8">
-          <Text strong className="block mb-4">Your Children</Text>
+          <Text strong className="block mb-4">
+            Your Children
+          </Text>
           <Row gutter={[16, 16]}>
-            {children.map((child) => (
+            {children.map(child => (
               <Col xs={24} sm={12} key={child.id}>
                 <Card hoverable className="shadow-sm h-full">
                   <div className="flex items-center mb-4">
-                    <Avatar src={child.avatar} size={64} />
+                    <Avatar src={child.photo} size={64} />
                     <div className="ml-4">
-                      <Title level={5} className="!mb-0">{child.name}</Title>
-                      <Text type="secondary">{child.grade} • {child.teacher}</Text>
+                      <Title level={5} className="!mb-0">
+                        {child.name}
+                      </Title>
+                      <Text type="secondary">
+                        {child.grade} • {child.teacher}
+                      </Text>
                     </div>
                   </div>
-                  
+
                   <div className="mb-4">
                     <div className="flex justify-between mb-1">
                       <Text>Attendance</Text>
@@ -82,11 +100,13 @@ const GuardianDashboard: React.FC = () => {
                     </div>
                     <Progress percent={child.attendance} showInfo={false} strokeColor="#34C759" />
                   </div>
-                  
+
                   <div className="bg-sms-gray p-3 rounded-lg">
                     <div className="flex items-center">
                       <BookOutlined className="mr-2 text-sms-guardian" />
-                      <Text>Next Class: <Text strong>{child.nextClass}</Text></Text>
+                      <Text>
+                        Next Class: <Text strong>{child.nextClass}</Text>
+                      </Text>
                     </div>
                   </div>
                 </Card>
@@ -94,18 +114,18 @@ const GuardianDashboard: React.FC = () => {
             ))}
           </Row>
         </div>
-        
+
         {/* Two column layout for desktop */}
         <Row gutter={[16, 16]}>
           {/* Upcoming Events */}
           <Col xs={24} md={12}>
-            <Card 
+            <Card
               title={
                 <Space>
                   <CalendarOutlined className="text-sms-guardian" />
                   <span>Upcoming Events</span>
                 </Space>
-              } 
+              }
               className="shadow-sm mb-8 h-full"
             >
               <List
@@ -124,16 +144,16 @@ const GuardianDashboard: React.FC = () => {
               />
             </Card>
           </Col>
-          
+
           {/* Announcements */}
           <Col xs={24} md={12}>
-            <Card 
+            <Card
               title={
                 <Space>
                   <NotificationOutlined className="text-sms-guardian" />
                   <span>Announcements</span>
                 </Space>
-              } 
+              }
               className="shadow-sm mb-8 h-full"
             >
               <List
@@ -154,7 +174,7 @@ const GuardianDashboard: React.FC = () => {
           </Col>
         </Row>
       </div>
-      
+
       <BottomNavigation appType="guardian" />
     </>
   );
