@@ -46,12 +46,6 @@ export type { BankAccountResponse } from './bank-account';
 
 export type { EmployeePayload } from './payloads';
 
-// Service worker types
-export * from './service-worker';
-
-// Student types
-export * from './student';
-
 // User types
 export * from './user';
 
@@ -71,6 +65,8 @@ export interface InstitutionDetailsPayload {
   id: string;
   name?: string;
   institutionType?: string;
+  email?: string;
+  phoneNumber?: string;
 }
 
 export interface CreateInstitutionDetailsPayload {

@@ -6,11 +6,13 @@ export interface TokenPayload {
   refreshToken?: string;
   user?: User;
   expiresIn?: number;
+  role?: UserRole;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
+  remember?: boolean;
   appType?: string;
 }
 
@@ -39,7 +41,15 @@ export type UserForgotPasswordRequest = ForgotPasswordRequest;
 export interface ResetPasswordRequest {
   token: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
+  confirmed?: string;
+  email?: string;
 }
 
 export type UserResetPasswordRequest = ResetPasswordRequest;
+
+export interface UpdatePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+  passwordConfirmation: string;
+}

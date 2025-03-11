@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Login: React.FC = () => {
   const location = useLocation();
@@ -35,7 +36,11 @@ const Login: React.FC = () => {
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       setLoading(true);
-      await login(values.email, values.password, appType);
+      await login({ 
+        email: values.email, 
+        password: values.password,
+        remember: true
+      });
       message.success('Login successful!');
       navigate(`/${appType}/dashboard`);
     } catch (error) {

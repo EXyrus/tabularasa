@@ -2,24 +2,19 @@
 export interface Event {
   id: string;
   title: string;
-  description: string;
   startDate: string;
   endDate: string;
   location: string;
-  allDay?: boolean;
-  institutionId: string;
+  createdBy?: string;
+  description?: string;
   createdAt: string;
   updatedAt: string;
+  recipientGroups: RecipientGroup[];
 }
 
 export interface RecipientGroup {
   id: string;
   name: string;
-  description: string;
-  type?: string;
-  eventId?: string;
-  institutionId: string;
-  recipients: string[];
-  createdAt: string;
-  updatedAt: string;
+  type: 'all' | 'student' | 'employee' | 'parent';
+  description?: string;
 }

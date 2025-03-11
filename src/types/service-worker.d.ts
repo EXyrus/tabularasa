@@ -1,5 +1,5 @@
 
-interface BeforeInstallPromptEvent extends Event {
+export interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed';
@@ -8,6 +8,15 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-interface WindowEventMap {
-  beforeinstallprompt: BeforeInstallPromptEvent;
+declare global {
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent;
+  }
+
+  interface Window {
+    deferredPrompt?: BeforeInstallPromptEvent;
+  }
 }
+
+// This empty export is necessary to make TypeScript treat this file as a module
+export {};

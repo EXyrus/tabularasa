@@ -1,269 +1,192 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Tabs, Space, Modal, Form, Input, Select } from 'antd';
-import { EditOutlined, UserAddOutlined, DeleteOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { InstitutionDetailsCard } from '@/components/institutions/InstitutionDetailsCard';
-import { EditInstitutionForm } from '@/components/institutions/EditInstitutionForm';
-import { 
-  useInstitutionDetails, 
+import { Card, Typography, Button, Tabs, Space, Modal, Form, Input, Select } from "antd";
+import { EditOutlined, DeleteOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { InstitutionDetailsCard } from "@/components/institutions/InstitutionDetailsCard";
+import {
+  useInstitutionDetails,
   useUpdateInstitutionStatus,
   useUpdateInstitutionDetails,
   useDeleteInstitution
-} from '@/queries/use-institutions';
-import { useToast } from '@/hooks/use-toast';
-import type { InstitutionStatusPayload, InstitutionDetailsPayload } from '@/types';
+} from "@/queries/use-institutions";
+import { useToast } from "@/hooks/use-toast";
+import EditInstitutionForm from "@/components/institutions/EditInstitutionForm";
+import { InstitutionDetailsPayload } from "@/types";
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-const InstitutionDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+const InstitutionDetails = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState('details');
   const [editForm] = Form.useForm();
   
-  // Queries and Mutations
-  const { data: institution, isLoading, error } = useInstitutionDetails(id || '');
+  const { data: institution, isLoading, error } = useInstitutionDetails(id || "");
   const updateStatusMutation = useUpdateInstitutionStatus();
   const updateDetailsMutation = useUpdateInstitutionDetails();
   const deleteInstitutionMutation = useDeleteInstitution();
-
+  
   useEffect(() => {
     if (institution) {
       editForm.setFieldsValue({
         name: institution.name,
-        institutionType: institution.type,
-        email: institution.email,
-        phoneNumber: institution.phoneNumber
+        type: institution.type
       });
     }
   }, [institution, editForm]);
-
+  
   if (isLoading) {
     return <div className="flex justify-center items-center h-64">Loading institution details...</div>;
   }
-
+  
   if (error || !institution) {
     return <div className="text-red-500">Error loading institution details</div>;
   }
-
+  
   const handleStatusChange = async (status: 'active' | 'inactive' | 'pending') => {
     try {
-      const payload: InstitutionStatusPayload = { 
-        id: institution.id, 
-        status 
-      };
-      
-      await updateStatusMutation.mutateAsync(payload);
-      
+      await updateStatusMutation.mutateAsync({ id: institution.id, status });
       toast({
         title: "Status Updated",
-        description: `Institution status changed to ${status}`,
+        description: `Institution status changed to ${status}`
       });
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update institution status",
+        description: "Failed to update institution status"
       });
     }
   };
-
+  
   const handleEditSubmit = async (values: InstitutionDetailsPayload) => {
     try {
-      await updateDetailsMutation.mutateAsync(values);
+      await updateDetailsMutation.mutateAsync({
+        id: institution.id,
+        name: values.name,
+        institutionType: values.institutionType,
+        email: values.email,
+        phoneNumber: values.phoneNumber
+      });
       setIsEditModalVisible(false);
       toast({
         title: "Details Updated",
-        description: "Institution details updated successfully",
+        description: "Institution details updated successfully"
       });
-      setActiveTab('details');
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update institution details",
+        description: "Failed to update institution details"
       });
     }
   };
-
+  
   const handleDelete = async () => {
     try {
-      const payload: InstitutionStatusPayload = { 
-        id: institution.id, 
-        status: institution.status
-      };
-      
-      await deleteInstitutionMutation.mutateAsync(payload);
-      
+      await deleteInstitutionMutation.mutateAsync({ id: institution.id });
       setIsDeleteModalVisible(false);
       toast({
         title: "Institution Deleted",
-        description: "Institution has been successfully deleted",
+        description: "Institution has been successfully deleted"
       });
-      navigate('/vendor/institutions');
+      navigate("/vendor/institutions");
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete institution",
+        description: "Failed to delete institution"
       });
     }
   };
-
+  
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <Title level={3}>{institution.name}</Title>
         <Space>
-          <Button 
-            icon={<EditOutlined />} 
+          <Button
+            icon={<EditOutlined />}
             onClick={() => setIsEditModalVisible(true)}
           >
             Edit Details
           </Button>
-          <Button 
-            danger 
-            icon={<DeleteOutlined />} 
+          <Button
+            danger
+            icon={<DeleteOutlined />}
             onClick={() => setIsDeleteModalVisible(true)}
           >
             Delete
           </Button>
         </Space>
       </div>
-
-      <Tabs 
-        activeKey={activeTab} 
-        onChange={setActiveTab}
-        className="mb-6"
-      >
-        <TabPane tab="Details" key="details">
-          <InstitutionDetailsCard institution={institution} />
-        </TabPane>
-        <TabPane tab="Edit" key="edit">
-          <EditInstitutionForm 
-            institution={institution} 
-            onSubmit={handleEditSubmit}
-            isLoading={updateDetailsMutation.isPending}
-          />
-        </TabPane>
-      </Tabs>
+      
+      <InstitutionDetailsCard institution={institution} />
       
       <Card className="mt-6">
         <Title level={4}>Status Management</Title>
         <div className="flex gap-4 mt-4">
           <Button
-            type={institution.status === 'active' ? 'primary' : 'default'}
+            type={institution.status === "active" ? "primary" : "default"}
             icon={<CheckCircleOutlined />}
-            onClick={() => handleStatusChange('active')}
+            onClick={() => handleStatusChange("active")}
           >
             Set Active
           </Button>
           <Button
-            danger={institution.status === 'inactive'}
+            danger={institution.status === "inactive"}
             icon={<CloseCircleOutlined />}
-            onClick={() => handleStatusChange('inactive')}
+            onClick={() => handleStatusChange("inactive")}
           >
             Set Inactive
           </Button>
           <Button
-            onClick={() => handleStatusChange('pending')}
+            onClick={() => handleStatusChange("pending")}
           >
             Set Pending
           </Button>
         </div>
       </Card>
-
+      
       <Modal
         title="Edit Institution Details"
         open={isEditModalVisible}
         onCancel={() => setIsEditModalVisible(false)}
         footer={null}
       >
-        <Form
-          form={editForm}
-          layout="vertical"
-          onFinish={(values) => {
-            handleEditSubmit({
-              id: institution.id,
-              name: values.name,
-              institutionType: values.institutionType,
-              email: values.email,
-              phoneNumber: values.phoneNumber
-            });
-          }}
-        >
-          <Form.Item
-            name="name"
-            label="Institution Name"
-            rules={[{ required: true, message: 'Please enter institution name' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="institutionType"
-            label="Institution Type"
-            rules={[{ required: true, message: 'Please select institution type' }]}
-          >
-            <Select>
-              <Option value="primary">Primary School</Option>
-              <Option value="secondary">Secondary School</Option>
-              <Option value="tertiary">Tertiary Institution</Option>
-              <Option value="vocational">Vocational Institution</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email Address"
-            rules={[
-              { required: true, message: 'Please enter email address' },
-              { type: 'email', message: 'Please enter a valid email' }
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="phoneNumber"
-            label="Phone Number"
-            rules={[{ required: true, message: 'Please enter phone number' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item>
-            <div className="flex justify-end gap-2">
-              <Button onClick={() => setIsEditModalVisible(false)}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={updateDetailsMutation.isPending}>
-                Save Changes
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
+        <EditInstitutionForm 
+          institution={institution}
+          onSubmit={handleEditSubmit}
+          isLoading={updateDetailsMutation.isPending}
+        />
       </Modal>
-
+      
       <Modal
         title="Delete Institution"
         open={isDeleteModalVisible}
         onCancel={() => setIsDeleteModalVisible(false)}
         footer={[
-          <Button key="cancel" onClick={() => setIsDeleteModalVisible(false)}>
+          <Button onClick={() => setIsDeleteModalVisible(false)} key="cancel">
             Cancel
           </Button>,
-          <Button 
-            key="delete" 
-            danger 
+          <Button
+            danger
             loading={deleteInstitutionMutation.isPending}
             onClick={handleDelete}
+            key="delete"
           >
             Delete
           </Button>
         ]}
       >
-        <p>Are you sure you want to delete {institution.name}? This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete {institution.name}? This action cannot be undone.
+        </p>
       </Modal>
     </div>
   );

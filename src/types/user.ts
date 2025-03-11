@@ -31,5 +31,5 @@ export type Employee = User & {
     institutionId?: string;
     status?: string;
     roles?: Role[];
-    permissions?: Permission;
+    permissions?: Permission[];
 };

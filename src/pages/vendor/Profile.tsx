@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import ProfileForm from '@/components/profile/ProfileForm';
@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useUpdatePasswordMutation } from '@/queries/use-auth';
-import type { UpdatePasswordPayload } from '@/types';
+import type { UpdatePasswordPayload } from '@/types/auth';
 
 const VendorProfile: React.FC = () => {
   const { user } = useAuth();

@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import { UserForgotPasswordRequest } from '@/types/auth';
 
 const ForgotPassword: React.FC = () => {
   const { appType } = useParams<{ appType: 'vendor' | 'institution' | 'guardian' }>();
@@ -17,7 +18,8 @@ const ForgotPassword: React.FC = () => {
   const handleForgotPassword = async (values: { email: string }) => {
     try {
       setLoading(true);
-      await forgotPassword(values.email, validAppType);
+      const data: UserForgotPasswordRequest = { email: values.email };
+      await forgotPassword(data);
       message.success('Password reset link sent to your email!');
       navigate(`/${validAppType}/reset-password`);
     } catch (error) {
