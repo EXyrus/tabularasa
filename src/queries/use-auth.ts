@@ -10,16 +10,18 @@ import { decodeTokenPayload, getTokenPayload } from '@/helpers/token';
 import axios from '@/overrides/axios.override';
 import { queryClient } from '@/overrides/react-query.override';
 import type {
-    AdminLoginResponse,
-    EmployeeUserResponse,
-    InstitutionLoginResponse,
-    LoginCredentials,
-    TokenResponse,
     User,
     UserRole,
     UserForgotPasswordRequest,
-    UserResetPasswordRequest
+    UserResetPasswordRequest,
+    TokenResponse,
+    LoginCredentials,
 } from '@/types';
+import type {
+    AdminLoginResponse,
+    EmployeeUserResponse,
+    InstitutionLoginResponse,
+} from '@/types/responses';
 import URIS from '@/queries/uris.json';
 
 export const useTokenQuery = () => {
@@ -76,6 +78,7 @@ export const useLogin = () => {
       if (token) {
         setLocalStorageItem('token', token);
         setLocalStorageItem('tokenRegistered', Date.now().toString());
+        setLocalStorageItem('appType', 'vendor');
       }
 
       if (user) {

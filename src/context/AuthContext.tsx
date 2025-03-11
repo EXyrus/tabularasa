@@ -5,17 +5,16 @@ import type {
   AuthContextType,
   User,
   UserRole,
-  AppType,
   LoginCredentials,
   UserForgotPasswordRequest,
-  EmployeeUserResponse,
   UserResetPasswordRequest,
 } from '@/types';
+import type { EmployeeUserResponse } from '@/types/responses';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<EmployeeUserResponse |User | null>(null);
+  const [user, setUser] = useState<EmployeeUserResponse | User | null>(null);
   const [loading, setLoading] = useState(true);
   
   const { data: tokenData, isLoading: isTokenLoading, isSuccess } = useTokenQuery();
@@ -45,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initializeDarkMode = () => {
       // Check settings for current user type or default to vendor
-      const appType = user?.appType || 'vendor';
+      const appType = localStorage.getItem('appType') || 'vendor';
       const settingsKey = `sms_settings_${appType}`;
       
       try {
@@ -64,9 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     
     initializeDarkMode();
-  }, [user?.appType]);
-
- 
+  }, []);
 
   const value: AuthContextType = {
     user,

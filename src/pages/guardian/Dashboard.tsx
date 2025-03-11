@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Typography, Card, Row, Col, List, Avatar, Badge, Progress, Space } from 'antd';
 import { BookOutlined, CalendarOutlined, NotificationOutlined } from '@ant-design/icons';
 import HeaderBar from '../../components/HeaderBar';
 import BottomNavigation from '../../components/BottomNavigation';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
+import { formatName } from '@/helpers/format-name';
 
 const { Title, Text } = Typography;
 
@@ -60,7 +62,7 @@ const GuardianDashboard: React.FC = () => {
     <>
       <HeaderBar
         appType="guardian"
-        userName={user?.name || 'Guardian User'}
+        userName={user ? formatName(user) : 'Guardian User'}
         userAvatar={user?.photo}
       />
 
