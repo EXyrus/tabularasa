@@ -6,7 +6,7 @@ import type { Location } from 'react-router-dom';
 import { Outlet, useLocation } from 'react-router-dom';
 import ErrorBoundary from '../global/ErrorBoundary';
 import ReloadPrompt from '../ReloadPrompt';
-import type { LocationState } from '@/types/location';
+import type { LocationState } from '@/types';
 
 type Props = {
     children?: ReactNode;

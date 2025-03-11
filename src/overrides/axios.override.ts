@@ -3,8 +3,8 @@ import axios from 'axios';
 import config from '@/config';
 import { getLocalStorageItem } from '@/helpers/local-storage';
 import * as Sentry from '@/overrides/sentry.override';
-import { mapKeysToCamelCase } from '@/helpers/map-key-to-camel-case';
-import { mapKeysToSnakeCase } from '@/helpers/map-key-to-snake-case';
+import  mapKeysToCamelCase  from '@/helpers/map-key-to-camel-case';
+import  mapKeysToSnakeCase  from '@/helpers/map-key-to-snake-case';
 
 // Create an instance of axios with default configuration
 const axiosInstance = axios.create({
