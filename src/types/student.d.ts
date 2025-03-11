@@ -13,6 +13,23 @@ export type Student = User & {
     guardianEmail?: string;
     guardianAddress?: string;
     attendance?: Attendance[];
+};
+
+export type Student = User & {
+    registrationNumber: string;
+    dateOfBirth: string;
+    gender: Gender;
+    institutionId: string;
+    organizationId: string;
+    unit: string;
+    level: string;
+    status: 'pending' | 'active' | 'inactive' | 'terminated';
+    createdAt: string;
+    guardianName?: string;
+    guardianPhoneNumber?: string;
+    guardianEmail?: string;
+    guardianAddress?: string;
+    attendance?: Attendance[];
     weeklyAttendance?: AttendanceAggregate;
     monthlyAttendance?: AttendanceAggregate;
     semesterAttendance?: AttendanceAggregate;

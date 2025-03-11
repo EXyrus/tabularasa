@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import axios from 'overrides/axios';
-import type { Institution, Module, ModulePayload } from 'types';
-import type { FetchResponseError } from 'types/fetch';
+import {axios} from '@/overrides';
+import type { Institution, Module, ModulePayload } from '@/types';
+import type { FetchResponseError } from '@/types/fetch';
 import URIS from './uris.json';
 
 export const useModules = () => {

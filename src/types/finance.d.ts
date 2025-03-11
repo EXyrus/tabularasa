@@ -30,3 +30,29 @@ export interface Transaction {
   createdAt?: string;
   updatedAt?: string;
 }
+
+
+export type Paystack = {
+  button?: () => React.ReactNode;
+  close: () => void;
+  onSuccess: (response: Record<string, any>) => void;
+  onCancel: () => void;
+};
+
+export type PaystackProps = {
+  publicKey: string;
+  email: string;
+  amount: number;
+  reference?: string;
+  metadata?: Record<string, any>;
+  currency?: string;
+  channels?: string[];
+  callback?: (response: Record<string, any>) => void;
+  onClose?: () => void;
+  onSuccess?: (response: Record<string, any>) => void;
+  onCancel?: () => void;
+  className?: string;
+  text?: string;
+  disabled?: boolean;
+};
+

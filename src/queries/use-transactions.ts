@@ -1,11 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'overrides/axios';
+import {axios} from '@/overrides';
 import type {
     Payment,
     SingleEmployeeResponse,
     Transaction,
     EmployeePayload
-} from 'types';
+} from '@/types';
 import URIS from './uris.json';
 // import { FetchResponseError } from 'types/fetch';
 

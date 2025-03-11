@@ -71,7 +71,7 @@ export type SchoolResponse = {
     activeEmployee: number | string;
 };
 
-export type EmployeePayload = EmployeePayload;
+
 
 export type SingleEmployeeResponse = EmployeeUserResponse & { role: string[] };
 
@@ -121,12 +121,28 @@ export type SuspensionData = {
     notifyParent: boolean;
 };
 
-export type BankAccountResponse = {
-    id: string;
-    name: string;
-    accountNumber: string;
-    bankName: string;
-    accountType: string;
-    status: string;
-    createdAt?: string;
-};
+export interface BankAccountResponse {
+  id: string;
+  bank: string;
+  accountNumber: string;
+  accountName: string;
+  accountType: string;
+  institutionId: string;
+  createdAt: string;
+  updatedAt: string;
+  isDefault?: boolean;
+}
+
+export interface InstitutionResponse {
+  institutions: Institution[];
+}
+
+export interface InstitutionsResponse {
+  registered: number | string;
+  active: number | string;
+  inactive: number | string;
+  pending: number | string;
+  tertiary: number | string;
+  secondary: number | string;
+  primary: number | string;
+}

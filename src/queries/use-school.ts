@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'overrides/axios';
-import type { SchoolResponse } from 'types';
+import {axios} from '@/overrides';
+import type { SchoolResponse } from '@/types';
 import URIS from './uris.json';
 
 type Props = {

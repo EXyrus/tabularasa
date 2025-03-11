@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'overrides/axios';
-import { queryClient } from 'overrides/react-query';
+import {axios} from '@/overrides';
+import { queryClient } from '@/overrides';
 import type {
     Student,
     StudentDashboardResponse,
     StudentData,
     SuspensionData
-} from 'types';
+} from '@/types';
 import URIS from './uris.json';
 
 export const useStudentDashboard = () => {

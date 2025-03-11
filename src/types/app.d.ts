@@ -1,15 +1,14 @@
-
 import { ComponentType } from 'react';
 import type { A } from 'ts-toolbelt';
 import type { UserRole } from './users';
 
-export type AppType = 'vendor' | 'institution' | 'guardian' | 'student';
+export type AppType = 'vendor' | 'institution' | 'guardian';
 
 declare global {
   interface Window {
     deferredPrompt: BeforeInstallPromptEvent;
   }
-  
+
   interface BeforeInstallPromptEvent extends Event {
     readonly platforms: string[];
     readonly userChoice: Promise<{
@@ -27,33 +26,28 @@ export type CorrelationId = A.Type<string, 'correlation_id'>;
 export type SessionId = A.Type<string, 'session_id'>;
 
 export type Session = {
-    browserId: BrowserId;
-    sessionId: SessionId;
-    ipAddress: string;
-    userId: string | null;
+  browserId: BrowserId;
+  sessionId: SessionId;
+  ipAddress: string;
+  userId: string | null;
 };
 
 export type RouteConfig = {
-    index?: boolean;
-    path: string;
-    exact?: boolean;
-    title?: string;
-    component: ComponentType;
-    userRole: UserRole;
-    // children?: RouteConfig[];
+  index?: boolean;
+  path: string;
+  exact?: boolean;
+  title?: string;
+  component: ComponentType;
+  userRole: UserRole;
+  // children?: RouteConfig[];
 };
 
-export type LocationState = object;
+
+export type LocationState = {
+  from?: string;
+  redirectTo?: string;
+  [key: string]: any;
+};
+
 
 export type AppScope = 'public' | 'vendor' | 'institution' | 'student';
-
-export interface Organization {
-  id: string;
-  name: string;
-  type: string;
-  parent?: string;
-}
-
-export interface OrganizationNode extends Organization {
-  children?: OrganizationNode[];
-}
