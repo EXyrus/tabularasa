@@ -28,5 +28,9 @@ const initSentry = (): void => {
   });
 };
 
+// Export all Sentry functions
 export default initSentry;
+export const captureException = Sentry.captureException;
+export const captureMessage = Sentry.captureMessage;
+export const withScope = Sentry.withScope;
 export * from '@sentry/react';
