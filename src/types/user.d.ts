@@ -1,5 +1,4 @@
-
-import { AppType } from "./app-type";
+import { AppType } from './app';
 import { Permission } from './institution';
 import { Attendance } from './student';
 import { Role } from './institution';
@@ -26,9 +25,9 @@ export type User = {
 export type Vendor = User & {};
 
 export type Employee = User & {
-    organizationId?: string;
-    institutionId?: string;
-    status?: string;
-    roles?: Role[];
-    permissions?: Permission;
+  organizationId?: string;
+  institutionId?: string;
+  status?: string;
+  roles?: Role[];
+  permissions?: Permission[];
 };

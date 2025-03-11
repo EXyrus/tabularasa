@@ -5,24 +5,12 @@ import type { AppType } from '@/types/app';
 import type { User, UserRole } from '@/types/user';
 import type { EmployeeUserResponse } from '@/types/responses';
 import type { LoginCredentials, UserForgotPasswordRequest, UserResetPasswordRequest } from '@/types/auth';
-
-interface AuthContextType {
-  user: User | EmployeeUserResponse | null;
-  userRole?: UserRole;
-  loading: boolean;
-  isLoggingIn: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  institutionLogin: (url: string, credentials: LoginCredentials) => Promise<void>;
-  logout: () => Promise<void>;
-  forgotPassword: (params: UserForgotPasswordRequest) => Promise<void>;
-  resetPassword: (data: UserResetPasswordRequest) => Promise<void>;
-  updatePassword: (variables: UserResetPasswordRequest) => Promise<void>;
-}
+import { AuthContextType } from '@/types';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | EmployeeUserResponse | null>(null);
+  const [user, setUser] = useState<EmployeeUserResponse |User | null>(null);
   const [loading, setLoading] = useState(true);
   
   const { data: tokenData, isLoading: isTokenLoading, isSuccess } = useTokenQuery();
@@ -36,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (vendorUser) {
       setUser(vendorUser as User);
     } else if (institutionUser) {
-      setUser(institutionUser);
+      setUser(institutionUser as User);
     }
 
     if (isSuccess && tokenData?.user) {

@@ -72,7 +72,7 @@ const VendorSettings: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
-      <HeaderBar appType="vendor" userName={user?.name || ''} userAvatar={user?.avatar} />
+      <HeaderBar appType="vendor" userName={user?.name || ''} userAvatar={getCloudinaryImge(user?.avatar)} />
       
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
         <h1 className="text-2xl font-bold mb-6 dark:text-white">Settings</h1>
