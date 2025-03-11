@@ -1,11 +1,16 @@
 
 import React, { createContext, useState, useEffect } from 'react';
 import { useTokenQuery, useLogin, useLogout, useInstitutionLogin, useForgotPassword, useUpdatePasswordMutation } from '@/queries/use-auth';
-import type { AppType } from '@/types/app';
-import type { User, UserRole } from '@/types/user';
-import type { EmployeeUserResponse } from '@/types/responses';
-import type { LoginCredentials, UserForgotPasswordRequest, UserResetPasswordRequest } from '@/types/auth';
-import { AuthContextType } from '@/types';
+import type {
+  AuthContextType,
+  User,
+  UserRole,
+  AppType,
+  LoginCredentials,
+  UserForgotPasswordRequest,
+  EmployeeUserResponse,
+  UserResetPasswordRequest,
+} from '@/types';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -61,29 +66,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initializeDarkMode();
   }, [user?.appType]);
 
-  // For password reset functionality
-  const resetPassword = async (data: UserResetPasswordRequest) => {
-    try {
-      setLoading(true);
-      await updatePassword(data);
-    } catch (error) {
-      console.error('Reset password failed:', error);
-      throw new Error('Failed to reset password. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   const value: AuthContextType = {
     user,
     userRole,
-    loading,
     isLoggingIn: isTokenLoading,
     login,
     institutionLogin,
     logout,
     forgotPassword,
-    resetPassword,
     updatePassword
   };
 

@@ -23,207 +23,194 @@ import type {
 import URIS from '@/queries/uris.json';
 
 export const useTokenQuery = () => {
-    return useQuery({
-        queryKey: ['token'],
-        queryFn: async (): Promise<TokenResponse | null> => {
-            const token = getLocalStorageItem('token');
+  return useQuery({
+    queryKey: ['token'],
+    queryFn: async (): Promise<TokenResponse | null> => {
+      const token = getLocalStorageItem('token');
 
-            if (!token) {
-                return null;
-            }
+      if (!token) {
+        return null;
+      }
 
-            const loginLocation = window.location.pathname.split('/')[1] as
-                | 'vendor'
-                | 'institution'
-                | 'student';
+      const loginLocation = window.location.pathname.split('/')[1] as
+        | 'vendor'
+        | 'institution'
+        | 'student';
 
-            const tokenURIs = {
-                vendor: URIS.users.token,
-                institution: URIS.employees.token,
-                student: URIS.students.token
-            };
+      const tokenURIs = {
+        vendor: URIS.users.token,
+        institution: URIS.employees.token,
+        student: URIS.students.token,
+      };
 
-            const tokenURI = tokenURIs[loginLocation] || URIS.token;
+      const tokenURI = tokenURIs[loginLocation] || URIS.token;
 
-            const response = await axios.get<TokenResponse>(tokenURI);
+      const response = await axios.get<TokenResponse>(tokenURI);
 
-            return response.data;
-        },
-        retry: false
-    });
+      // const tokenPayload = getTokenPayload(response.data.payload);
+
+      return response.data;
+    },
+    retry: false,
+  });
 };
 
 const csrf = async () => {
-    await axios.get('/sanctum/csrf-cookie');
+  await axios.get('/sanctum/csrf-cookie');
 };
 
 export const useLogin = () => {
-    const [user, setUser] = useState<User | EmployeeUserResponse | null>(null);
-    const [userRole, setUserRole] = useState<string | null>(null);
+  const [user, setUser] = useState<User | EmployeeUserResponse | null>();
+  const [userRole, setUserRole] = useState<UserRole>();
 
-    const loginMutation = useMutation<User, Error, LoginCredentials>({
-        mutationFn: async credentials => {
-            await csrf();
+  const loginMutation = useMutation<User, Error, LoginCredentials>({
+    mutationFn: async credentials => {
+      await csrf();
 
-            const response = await axios.post<AdminLoginResponse>(
-                URIS.login,
-                credentials
-            );
+      const response = await axios.post<AdminLoginResponse>(URIS.login, credentials);
 
-            const { user, token } = response.data;
+      const { user, payload } = response.data;
 
-            if (token) {
-                setLocalStorageItem('token', token);
-                setLocalStorageItem('tokenRegistered', Date.now().toString());
-            }
+      const token = getTokenPayload(payload)?.token;
 
-            if (user) {
-                setUser(user);
-                setUserRole(user.role);
-                removeLocalStorageItem('subdomain');
-            }
+      if (token) {
+        setLocalStorageItem('token', token);
+        setLocalStorageItem('tokenRegistered', Date.now().toString());
+      }
 
-            return user;
-        },
-        onSuccess: data => {
-            queryClient.setQueryData(['user'], data);
-        }
-    });
+      if (user) {
+        setUser(user);
+        setUserRole(user.role);
 
-    const login = async (credentials: LoginCredentials) => {
-        await loginMutation.mutateAsync(credentials);
-    };
+        removeLocalStorageItem('subdomain');
+      }
 
-    return { login, user, userRole };
+      return user;
+    },
+      onSuccess: data => {
+        setLocalStorageItem('appType', 'vendor');
+      queryClient.setQueryData(['user'], data);
+    },
+  });
+
+  const login = async (credentials: LoginCredentials) => {
+    await loginMutation.mutateAsync(credentials);
+  };
+
+  return { login, user, userRole };
 };
 
 export const useInstitutionLogin = () => {
-    const [user, setUser] = useState<User | EmployeeUserResponse | null>();
+  const [user, setUser] = useState<User | EmployeeUserResponse | null>();
 
-    const institutionLoginMutation = useMutation<
-        InstitutionLoginResponse,
-        Error,
-        { url: string; credentials: LoginCredentials }
-    >({
-        mutationFn: async ({ url, credentials }) => {
-            const LOGIN_URL = `${URIS.index}${url}`;
+  const institutionLoginMutation = useMutation<
+    InstitutionLoginResponse,
+    Error,
+    { url: string; credentials: LoginCredentials }
+  >({
+    mutationFn: async ({ url, credentials }) => {
+      const LOGIN_URL = `${URIS.index}${url}`;
 
-            await csrf();
+      await csrf();
 
-            const response = await axios.post<InstitutionLoginResponse>(
-                LOGIN_URL,
-                credentials
-            );
+      const response = await axios.post<InstitutionLoginResponse>(LOGIN_URL, credentials);
 
-            const { user, token } = response.data;
+      const { user, payload } = response.data;
 
-            if (token) {
-                setLocalStorageItem('token', token);
-                setLocalStorageItem('tokenRegistered', Date.now().toString());
-            }
+      const token = getTokenPayload(payload)?.token;
 
-            if (user) {
-                setUser(user);
-            }
+      if (token) {
+        setLocalStorageItem('token', token);
+        setLocalStorageItem('tokenRegistered', Date.now().toString());
+      }
 
-            return response.data;
-        },
+      if (user) {
+        setUser(user);
+      }
 
-        onSuccess: data => {
-            if (data) {
-                const token = data.token;
+      return response.data;
+    },
 
-                if (token) {
-                    setLocalStorageItem('token', token);
-                    setLocalStorageItem(
-                        'tokenRegistered',
-                        Date.now().toString()
-                    );
-                }
+    onSuccess: data => {
+      if (data) {
+        const token = decodeTokenPayload(data?.payload)?.token;
 
-                queryClient.setQueryData(['user'], data.user);
-            }
+        if (token) {
+            setLocalStorageItem('token', token);
+            setLocalStorageItem('appType', url);
+          setLocalStorageItem('tokenRegistered', Date.now().toString());
         }
-    });
 
-    const institutionLogin = async (
-        url: string,
-        credentials: LoginCredentials
-    ) => {
-        await institutionLoginMutation.mutateAsync({ url, credentials });
-    };
+        queryClient.setQueryData(['user'], data.user);
+      }
+    },
+  });
 
-    return { user, institutionLogin };
+  const institutionLogin = async (url: string, credentials: LoginCredentials) => {
+    await institutionLoginMutation.mutateAsync({ url, credentials });
+  };
+
+  return { user, institutionLogin };
 };
 
 export const useLogout = () => {
-    const logoutMutation = useMutation<void, Error, void>({
-        mutationFn: async () => {
-            await csrf();
-            const response = await axios.post(URIS.logout);
+  const logoutMutation = useMutation<void, Error, void>({
+    mutationFn: async () => {
+      await csrf();
+      const response = await axios.post(URIS.logout);
 
-            return response.data;
-        },
-        onSuccess: () => {
-            const token = getLocalStorageItem('token');
+      return response.data;
+    },
+    onSuccess: () => {
+      const token = getLocalStorageItem('token');
 
-            if (token) {
-                removeLocalStorageItem('token');
-                removeLocalStorageItem('tokenRegistered');
-            }
+      if (token) {
+        removeLocalStorageItem('token');
+         removeLocalStorageItem('appType');
+        removeLocalStorageItem('tokenRegistered');
+      }
 
-            queryClient.invalidateQueries({
-                queryKey: ['user']
-            });
-        }
-    });
+      queryClient.invalidateQueries({
+        queryKey: ['user'],
+      });
+    },
+  });
 
-    const logout = async () => {
-        await logoutMutation.mutateAsync();
-    };
+  const logout = async () => {
+    await logoutMutation.mutateAsync();
+  };
 
-    return { logout };
+  return { logout };
 };
 
 export const useUpdatePasswordMutation = () => {
-    const updatePasswordMutation = useMutation<
-        void,
-        Error,
-        UserResetPasswordRequest
-    >({
-        mutationFn: async variables => {
-            const response = await axios.post(
-                `${URIS.users.password.reset}`,
-                variables
-            );
+  const updatePasswordMutation = useMutation<void, Error, UserResetPasswordRequest>({
+    mutationFn: async variables => {
+      const response = await axios.post(`${URIS.users.password.reset}`, variables);
 
-            return response.data;
-        }
-    });
+      return response.data;
+    },
+  });
 
-    const updatePassword = async (variables: UserResetPasswordRequest) => {
-        await updatePasswordMutation.mutateAsync(variables);
-    };
+  const updatePassword = async (variables: UserResetPasswordRequest) => {
+    await updatePasswordMutation.mutateAsync(variables);
+  };
 
-    return { updatePassword };
+  return { updatePassword };
 };
 
 export const useForgotPassword = () => {
-    const forgotPasswordMutation = useMutation<
-        void,
-        Error,
-        UserForgotPasswordRequest
-    >({
-        mutationFn: async (data: UserForgotPasswordRequest) => {
-            const response = await axios.post(URIS.users.password.forgot, data);
+  const forgotPasswordMutation = useMutation<void, Error, UserForgotPasswordRequest>({
+    mutationFn: async (data: UserForgotPasswordRequest) => {
+      const response = await axios.post(URIS.users.password.forgot, data);
 
-            return response.data;
-        }
-    });
+      return response.data;
+    },
+  });
 
-    const forgotPassword = async (variables: UserForgotPasswordRequest) => {
-        await forgotPasswordMutation.mutateAsync(variables);
-    };
+  const forgotPassword = async (variables: UserForgotPasswordRequest) => {
+    await forgotPasswordMutation.mutateAsync(variables);
+  };
 
-    return { forgotPassword };
+  return { forgotPassword };
 };

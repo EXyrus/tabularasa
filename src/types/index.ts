@@ -10,5 +10,5 @@ export * from './payloads';
 export * from './auth';
 export *from './bank-account';
 export * from './payloads';
-export * from './user';
+export * from './users';
 export * from './utilities';

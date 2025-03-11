@@ -3,7 +3,10 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import config from '@/config';
-import type { AppType } from '@/types/app-type';
+import {
+    getLocalStorageItem,
+} from '@/helpers/local-storage';
+import type { AppType } from '@/types';
 
 type ProtectedRouteProps = {
   children: React.ReactNode;
@@ -11,15 +14,16 @@ type ProtectedRouteProps = {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, appType }) => {
-  const { user, loading } = useAuth();
+  const { user, isLoggingIn } = useAuth();
   const location = useLocation();
+  const storedAppType = getLocalStorageItem('appType');
   
   // Skip auth checks if auth is disabled in config
   if (!config.AUTH_ENABLED) {
     return <>{children}</>;
   }
 
-  if (loading) {
+  if (isLoggingIn) {
     // You could show a loading spinner here
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -34,9 +38,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, appTyp
   }
 
   // Check if the user is authorized for this app type
-  if (user.appType !== appType) {
+  if (storedAppType !== appType) {
     // Redirect to the appropriate app type
-    return <Navigate to={`/${user.appType}/dashboard`} replace />;
+    return <Navigate to={`/${storedAppType}/dashboard`} replace />;
   }
 
   return <>{children}</>;
@@ -50,14 +54,14 @@ interface PublicRouteProps {
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({ children, appType, restricted = false }) => {
   const { user } = useAuth();
+    const storedAppType = getLocalStorageItem('appType');
   
   // Skip auth checks if auth is disabled in config
   if (!config.AUTH_ENABLED) {
     return <>{children}</>;
   }
 
-  // If restricted is true and user is logged in, redirect to dashboard
-  if (restricted && user && user.appType === appType) {
+  if (restricted && user && storedAppType === appType) {
     return <Navigate to={`/${appType}/dashboard`} replace />;
   }
 
