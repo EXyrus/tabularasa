@@ -24,12 +24,14 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
+import { formatName } from '@/helpers/format-name';
 
 type AppType = 'vendor' | 'institution' | 'guardian';
 
 // Define the form schema types to match our fields
 interface BaseFormValues {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string;
 }
@@ -54,7 +56,8 @@ type FormValues = BaseFormValues | VendorFormValues | InstitutionFormValues | Gu
 // Define form schema based on app type
 const getFormSchema = (appType: AppType) => {
   const baseSchema = {
-    name: z.string().min(2, 'Name must be at least 2 characters'),
+    firstName: z.string().min(2, 'First Name must be at least 2 characters'),
+    lastName: z.string().min(2, 'Last Name must be at least 2 characters'),
     email: z.string().email('Please enter a valid email address'),
     phone: z.string().optional(),
   };
@@ -98,7 +101,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: userData?.name || '',
+      firstName: userData?.firstName || '',
+      lastName: userData?.lastName || '',
       email: userData?.email || '',
       phone: userData?.phone || '',
       ...(appType === 'vendor' && {
@@ -142,7 +146,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
         <div className="flex justify-center mb-6">
           <Avatar className="h-24 w-24">
             {userData?.photo ? (
-              <img src={userData.photo} alt={userData.name} />
+              <img src={userData.photo} alt={formatName(userData)} />
             ) : (
               <User className="h-12 w-12" />
             )}
@@ -153,12 +157,26 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ appType, userData, onSubmit }
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="name"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your full name" {...field} />
+                    <Input placeholder="Enter your first name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your last name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

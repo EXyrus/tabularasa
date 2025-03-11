@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import ProfileForm from '@/components/profile/ProfileForm';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
+import { formatName } from '@/helpers/format-name';
 
 const GuardianProfile: React.FC = () => {
   const { user } = useAuth();
@@ -42,7 +43,7 @@ const GuardianProfile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <HeaderBar appType="guardian" userName={user?.name || ''} userAvatar={user?.photo} />
+      <HeaderBar appType="guardian" userName={formatName(user)} userAvatar={user?.photo} />
 
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
         <h1 className="text-2xl font-bold mb-6">Your Profile</h1>

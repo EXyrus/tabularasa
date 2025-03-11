@@ -1,13 +1,25 @@
-import mapKeys from 'lodash/mapKeys';
-import snakeCase from 'lodash/snakeCase';
-import isPlainObject from 'lodash/isPlainObject';
 
-const mapKeyToSnakeCase = (data: object) => {
-    if (isPlainObject(data)) {
-        return mapKeys(data, (_value, key) => snakeCase(key));
-    }
+import { snakeCase } from 'lodash';
 
-    return data;
+/**
+ * Recursively transforms keys of an object from camelCase to snake_case
+ * @param {any} object - The object to transform
+ * @returns {any} - The transformed object
+ */
+export const mapKeyToSnakeCase = (object: any): any => {
+  if (object === null || object === undefined || typeof object !== 'object') {
+    return object;
+  }
+
+  if (Array.isArray(object)) {
+    return object.map(item => mapKeyToSnakeCase(item));
+  }
+
+  return Object.keys(object).reduce((acc, key) => {
+    const snakeKey = snakeCase(key);
+    acc[snakeKey] = mapKeyToSnakeCase(object[key]);
+    return acc;
+  }, {} as Record<string, any>);
 };
 
 export default mapKeyToSnakeCase;
