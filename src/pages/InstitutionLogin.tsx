@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { message, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -7,7 +7,7 @@ import AuthForm from '@/components/AuthForm';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-;
+import { setLocalStorageItem } from '@/helpers/local-storage';
 
 const { Paragraph } = Typography;
 
@@ -19,6 +19,11 @@ const InstitutionLogin: React.FC = () => {
   const [institutionFound, setInstitutionFound] = useState(false);
   const [institutionName, setInstitutionName] = useState('');
   const [slugError, setSlugError] = useState('');
+
+  // Save app type on component mount
+  useEffect(() => {
+    setLocalStorageItem('appType', 'institution');
+  }, []);
 
   const onSlugSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +59,11 @@ const InstitutionLogin: React.FC = () => {
   const onLogin = async (values: { email: string; password: string }) => {
     try {
       setLoading(true);
-      await login(values.email, values.password, 'institution');
+      await login({ 
+        email: values.email, 
+        password: values.password,
+        remember: true
+      });
       message.success('Login successful!');
       navigate('/institution/dashboard');
     } catch (error) {

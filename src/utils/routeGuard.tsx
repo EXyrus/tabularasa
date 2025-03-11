@@ -3,9 +3,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import config from '@/config';
-import {
-    getLocalStorageItem,
-} from '@/helpers/local-storage';
+import { getAppType } from '@/helpers/local-storage';
 import type { AppType } from '@/types';
 
 type ProtectedRouteProps = {
@@ -16,7 +14,7 @@ type ProtectedRouteProps = {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, appType }) => {
   const { user, isLoggingIn } = useAuth();
   const location = useLocation();
-  const storedAppType = getLocalStorageItem('appType');
+  const storedAppType = getAppType();
   
   // Skip auth checks if auth is disabled in config
   if (!config.AUTH_ENABLED) {
@@ -54,7 +52,7 @@ interface PublicRouteProps {
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({ children, appType, restricted = false }) => {
   const { user } = useAuth();
-    const storedAppType = getLocalStorageItem('appType');
+  const storedAppType = getAppType();
   
   // Skip auth checks if auth is disabled in config
   if (!config.AUTH_ENABLED) {

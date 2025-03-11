@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
 import { useAuth } from '../hooks/useAuth';
+import { setLocalStorageItem } from '@/helpers/local-storage';
 
 const Login: React.FC = () => {
   const location = useLocation();
@@ -15,15 +16,20 @@ const Login: React.FC = () => {
   // Determine the app type by checking the URL's pathname
   useEffect(() => {
     const path = location.pathname.toLowerCase();
+    let currentAppType: 'vendor' | 'institution' | 'guardian' = 'vendor';
+    
     if (path.includes('institution')) {
-      setAppType('institution');
+      currentAppType = 'institution';
     } else if (path.includes('guardian')) {
-      setAppType('guardian');
+      currentAppType = 'guardian';
     } else if (path.includes('vendor')) {
-      setAppType('vendor');
-    } else {
-      setAppType('vendor'); // fallback
+      currentAppType = 'vendor';
     }
+    
+    setAppType(currentAppType);
+    
+    // Save the app type to localStorage
+    setLocalStorageItem('appType', currentAppType);
   }, [location.pathname]);
 
   // For 'institution', redirect to its specialized login page

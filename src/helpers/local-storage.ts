@@ -1,5 +1,6 @@
 
 import * as Sentry from '@/overrides/sentry.override';
+import type { AppType } from '@/types';
 
 export const setLocalStorageItem = (key: string, value: string) => {
     try {
@@ -37,3 +38,16 @@ export const removeLocalStorageItem = (key: string) => {
         Sentry.captureException(error);
     }
 };
+
+// Helper function to specifically get the app type
+export const getAppType = (): AppType => {
+    const appType = getLocalStorageItem('appType');
+    
+    if (appType === 'vendor' || appType === 'institution' || appType === 'guardian') {
+        return appType;
+    }
+    
+    // Default to vendor if no valid app type is found
+    return 'vendor';
+};
+

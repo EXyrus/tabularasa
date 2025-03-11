@@ -87,8 +87,8 @@ export const useLogin = () => {
 
       return user;
     },
-      onSuccess: data => {
-        setLocalStorageItem('appType', 'vendor');
+    onSuccess: data => {
+      setLocalStorageItem('appType', 'vendor');
       queryClient.setQueryData(['user'], data);
     },
   });
@@ -137,8 +137,8 @@ export const useInstitutionLogin = () => {
 
         if (token) {
             setLocalStorageItem('token', token);
-            setLocalStorageItem('appType', url);
-          setLocalStorageItem('tokenRegistered', Date.now().toString());
+            setLocalStorageItem('appType', 'institution');
+            setLocalStorageItem('tokenRegistered', Date.now().toString());
         }
 
         queryClient.setQueryData(['user'], data.user);
@@ -166,7 +166,7 @@ export const useLogout = () => {
 
       if (token) {
         removeLocalStorageItem('token');
-         removeLocalStorageItem('appType');
+        removeLocalStorageItem('appType');
         removeLocalStorageItem('tokenRegistered');
       }
 
