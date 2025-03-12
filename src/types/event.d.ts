@@ -1,3 +1,4 @@
+
 export type Event = {
   id: string;
   title: string;
@@ -21,4 +22,24 @@ export type RecipientGroup = {
   description?: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type Organization = {
+  id: string;
+  name: string;
+  description?: string;
+  parentId?: string;
+  level: number;
+  path: string[];
+  children?: Organization[];
+};
+
+export type OrganizationNode = {
+  id: string;
+  name: string;
+  description?: string;
+  parentId?: string;
+  level: number;
+  path: string[];
+  children?: OrganizationNode[];
 };

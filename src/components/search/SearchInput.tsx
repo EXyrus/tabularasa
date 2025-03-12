@@ -1,64 +1,54 @@
 
-import React, { useState, useEffect } from 'react';
-import { Input, AutoComplete } from 'antd';
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-
-interface SearchOption {
-  value: string;
-  label: string;
-}
 
 interface SearchInputProps {
   placeholder?: string;
   onSearch: (value: string) => void;
-  options?: SearchOption[];
-  loading?: boolean;
-  className?: string;
+  debounceTime?: number;
+  isLoading?: boolean; // Use this instead of 'loading'
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
   placeholder = 'Search...',
   onSearch,
-  options = [],
-  loading = false,
-  className = '',
+  debounceTime = 300,
+  isLoading = false, // Use isLoading instead of loading
 }) => {
-  const [searchText, setSearchText] = useState('');
+  const [searchValue, setSearchValue] = useState('');
 
+  // Debounce the search input
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchText) {
-        onSearch(searchText);
+    const timeoutId = setTimeout(() => {
+      if (searchValue.trim()) {
+        onSearch(searchValue);
       }
-    }, 500);
+    }, debounceTime);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchText, onSearch]);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [searchValue, debounceTime, onSearch]);
 
-  const handleSearch = (value: string) => {
-    setSearchText(value);
-  };
-
-  const handleSelect = (value: string) => {
-    setSearchText(value);
-    onSearch(value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
   };
 
   return (
-    <AutoComplete
-      className={className}
-      options={options}
-      onSelect={handleSelect}
-      onSearch={handleSearch}
-      value={searchText}
-    >
+    <div className="w-full relative">
       <Input
         placeholder={placeholder}
         prefix={<SearchOutlined />}
-        loading={loading}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleChange}
+        // Remove the loading prop as it doesn't exist on Input
       />
-    </AutoComplete>
+      {isLoading && (
+        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -1,13 +1,13 @@
+
 import type {
-  EmployeePayload,
   Gender,
   Institution,
   InstitutionRole,
   Role,
   Permission,
-  Student,
-  User
-} from 'types';
+  User,
+  UserRole
+} from '@/types';
 
 export type ErrorResponse = {
   message: string;
@@ -18,7 +18,6 @@ export type InstitutionLoginResponse = {
   payload: string;
   user: EmployeeUserResponse;
 };
-
 
 export type EmployeeUserResponse = {
   id: string;
@@ -34,6 +33,7 @@ export type EmployeeUserResponse = {
   createdAt: string;
   roles?: Role[];
   permissions: Permission[];
+  name?: string; // Add name property for compatibility
 };
 
 export type LoginResponse = {
@@ -49,22 +49,6 @@ export type SchoolResponse = {
   activeEmployee: number | string;
 };
 
-export type EmployeeUserResponse = {
-  id: string;
-  organizationId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  photo: string;
-  password: string | null;
-  institutionId: string | null;
-  status: string | null;
-  phoneNumber: string;
-  createdAt: string;
-  roles?: Role[];
-  permissions: Permission[];
-};
-
 export type SingleEmployeeResponse = EmployeeUserResponse & { role: string[] };
 
 export type AllEmployeeResponse = (EmployeeUserResponse & { role: string[] })[];
@@ -77,6 +61,26 @@ export type StudentDashboardResponse = {
 };
 
 export type InstitutionRoleResponse = InstitutionRole[];
+
+// Add Student type interface
+export type Student = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  gender: Gender;
+  dateOfBirth?: string;
+  phoneNumber?: string;
+  email?: string;
+  photo: string;
+  name?: string;
+  status?: string;
+  guardianName?: string;
+  guardianEmail?: string;
+  guardianPhone?: string;
+  grade?: string;
+  section?: string;
+  attendance?: number;
+};
 
 export type StudentData = {
   personalInfo: {
@@ -126,7 +130,11 @@ export interface BankAccountResponse {
 }
 
 export interface InstitutionResponse {
-  institutions: Institution[];
+  type: string;
+  id: string;
+  name: string;
+  logo: string;
+  status: 'pending' | 'active' | 'inactive';
 }
 
 export interface InstitutionsResponse {
@@ -139,38 +147,35 @@ export interface InstitutionsResponse {
   primary: number | string;
 }
 
-export type ErrorResponse = {
-  message: string;
-  statusCode?: number;
-};
-
-
 export type AdminLoginResponse = {
   payload: string;
   user: User;
 };
 
-export type EmployeeUserResponse = {
+// Define Payment type
+export type Payment = {
   id: string;
-  organizationId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  photo: string;
-  password: string | null;
-  institutionId: string | null;
-  status: string | null;
-  phoneNumber: string;
+  amount: number;
+  description: string;
+  reference: string;
+  status: 'pending' | 'completed' | 'failed';
+  studentId?: string;
+  studentName?: string;
+  institutionId: string;
   createdAt: string;
-  roles?: Role[];
-  permissions: Permission[];
+  updatedAt: string;
 };
 
-export type InstitutionResponse = {
-  type: string;
+// Define FinanceTransaction type
+export type FinanceTransaction = {
   id: string;
-  name: string;
-  logo: string;
-  status: 'pending' | 'active' | 'inactive';
-}[];
-
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: string;
+  reference: string;
+  date: string;
+  institutionId: string;
+  createdAt: string;
+  updatedAt: string;
+};

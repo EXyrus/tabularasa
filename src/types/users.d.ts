@@ -1,3 +1,4 @@
+
 import { AppType } from './app';
 import { Permission } from './institution';
 import { Attendance } from './student';
@@ -11,6 +12,7 @@ export type User = {
   phoneNumber: string;
   email: string;
   role: UserRole;
+  name?: string; // Add name property to support legacy code
   deletedAt?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -18,17 +20,9 @@ export type User = {
 
 export type Vendor = User & {};
 
-type UserRole = 'vendor' | 'employee' | 'student' | 'guest';
+export type UserRole = 'vendor' | 'employee' | 'student' | 'guest';
 
 export type Gender = 'male' | 'female';
-
-export type Employee = User & {
-  organizationId?: string;
-  institutionId?: string;
-  status?: string;
-  roles?: Role[];
-  permissions?: Permission;
-};
 
 export type Employee = User & {
   organizationId?: string;

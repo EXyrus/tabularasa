@@ -16,7 +16,7 @@ export const formatName = (user: User | EmployeeUserResponse | null): string => 
   }
   
   // Fallback for employee responses or other user types
-  if ('name' in user) {
+  if ('name' in user && typeof user.name === 'string') {
     return user.name;
   }
   

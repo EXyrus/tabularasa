@@ -17,6 +17,7 @@ export type AuthContextType = {
     logout: () => Promise<void>;
     forgotPassword: (data: UserForgotPasswordRequest) => Promise<void>;
     updatePassword: (data: UserResetPasswordRequest) => Promise<void>;
+    resetPassword: (data: UserResetPasswordRequest) => Promise<void>; // Added resetPassword
 };
 
 export type Theme = 'light' | 'dark' | 'system';

@@ -1,24 +1,30 @@
 
-import { Organization, OrganizationNode } from '@/types';
+import { Organization, OrganizationNode } from '@/types/event';
 
-export const flattenOrganizationTree = (tree: OrganizationNode): Organization[] => {
-  const result: Organization[] = [];
+export const flattenOrganizationTree = (
+  node: OrganizationNode | Organization,
+  level = 0,
+  path: string[] = []
+): OrganizationNode[] => {
+  const flattened: OrganizationNode[] = [
+    {
+      ...node,
+      level,
+      path,
+      // Remove type property and ensure parentId is used instead of parent
+    },
+  ];
 
-  function traverse(node: OrganizationNode) {
-    result.push({
-      id: node.id,
-      name: node.name,
-      type: node.type,
-      parent: node.parent,
+  if (node.children && node.children.length > 0) {
+    // For each child, recursively flatten
+    node.children.forEach(child => {
+      const childPath = [...path, node.id];
+      const flattenedChildren = flattenOrganizationTree(child, level + 1, childPath);
+      flattened.push(...flattenedChildren);
     });
-
-    if (node.children && node.children.length > 0) {
-      node.children.forEach(traverse);
-    }
   }
 
-  traverse(tree);
-  return result;
+  return flattened;
 };
 
 export default flattenOrganizationTree;

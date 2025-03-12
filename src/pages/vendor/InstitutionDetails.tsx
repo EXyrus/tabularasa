@@ -1,193 +1,180 @@
-
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Tabs, Space, Modal, Form, Input, Select } from "antd";
-import { EditOutlined, DeleteOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { InstitutionDetailsCard } from "@/components/institutions/InstitutionDetailsCard";
-import {
-  useInstitutionDetails,
-  useUpdateInstitutionStatus,
-  useUpdateInstitutionDetails,
-  useDeleteInstitution
-} from "@/queries/use-institutions";
-import { useToast } from "@/hooks/use-toast";
-import EditInstitutionForm from "@/components/institutions/EditInstitutionForm";
-import { InstitutionDetailsPayload } from "@/types";
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Avatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { MoreVertical, Edit, Trash, ArrowLeft, CheckCircle, Ban } from 'lucide-react';
+import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
+import { getInstitutionDetails, updateInstitutionDetails, updateInstitutionStatus } from '@/queries/use-institutions';
+import { InstitutionDetailsPayload } from '@/types';
+import HeaderBar from '@/components/HeaderBar';
+import { useAuth } from '@/context/AuthContext';
+import { InstitutionStatusPayload } from '@/types/payloads';
 
-const { Title, Text } = Typography;
-const { TabPane } = Tabs;
-const { Option } = Select;
-
-const InstitutionDetails = () => {
-  const { id } = useParams();
+const InstitutionDetails: React.FC = () => {
+  const { user } = useAuth();
+  const { institutionId } = useParams<{ institutionId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const [editForm] = Form.useForm();
-  
-  const { data: institution, isLoading, error } = useInstitutionDetails(id || "");
-  const updateStatusMutation = useUpdateInstitutionStatus();
-  const updateDetailsMutation = useUpdateInstitutionDetails();
-  const deleteInstitutionMutation = useDeleteInstitution();
-  
+  const [institutionData, setInstitutionData] = useState<any>(null);
+
+  const { data, isLoading, isError, error } = useQuery(
+    ['institution', institutionId],
+    () => getInstitutionDetails(institutionId as string),
+    {
+      enabled: !!institutionId,
+      onSuccess: (data) => {
+        setInstitutionData(data);
+      },
+      onError: (err: any) => {
+        toast({
+          title: 'Error',
+          description: `Failed to fetch institution details: ${err.message}`,
+          variant: 'destructive',
+        });
+      },
+    }
+  );
+
   useEffect(() => {
-    if (institution) {
-      editForm.setFieldsValue({
-        name: institution.name,
-        type: institution.type
-      });
+    if (data) {
+      setInstitutionData(data);
     }
-  }, [institution, editForm]);
-  
-  if (isLoading) {
-    return <div className="flex justify-center items-center h-64">Loading institution details...</div>;
-  }
-  
-  if (error || !institution) {
-    return <div className="text-red-500">Error loading institution details</div>;
-  }
-  
-  const handleStatusChange = async (status: 'active' | 'inactive' | 'pending') => {
-    try {
-      await updateStatusMutation.mutateAsync({ id: institution.id, status });
-      toast({
-        title: "Status Updated",
-        description: `Institution status changed to ${status}`
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update institution status"
-      });
-    }
+  }, [data]);
+
+  const handleEdit = () => {
+    navigate(`/vendor/institutions/edit/${institutionId}`);
   };
-  
-  const handleEditSubmit = async (values: InstitutionDetailsPayload) => {
-    try {
-      await updateDetailsMutation.mutateAsync({
-        id: institution.id,
-        name: values.name,
-        institutionType: values.institutionType,
-        email: values.email,
-        phoneNumber: values.phoneNumber
-      });
-      setIsEditModalVisible(false);
-      toast({
-        title: "Details Updated",
-        description: "Institution details updated successfully"
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update institution details"
-      });
-    }
-  };
-  
+
   const handleDelete = async () => {
+    // Implement delete logic here
+    toast({
+      title: 'Delete Action',
+      description: 'Delete functionality is not implemented yet.',
+    });
+  };
+
+  const handleStatusToggle = async (institutionId: string) => {
+    const currentStatus = institutionData?.status;
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    
     try {
-      await deleteInstitutionMutation.mutateAsync({ id: institution.id });
-      setIsDeleteModalVisible(false);
-      toast({
-        title: "Institution Deleted",
-        description: "Institution has been successfully deleted"
+      await updateInstitutionStatus({ 
+        id: institutionId, 
+        status: newStatus // Added the required status field
       });
-      navigate("/vendor/institutions");
+      
+      // Update the local state to reflect the change
+      if (institutionData) {
+        setInstitutionData({
+          ...institutionData,
+          status: newStatus,
+        });
+      }
+      
+      toast({
+        title: 'Status Updated',
+        description: `Institution has been ${newStatus === 'active' ? 'activated' : 'deactivated'}.`,
+      });
     } catch (error) {
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete institution"
+        title: 'Update Failed',
+        description: 'Failed to update institution status.',
+        variant: 'destructive',
       });
     }
   };
-  
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error?.message}</div>;
+  }
+
+  if (!institutionData) {
+    return <div>No institution data found.</div>;
+  }
+
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <Title level={3}>{institution.name}</Title>
-        <Space>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => setIsEditModalVisible(true)}
-          >
-            Edit Details
+    <div className="min-h-screen bg-gray-100 pb-20">
+      <HeaderBar appType="vendor" userName={user?.name || 'Vendor User'} userAvatar={user?.photo} />
+
+      <div className="container max-w-4xl mx-auto px-4 py-8 mt-20">
+        <div className="mb-4 flex justify-between items-center">
+          <Button variant="ghost" onClick={() => navigate('/vendor/institutions')}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Institutions
           </Button>
-          <Button
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => setIsDeleteModalVisible(true)}
-          >
-            Delete
-          </Button>
-        </Space>
-      </div>
-      
-      <InstitutionDetailsCard institution={institution} />
-      
-      <Card className="mt-6">
-        <Title level={4}>Status Management</Title>
-        <div className="flex gap-4 mt-4">
-          <Button
-            type={institution.status === "active" ? "primary" : "default"}
-            icon={<CheckCircleOutlined />}
-            onClick={() => handleStatusChange("active")}
-          >
-            Set Active
-          </Button>
-          <Button
-            danger={institution.status === "inactive"}
-            icon={<CloseCircleOutlined />}
-            onClick={() => handleStatusChange("inactive")}
-          >
-            Set Inactive
-          </Button>
-          <Button
-            onClick={() => handleStatusChange("pending")}
-          >
-            Set Pending
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleEdit}>
+                <Edit className="mr-2 h-4 w-4" /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDelete}>
+                <Trash className="mr-2 h-4 w-4" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </Card>
-      
-      <Modal
-        title="Edit Institution Details"
-        open={isEditModalVisible}
-        onCancel={() => setIsEditModalVisible(false)}
-        footer={null}
-      >
-        <EditInstitutionForm 
-          institution={institution}
-          onSubmit={handleEditSubmit}
-          isLoading={updateDetailsMutation.isPending}
-        />
-      </Modal>
-      
-      <Modal
-        title="Delete Institution"
-        open={isDeleteModalVisible}
-        onCancel={() => setIsDeleteModalVisible(false)}
-        footer={[
-          <Button onClick={() => setIsDeleteModalVisible(false)} key="cancel">
-            Cancel
-          </Button>,
-          <Button
-            danger
-            loading={deleteInstitutionMutation.isPending}
-            onClick={handleDelete}
-            key="delete"
-          >
-            Delete
-          </Button>
-        ]}
-      >
-        <p>
-          Are you sure you want to delete {institution.name}? This action cannot be undone.
-        </p>
-      </Modal>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center">
+              <Avatar className="mr-4 h-12 w-12">
+                {institutionData.logo ? (
+                  <img src={institutionData.logo} alt={institutionData.name} />
+                ) : (
+                  <span>{institutionData.name?.charAt(0)}</span>
+                )}
+              </Avatar>
+              <div>
+                <CardTitle>{institutionData.name}</CardTitle>
+                <CardDescription>{institutionData.type}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="text-sm font-bold">Contact Information</p>
+              <p>Email: {institutionData.email}</p>
+              <p>Phone: {institutionData.phoneNumber}</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold">Status</p>
+              <div className="flex items-center">
+                {institutionData.status === 'active' ? (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                    <span>Active</span>
+                  </>
+                ) : (
+                  <>
+                    <Ban className="mr-2 h-4 w-4 text-red-500" />
+                    <span>Inactive</span>
+                  </>
+                )}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleStatusToggle(institutionData.id)}
+              >
+                {institutionData.status === 'active' ? 'Deactivate' : 'Activate'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
