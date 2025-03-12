@@ -3,7 +3,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import prettierConfig from "eslint-plugin-prettier/recommended";
+import * as prettierPlugin from "eslint-plugin-prettier";
 import tseslint from "typescript-eslint";
 import cypress from "eslint-plugin-cypress";
 
@@ -19,7 +19,7 @@ export default tseslint.config(
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      "prettier": prettierConfig,
+      "prettier": prettierPlugin,
       "cypress": cypress,
     },
     rules: {
