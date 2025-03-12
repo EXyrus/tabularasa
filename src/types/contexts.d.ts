@@ -18,3 +18,10 @@ export type AuthContextType = {
     forgotPassword: (data: UserForgotPasswordRequest) => Promise<void>;
     updatePassword: (data: UserResetPasswordRequest) => Promise<void>;
 };
+
+export type Theme = 'light' | 'dark' | 'system';
+
+export type ThemeContextType = {
+    theme: Theme;
+    setTheme: (theme: Theme) => void;
+};

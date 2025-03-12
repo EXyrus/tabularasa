@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import HeaderBar from '@/components/HeaderBar';
 import BottomNavigation from '@/components/BottomNavigation';
 import SettingsForm from '@/components/settings/SettingsForm';
 import { useToast } from '@/hooks/use-toast';
+import { formatName } from '@/helpers/format-name';
 
 const VendorSettings: React.FC = () => {
   const { user } = useAuth();
@@ -77,8 +79,8 @@ const VendorSettings: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
       <HeaderBar
         appType="vendor"
-        userName={user?.name || ''}
-        userAvatar={getCloudinaryImge(user?.photo)}
+        userName={user ? formatName(user) : ''}
+        userAvatar={user?.photo || ''}
       />
 
       <div className="container max-w-3xl mx-auto px-4 py-8 mt-16">
