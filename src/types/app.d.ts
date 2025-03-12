@@ -1,8 +1,9 @@
+
 import { ComponentType } from 'react';
 import type { A } from 'ts-toolbelt';
 import type { UserRole } from './users';
 
-export type AppType = 'vendor' | 'institution' | 'guardian';
+export type AppType = 'vendor' | 'institution' | 'guardian' | 'student';
 
 declare global {
   interface Window {

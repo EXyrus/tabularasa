@@ -1,3 +1,4 @@
+
 import type { EmployeeUserResponse } from './responses';
 import type { User, UserRole } from './users';
 
@@ -42,4 +43,10 @@ export type TokenResponse = {
 export type TokenPayload = {
   role: UserRole;
   token: string;
+};
+
+export type UpdatePasswordPayload = {
+  oldPassword: string;
+  newPassword: string;
+  passwordConfirmation: string;
 };
