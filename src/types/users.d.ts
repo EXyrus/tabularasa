@@ -12,7 +12,7 @@ export type User = {
   phoneNumber: string;
   email: string;
   role: UserRole;
-  name?: string; // Add name property to support legacy code
+  name: string; // Change from optional to required for better type safety
   deletedAt?: string;
   createdAt?: string;
   updatedAt?: string;

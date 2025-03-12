@@ -29,7 +29,7 @@ export type UserResetPasswordRequest = {
   password: string;
   confirmed: string;
   email: string;
-  confirmPassword?: string; // Added confirmPassword field
+  confirmPassword: string; // Changed from optional to required
 };
 
 export type UserForgotPasswordRequest = {
