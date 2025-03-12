@@ -6,6 +6,7 @@
   "homepage": "https://tabularasa.ng",
   "scripts": {
     "build": "vite build",
+    "build:dev": "vite build --mode development",
     "cache:clear": "npx rimraf node_modules/.cache",
     "code:check:ci": "npm-run-all -p --aggregate-output tsc code:check",
     "code:check": "npm run eslint -- --cache --max-warnings=0 && npm run prettier:check",
