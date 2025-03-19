@@ -1,16 +1,17 @@
+
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import axios from 'overrides/axios';
-import { queryClient } from 'overrides/react-query';
+import { axios } from '@/overrides';
+import { queryClient } from '@/overrides';
 import type {
     InstitutionFee,
     InstitutionRole,
     InstitutionRolePayload,
     Organization,
     Role
-} from 'types';
-import type { FetchResponseError } from 'types/fetch';
-import { flattenOrgTree } from 'helpers/flatten-organization-tree';
+} from '@/types';
+import type { FetchResponseError } from '@/types/fetch';
+import { flattenOrganizationTree } from '@/helpers/flatten-organization-tree';
 import URIS from './uris.json';
 
 export const useInstitutionRoles = () => {

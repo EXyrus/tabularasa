@@ -8,10 +8,12 @@ export const flattenOrganizationTree = (
 ): OrganizationNode[] => {
   const flattened: OrganizationNode[] = [
     {
-      ...node,
+      id: node.id,
+      name: node.name,
+      parentId: node.parentId,
+      children: node.children as OrganizationNode[],
       level,
       path,
-      // Remove type property and ensure parentId is used instead of parent
     },
   ];
 

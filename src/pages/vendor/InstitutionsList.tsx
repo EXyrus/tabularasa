@@ -1,15 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Search,
-  PlusCircle,
-  Building,
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+// At the top of the file, add:
+import { AlertTriangle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -18,304 +9,372 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import HeaderBar from '@/components/HeaderBar';
-import BottomNavigation from '@/components/BottomNavigation';
-import { useAuth } from '@/context/AuthContext';
 import {
   useInstitutions,
   useUpdateInstitutionStatus,
-  useDeleteInstitution,
+  useInstitutionDetails,
 } from '@/queries/use-institutions';
-import type { InstitutionStatusPayload } from '@/types/payloads';
+import {
+  InstitutionStatusPayload,
+  InstitutionDetailsPayload,
+} from '@/types/payloads';
+import { Icons } from '@/components/icons';
+import { useNavigate } from 'react-router-dom';
+import { useDebounce } from '@/hooks/useDebounce';
+
+interface Institution {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  logo: string;
+  status: 'active' | 'inactive' | 'pending';
+  createdAt: string;
+  email: string;
+}
 
 const InstitutionsList: React.FC = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedInstitution, setSelectedInstitution] = useState<any>(null);
+  const [selectedStatus, setSelectedStatus] = useState<
+    'active' | 'inactive' | 'pending' | 'all'
+  >('all');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedInstitution, setSelectedInstitution] = useState<
+    Institution | null
+  >(null);
+  const [institutionDetails, setInstitutionDetails] = useState<{
+    name?: string;
+    institutionType?: string;
+    email?: string;
+    phoneNumber?: string;
+  }>({});
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const navigate = useNavigate();
 
-  // Use the real query instead of mock data
-  const { data: institutionsData, isLoading } = useInstitutions();
-  const updateStatusMutation = useUpdateInstitutionStatus();
-  const deleteInstitutionMutation = useDeleteInstitution();
+  const { toast } = useToast();
+  const {
+    institutions,
+    isLoading,
+    isError,
+    error,
+  } = useInstitutions();
+  const {
+    mutate: updateInstitutionStatus,
+    isLoading: isStatusUpdating,
+  } = useUpdateInstitutionStatus();
+  const {
+    mutate: updateInstitutionDetails,
+    isLoading: isDetailsUpdating,
+  } = useInstitutionDetails();
 
-  // Safely access institutions data with fallback to empty array
-  const institutions = institutionsData?.institutions || [];
-
-  const filteredInstitutions = institutions.filter(
-    institution =>
-      institution.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      institution.slug.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleStatusToggle = async (id: string, currentStatus: string) => {
-    try {
-      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-
-      const payload: InstitutionStatusPayload = {
-        id: id,
-        status: newStatus as 'active' | 'inactive' | 'pending',
-      };
-
-      await updateStatusMutation.mutateAsync(payload);
-
-      toast({
-        title: `Institution ${newStatus === 'active' ? 'activated' : 'suspended'}`,
-        description: `The institution has been ${newStatus === 'active' ? 'activated' : 'suspended'} successfully.`,
-        variant: newStatus === 'active' ? 'default' : 'destructive',
-      });
-    } catch (error) {
-      toast({
-        title: 'Status Update Failed',
-        description: 'There was an error updating the institution status.',
-        variant: 'destructive',
+  useEffect(() => {
+    if (selectedInstitution) {
+      setInstitutionDetails({
+        name: selectedInstitution.name,
+        institutionType: selectedInstitution.type,
+        email: selectedInstitution.email,
+        phoneNumber: selectedInstitution.email,
       });
     }
+  }, [selectedInstitution]);
+
+  const handleStatusChange = (
+    institutionId: string,
+    newStatus: 'active' | 'inactive' | 'pending'
+  ) => {
+    const payload: InstitutionStatusPayload = {
+      id: institutionId,
+      status: newStatus,
+    };
+
+    updateInstitutionStatus(payload, {
+      onSuccess: () => {
+        toast({
+          title: 'Status Updated',
+          description: `Institution status updated to ${newStatus}`,
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          title: 'Error',
+          description: `Failed to update institution status: ${error.message}`,
+          variant: 'destructive',
+        });
+      },
+    });
   };
 
-  const handleEdit = (id: string) => {
-    navigate(`/vendor/institutions/${id}`);
+  const filteredInstitutions = React.useMemo(() => {
+    if (!institutions) return [];
+
+    let filtered = [...institutions];
+
+    if (debouncedSearchQuery) {
+      filtered = filtered.filter((institution) =>
+        institution.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
+    }
+
+    if (selectedStatus !== 'all') {
+      filtered = filtered.filter(
+        (institution) => institution.status === selectedStatus
+      );
+    }
+
+    return filtered;
+  }, [institutions, debouncedSearchQuery, selectedStatus]);
+
+  const handleDetailsChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setInstitutionDetails({
+      ...institutionDetails,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const openDeleteDialog = (institution: any) => {
-    setSelectedInstitution(institution);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDelete = async () => {
+  const handleUpdateDetails = () => {
     if (!selectedInstitution) return;
 
-    try {
-      const payload: InstitutionStatusPayload = {
-        id: selectedInstitution.id,
-        status: selectedInstitution.status,
-      };
+    const payload: InstitutionDetailsPayload = {
+      id: selectedInstitution.id,
+      ...institutionDetails,
+    };
 
-      await deleteInstitutionMutation.mutateAsync(payload);
-
-      toast({
-        title: 'Institution deleted',
-        description: `${selectedInstitution?.name} has been deleted.`,
-        variant: 'destructive',
-      });
-
-      setDeleteDialogOpen(false);
-    } catch (error) {
-      toast({
-        title: 'Delete Failed',
-        description: 'There was an error deleting the institution.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleSendEmail = (email: string) => {
-    // This would integrate with an email service
-    toast({
-      title: 'Email sent',
-      description: `An email has been sent to ${email}.`,
+    updateInstitutionDetails(payload, {
+      onSuccess: () => {
+        toast({
+          title: 'Details Updated',
+          description: 'Institution details updated successfully',
+        });
+        setIsDetailsDialogOpen(false);
+      },
+      onError: (error: any) => {
+        toast({
+          title: 'Error',
+          description: `Failed to update institution details: ${error.message}`,
+          variant: 'destructive',
+        });
+      },
     });
   };
 
-  const handleSendNotification = (id: string) => {
-    // This would send a notification to the institution admin
-    toast({
-      title: 'Notification sent',
-      description: 'The notification has been sent to the institution admin.',
-    });
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-48">
+        <Icons.spinner className="mr-2 h-6 w-6 animate-spin" />
+        Loading institutions...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-48 text-red-500">
+        <AlertTriangle className="mr-2 h-4 w-4" />
+        Error: {(error as Error).message}
+      </div>
+    );
+  }
 
   return (
-    <>
-      <HeaderBar appType="vendor" userName={user?.name || 'Admin User'} userAvatar={user?.photo} />
-
-      <div className="page-container pt-20 pb-20 px-4 animate-fade-in">
-        <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-bold mb-1 dark:text-white">Institutions</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Manage all institutions in the system
-            </p>
+    <div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Institutions</CardTitle>
+          <CardDescription>Manage registered institutions</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Input
+              type="text"
+              placeholder="Search institutions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Select
+              value={selectedStatus}
+              onValueChange={(value) =>
+                setSelectedStatus(value as typeof selectedStatus)
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search institutions..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="pl-10 w-full sm:w-[250px]"
-              />
-            </div>
-
-            <Button onClick={() => navigate('/vendor/create-institution')} className="gap-1">
-              <PlusCircle className="h-4 w-4" />
-              <span>Add Institution</span>
-            </Button>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          {isLoading ? (
-            <div className="flex justify-center items-center p-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[300px]">Institution</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Created At</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredInstitutions.map((institution) => (
+                  <TableRow key={institution.id}>
+                    <TableCell>{institution.name}</TableCell>
+                    <TableCell>{institution.type}</TableCell>
+                    <TableCell>{institution.email}</TableCell>
+                    <TableCell>
+                      <Select
+                        value={institution.status}
+                        onValueChange={(value) =>
+                          handleStatusChange(institution.id, value as any)
+                        }
+                        disabled={isStatusUpdating}
+                      >
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue placeholder={institution.status} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedInstitution(institution);
+                          setIsDetailsDialogOpen(true);
+                        }}
+                      >
+                        View Details
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="ml-2"
+                        onClick={() =>
+                          navigate(`/vendor/institutions/${institution.id}`)
+                        }
+                      >
+                        Manage
+                      </Button>
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredInstitutions.length === 0 ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={5}
-                        className="text-center py-8 text-gray-500 dark:text-gray-400"
-                      >
-                        <Building className="h-12 w-12 mx-auto mb-2 opacity-20" />
-                        <p>No institutions found</p>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    filteredInstitutions.map(institution => (
-                      <TableRow
-                        key={institution.id}
-                        className="hover:bg-gray-50 dark:hover:bg-gray-700"
-                      >
-                        <TableCell className="font-medium">
-                          <div>
-                            <div className="font-medium dark:text-white">{institution.name}</div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {institution.slug}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Switch
-                              checked={institution.status === 'active'}
-                              onCheckedChange={() =>
-                                handleStatusToggle(institution.id, institution.status)
-                              }
-                            />
-                            <span
-                              className={`text-sm ${
-                                institution.status === 'active'
-                                  ? 'text-green-600 dark:text-green-400'
-                                  : institution.status === 'inactive'
-                                    ? 'text-red-600 dark:text-red-400'
-                                    : 'text-yellow-600 dark:text-yellow-400'
-                              }`}
-                            >
-                              {institution.status.charAt(0).toUpperCase() +
-                                institution.status.slice(1)}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>{institution.type}</TableCell>
-                        <TableCell>
-                          {new Date(institution.createdAt).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Actions</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() => navigate(`/vendor/institutions/${institution.id}`)}
-                              >
-                                <Building className="mr-2 h-4 w-4" />
-                                View Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleEdit(institution.id)}>
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Edit Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleSendEmail(institution.email)}>
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Email Admin
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleSendNotification(institution.id)}
-                              >
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Send Notification
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-red-600 dark:text-red-400 focus:text-red-700 dark:focus:text-red-300"
-                                onClick={() => openDeleteDialog(institution)}
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </div>
-      </div>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
 
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
+      <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
-              Delete Institution
-            </DialogTitle>
+            <DialogTitle>Institution Details</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {selectedInstitution?.name}? This action cannot be
-              undone.
+              Update institution details here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-              Cancel
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                value={institutionDetails.name || ''}
+                onChange={handleDetailsChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="institutionType" className="text-right">
+                Type
+              </Label>
+              <Input
+                id="institutionType"
+                name="institutionType"
+                value={institutionDetails.institutionType || ''}
+                onChange={handleDetailsChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-right">
+                Email
+              </Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={institutionDetails.email || ''}
+                onChange={handleDetailsChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="phoneNumber" className="text-right">
+                Phone Number
+              </Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                value={institutionDetails.phoneNumber || ''}
+                onChange={handleDetailsChange}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit" onClick={handleUpdateDetails} disabled={isDetailsUpdating}>
+              {isDetailsUpdating ? (
+                <>
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                'Save changes'
+              )}
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              Delete Institution
-            </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
-
-      <BottomNavigation appType="vendor" />
-    </>
+    </div>
   );
 };
 

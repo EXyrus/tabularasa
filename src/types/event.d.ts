@@ -6,6 +6,7 @@ export type RecipientGroup = {
   members: string[];
   createdAt: string;
   updatedAt: string;
+  type?: string;
 };
 
 export type Organization = {
@@ -22,18 +23,25 @@ export type OrganizationNode = {
   name: string;
   parentId?: string;
   children?: OrganizationNode[];
+  level?: number;
+  path?: string[];
 };
 
 export type Event = {
   id: string;
   title: string;
   description: string;
-  date: string;
-  time: string;
+  date?: string;
+  time?: string;
+  startDate?: string;
+  endDate?: string;
   location: string;
-  organizer: string;
+  organizer?: string;
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   attendees?: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+  allDay?: boolean;
+  createdBy?: string;
+  recipientGroups?: { id: string; name: string; type: string; members: number }[];
 };

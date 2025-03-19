@@ -25,5 +25,7 @@ export type Student = {
   grade?: string;
   section?: string;
   attendance?: number;
-  avatar?: string; // Add avatar as an alternative to photo
+  avatar?: string; // Alternative to photo
+  nextClass?: string; // For student dashboard
+  teacher?: string; // For student dashboard
 };

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -23,13 +24,13 @@ const ForgotPassword: React.FC = () => {
   const { forgotPassword } = useAuth();
   const {
     register,
-    handleSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
       // Corrected to use only one argument
@@ -61,7 +62,7 @@ const ForgotPassword: React.FC = () => {
           Enter your email address and we will send you a reset link.
         </p>
       </div>
-      <form onSubmit={handleSubmit(handleSubmit)} className="space-y-4">
+      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input

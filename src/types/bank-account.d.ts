@@ -1,5 +1,16 @@
 
-export interface BankAccount {
+export type BankAccount = {
+  id: string;
+  bank: string;
+  accountNumber: string;
+  accountName: string;
+  accountType: string;
+  institutionId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BankAccountResponse = {
   id: string;
   bank: string;
   accountNumber: string;
@@ -9,8 +20,4 @@ export interface BankAccount {
   createdAt: string;
   updatedAt: string;
   isDefault?: boolean;
-}
-
-
-
-
+};

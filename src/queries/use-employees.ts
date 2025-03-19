@@ -1,13 +1,14 @@
+
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import axios from 'overrides/axios';
+import { axios } from '@/overrides';
 import type {
     AllEmployeeResponse,
     Employee,
     EmployeePayload,
     SingleEmployeeResponse
-} from 'types';
-import type { FetchResponseError } from 'types/fetch';
+} from '@/types';
+import type { FetchResponseError } from '@/types/fetch';
 import URIS from './uris.json';
 
 export const useEmployeesQuery = () => {
