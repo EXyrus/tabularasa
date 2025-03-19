@@ -21,9 +21,9 @@ const ResetPassword: React.FC = () => {
       const resetData: UserResetPasswordRequest = {
         token: values.resetCode,
         password: values.password,
-        confirmPassword: values.confirmPassword,
         confirmed: values.confirmPassword, // Add the required confirmed field
-        email: '' // Add a default email that will be overridden by the backend
+        email: '', // Add a default email that will be overridden by the backend
+        confirmPassword: values.confirmPassword
       };
       
       await resetPassword(resetData);
