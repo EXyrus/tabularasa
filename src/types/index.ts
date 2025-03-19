@@ -7,7 +7,8 @@ import type { Student as StudentType } from './student';
 import type { User, UserRole, Employee } from './users';
 import type { Payment, Transaction } from './finance';
 import type { SchoolResponse, InstitutionResponse, InstitutionsResponse, 
-  StudentDashboardResponse, StudentData, SuspensionData, SingleEmployeeResponse } from './responses';
+  StudentDashboardResponse, StudentData, SuspensionData, SingleEmployeeResponse, AllEmployeeResponse } from './responses';
+import type { BankAccount, BankAccountResponse } from './bank-account';
 
 // Export all types from their respective files
 export * from './app';
@@ -23,6 +24,7 @@ export * from './service-worker';
 export * from './utilities';
 export * from './users';
 export * from './student';
+export * from './responses';
 
 // Export responses separately to avoid naming conflicts
 import type * as ResponseTypes from './responses';
@@ -48,5 +50,8 @@ export {
   StudentDashboardResponse,
   StudentData,
   SuspensionData,
-  SingleEmployeeResponse
+  SingleEmployeeResponse,
+  AllEmployeeResponse,
+  BankAccount,
+  BankAccountResponse
 };

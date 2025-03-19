@@ -1,173 +1,132 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
+import { Event, RecipientGroup } from '@/types';
+import { axios } from '@/overrides';
+import { queryClient } from '@/overrides';
+import URIS from './uris.json';
 
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { Event, RecipientGroup } from '@/types/institution';
-import { useToast } from '@/hooks/use-toast';
+export const useEvents = () => {
+    return useQuery({
+        queryKey: ['events'],
+        queryFn: async () => {
+            const response = await axios.get<Event[]>(URIS.events.index);
 
-/**
- * Custom hook to fetch events
- */
-export const useGetEvents = () => {
-  return useQuery({
-    queryKey: ['events'],
-    queryFn: async () => {
-      try {
-        // Mock data for development - in production this would fetch from the API
-        const mockEvents: Event[] = [
-          {
-            id: '1',
-            title: 'Parent-Teacher Conference',
-            description: 'Annual parent-teacher conference to discuss student progress',
-            startDate: '2023-10-15T14:00:00',
-            endDate: '2023-10-15T18:00:00',
-            location: 'School Main Hall',
-            allDay: false,
-            createdBy: 'Administrator',
-            recipientGroups: [
-              { id: '1', name: 'All Parents', type: 'guardian', members: 450 }
-            ]
-          },
-          {
-            id: '2',
-            title: 'Staff Meeting',
-            description: 'Monthly staff meeting to discuss school operations',
-            startDate: '2023-10-10T09:00:00',
-            endDate: '2023-10-10T11:00:00',
-            location: 'Conference Room A',
-            allDay: false,
-            createdBy: 'Principal',
-            recipientGroups: [
-              { id: '2', name: 'All Staff', type: 'staff', members: 45 }
-            ]
-          },
-          {
-            id: '3',
-            title: 'School Holiday',
-            description: 'National Independence Day',
-            startDate: '2023-10-01T00:00:00',
-            endDate: '2023-10-01T23:59:59',
-            allDay: true,
-            createdBy: 'System',
-            recipientGroups: [
-              { id: '3', name: 'Everyone', type: 'all', members: 1200 }
-            ]
-          }
-        ];
-        
-        return mockEvents;
-      } catch (error: any) {
-        console.error('Error fetching events:', error);
-        throw new Error(error.message || 'Failed to fetch events');
-      }
-    },
-    retry: 1,
-  });
+            return response.data;
+        }
+    });
 };
 
-/**
- * Custom hook to fetch recipient groups
- */
-export const useGetRecipientGroups = () => {
-  return useQuery({
-    queryKey: ['recipient_groups'],
-    queryFn: async () => {
-      try {
-        // Mock data for development - in production this would fetch from the API
-        const mockGroups: RecipientGroup[] = [
-          { id: '1', name: 'All Parents', type: 'guardian', description: 'All registered parents/guardians', members: 450 },
-          { id: '2', name: 'All Staff', type: 'staff', description: 'All school staff members', members: 45 },
-          { id: '3', name: 'Everyone', type: 'all', description: 'All users in the system', members: 1200 },
-          { id: '4', name: 'Primary School Students', type: 'student', description: 'All primary school students', members: 300 },
-          { id: '5', name: 'Secondary School Students', type: 'student', description: 'All secondary school students', members: 450 },
-          { id: '6', name: 'Teaching Staff', type: 'staff', description: 'Teachers only', members: 30 },
-          { id: '7', name: 'Admin Staff', type: 'staff', description: 'Administrative staff only', members: 15 }
-        ];
-        
-        return mockGroups;
-      } catch (error: any) {
-        console.error('Error fetching recipient groups:', error);
-        throw new Error(error.message || 'Failed to fetch recipient groups');
-      }
-    },
-    retry: 1,
-  });
+export const useEvent = (id: string) => {
+    return useQuery({
+        queryKey: ['event', id],
+        queryFn: async () => {
+            const response = await axios.get<Event>(`${URIS.events.index}/${id}`);
+
+            return response.data;
+        },
+        enabled: !!id // Ensure the query doesn't run without an ID
+    });
 };
 
-/**
- * Custom hook to add an event
- */
-export const useAddEvent = () => {
-  const { toast } = useToast();
-  
-  return useMutation({
-    mutationFn: async (newEvent: Omit<Event, 'id'>) => {
-      try {
-        // This would be an API call in production
-        console.log('Adding event:', newEvent);
-        
-        // Mock creating a new event with an ID
-        const createdEvent: Event = {
-          id: Math.random().toString(36).substring(2, 11),
-          ...newEvent
-        };
-        
-        return createdEvent;
-      } catch (error: any) {
-        console.error('Error adding event:', error);
-        throw new Error(error.message || 'Failed to add event');
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Event created successfully",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to create event: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });
+export const useCreateEvent = () => {
+    return useMutation<Event, AxiosError, Event>({
+        mutationFn: async (event: Event) => {
+            const response = await axios.post<Event>(URIS.events.index, event);
+
+            return response.data;
+        },
+        onSuccess: () => {
+            // Invalidate and refetch events after successful creation
+            queryClient.invalidateQueries({ queryKey: ['events'] });
+        }
+    });
 };
 
-/**
- * Custom hook to add a recipient group
- */
-export const useAddRecipientGroup = () => {
-  const { toast } = useToast();
-  
-  return useMutation({
-    mutationFn: async (newGroup: Omit<RecipientGroup, 'id'>) => {
-      try {
-        // This would be an API call in production
-        console.log('Adding recipient group:', newGroup);
-        
-        // Mock creating a new group with an ID
-        const createdGroup: RecipientGroup = {
-          id: Math.random().toString(36).substring(2, 11),
-          ...newGroup
-        };
-        
-        return createdGroup;
-      } catch (error: any) {
-        console.error('Error adding recipient group:', error);
-        throw new Error(error.message || 'Failed to add recipient group');
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Recipient group created successfully",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to create recipient group: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });
+export const useUpdateEvent = () => {
+    return useMutation<Event, AxiosError, Event>({
+        mutationFn: async (event: Event) => {
+            const response = await axios.put<Event>(`${URIS.events.index}/${event.id}`, event);
+
+            return response.data;
+        },
+        onSuccess: () => {
+            // Invalidate and refetch events after successful update
+            queryClient.invalidateQueries({ queryKey: ['events'] });
+        }
+    });
+};
+
+export const useDeleteEvent = () => {
+    return useMutation<void, AxiosError, string>({
+        mutationFn: async (id: string) => {
+            await axios.delete(`${URIS.events.index}/${id}`);
+        },
+        onSuccess: () => {
+            // Invalidate and refetch events after successful deletion
+            queryClient.invalidateQueries({ queryKey: ['events'] });
+        }
+    });
+};
+
+export const useRecipientGroups = () => {
+    return useQuery({
+        queryKey: ['recipientGroups'],
+        queryFn: async () => {
+            const response = await axios.get<RecipientGroup[]>(URIS.recipientGroups.index);
+
+            return response.data;
+        }
+    });
+};
+
+export const useRecipientGroup = (id: string) => {
+    return useQuery({
+        queryKey: ['recipientGroup', id],
+        queryFn: async () => {
+            const response = await axios.get<RecipientGroup>(`${URIS.recipientGroups.index}/${id}`);
+
+            return response.data;
+        },
+        enabled: !!id // Ensure the query doesn't run without an ID
+    });
+};
+
+export const useCreateRecipientGroup = () => {
+    return useMutation<RecipientGroup, AxiosError, RecipientGroup>({
+        mutationFn: async (recipientGroup: RecipientGroup) => {
+            const response = await axios.post<RecipientGroup>(URIS.recipientGroups.index, recipientGroup);
+
+            return response.data;
+        },
+        onSuccess: () => {
+            // Invalidate and refetch recipient groups after successful creation
+            queryClient.invalidateQueries({ queryKey: ['recipientGroups'] });
+        }
+    });
+};
+
+export const useUpdateRecipientGroup = () => {
+    return useMutation<RecipientGroup, AxiosError, RecipientGroup>({
+        mutationFn: async (recipientGroup: RecipientGroup) => {
+            const response = await axios.put<RecipientGroup>(`${URIS.recipientGroups.index}/${recipientGroup.id}`, recipientGroup);
+
+            return response.data;
+        },
+        onSuccess: () => {
+            // Invalidate and refetch recipient groups after successful update
+            queryClient.invalidateQueries({ queryKey: ['recipientGroups'] });
+        }
+    });
+};
+
+export const useDeleteRecipientGroup = () => {
+    return useMutation<void, AxiosError, string>({
+        mutationFn: async (id: string) => {
+            await axios.delete(`${URIS.recipientGroups.index}/${id}`);
+        },
+        onSuccess: () => {
+            // Invalidate and refetch recipient groups after successful deletion
+            queryClient.invalidateQueries({ queryKey: ['recipientGroups'] });
+        }
+    });
 };

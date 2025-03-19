@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { FinanceTransaction } from '@/types/institution';
+import { FinanceTransaction } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
 /**

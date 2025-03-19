@@ -1,58 +1,38 @@
 
-export interface FinanceTransaction {
+export type Payment = {
   id: string;
   amount: number;
   description: string;
-  date: string;
-  category: string;
-  type: 'income' | 'expense';
+  reference: string;
   status: 'pending' | 'completed' | 'failed';
-  paymentMethod?: string;
+  studentId?: string;
+  studentName?: string;
   institutionId: string;
-  createdBy: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface Paystack {
-  button?: () => React.ReactNode;
-  close: () => void;
-  onSuccess: (response: Record<string, any>) => void;
-  onCancel: () => void;
-}
-
-export interface Transaction {
+export type Transaction = {
   id: string;
   amount: number;
-  referenceNumber: string;
-  status?: string;
-  description?: string;
+  description: string;
+  reference: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FinanceTransaction = {
+  id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: string;
+  reference: string;
+  date: string;
+  institutionId?: string;
   createdAt?: string;
   updatedAt?: string;
-}
-
-
-export type Paystack = {
-  button?: () => React.ReactNode;
-  close: () => void;
-  onSuccess: (response: Record<string, any>) => void;
-  onCancel: () => void;
+  paymentMethod?: string;
+  status?: string;
 };
-
-export type PaystackProps = {
-  publicKey: string;
-  email: string;
-  amount: number;
-  reference?: string;
-  metadata?: Record<string, any>;
-  currency?: string;
-  channels?: string[];
-  callback?: (response: Record<string, any>) => void;
-  onClose?: () => void;
-  onSuccess?: (response: Record<string, any>) => void;
-  onCancel?: () => void;
-  className?: string;
-  text?: string;
-  disabled?: boolean;
-};
-

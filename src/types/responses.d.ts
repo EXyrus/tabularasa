@@ -186,4 +186,18 @@ export type FinanceTransaction = {
   institutionId: string;
   createdAt: string;
   updatedAt: string;
+  paymentMethod?: string;
+  status?: string;
+};
+
+// Add InstitutionFee type
+export type InstitutionFee = {
+  id: string;
+  name: string;
+  amount: number;
+  description?: string;
+  dueDate?: string;
+  institutionId: string;
+  createdAt: string;
+  updatedAt: string;
 };

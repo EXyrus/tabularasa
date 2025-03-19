@@ -1,6 +1,6 @@
-// At the top of the file, add:
-import { AlertTriangle } from 'lucide-react';
+
 import React, { useState, useEffect } from 'react';
+import { AlertTriangle } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -17,7 +17,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import {
@@ -40,13 +39,9 @@ import {
   useUpdateInstitutionStatus,
   useInstitutionDetails,
 } from '@/queries/use-institutions';
-import {
-  InstitutionStatusPayload,
-  InstitutionDetailsPayload,
-} from '@/types/payloads';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Icons } from '@/components/icons';
 import { useNavigate } from 'react-router-dom';
-import { useDebounce } from '@/hooks/useDebounce';
 
 interface Institution {
   id: string;
@@ -59,12 +54,25 @@ interface Institution {
   email: string;
 }
 
+interface InstitutionStatusPayload {
+  id: string;
+  status: 'active' | 'inactive' | 'pending';
+}
+
+interface InstitutionDetailsPayload {
+  id: string;
+  name?: string;
+  institutionType?: string;
+  email?: string;
+  phoneNumber?: string;
+}
+
 const InstitutionsList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<
     'active' | 'inactive' | 'pending' | 'all'
   >('all');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [selectedInstitution, setSelectedInstitution] = useState<
     Institution | null
   >(null);
@@ -74,13 +82,12 @@ const InstitutionsList: React.FC = () => {
     email?: string;
     phoneNumber?: string;
   }>({});
-  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const navigate = useNavigate();
 
   const { toast } = useToast();
   const {
-    institutions,
+    data: institutionsData,
     isLoading,
     isError,
     error,
@@ -130,6 +137,8 @@ const InstitutionsList: React.FC = () => {
       },
     });
   };
+
+  const institutions = institutionsData?.institutions || [];
 
   const filteredInstitutions = React.useMemo(() => {
     if (!institutions) return [];

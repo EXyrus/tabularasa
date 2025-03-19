@@ -8,6 +8,7 @@ export type BankAccount = {
   institutionId: string;
   createdAt: string;
   updatedAt: string;
+  isDefault?: boolean;
 };
 
 export type BankAccountResponse = {

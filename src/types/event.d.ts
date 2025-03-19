@@ -15,7 +15,6 @@ export type Organization = {
   description?: string;
   parentId?: string;
   children?: Organization[];
-  level?: number;
 };
 
 export type OrganizationNode = {

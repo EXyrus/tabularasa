@@ -1,30 +1,28 @@
-
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { axios } from '@/overrides';
 import { queryClient } from '@/overrides';
 import type {
     InstitutionFee,
-    InstitutionRole,
-    InstitutionRolePayload,
     Organization,
-    Role
+    OrganizationNode,
+    RecipientGroup
 } from '@/types';
 import type { FetchResponseError } from '@/types/fetch';
 import { flattenOrganizationTree } from '@/helpers/flatten-organization-tree';
 import URIS from './uris.json';
 
-export const useInstitutionRoles = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
-
+export const useRecipientGroups = () => {
     return useQuery({
-        queryKey: ['roles', institution.data.id],
+        queryKey: ['recipient-groups'],
 
         queryFn: async () => {
-            const response = await axios.get<Role[]>(
-                `${URIS.institutions.index}/${institution.data.id}/roles`
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
+
+            const response = await axios.get<RecipientGroup[]>(
+                `${URIS.institutions.index}/${storedName?.data.id}/recipient-groups`
             );
 
             return response.data;
@@ -32,114 +30,79 @@ export const useInstitutionRoles = () => {
     });
 };
 
-export const useCreateInstitutionRole = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
-
+export const useCreateRecipientGroup = () => {
     return useMutation({
-        mutationFn: async (variables: InstitutionRolePayload) => {
-            const response = await axios.post<InstitutionRole>(
-                `${URIS.institutions.index}/${institution.data?.id}/roles/save`,
-                variables
+        mutationFn: async (data: RecipientGroup) => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
+
+            const response = await axios.post(
+                `${URIS.institutions.index}/${storedName?.data.id}/recipient-groups`,
+                data
             );
 
             return response.data;
         },
 
         onSettled: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['roles']
-            });
+            queryClient.invalidateQueries({ queryKey: ['recipient-groups'] });
         }
     });
 };
 
-export const useGetInstitutionStructure = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
-
-    return useQuery({
-        queryKey: ['structure', institution.data.id],
-
-        queryFn: async () => {
-            const response = await axios.get(
-                `${URIS.institutions.index}/${institution.data.id}/structure`
-            );
-
-            return response.data as Organization[];
-        }
-    });
-};
-
-export const useUpdateInstitutionStructure = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
-
+export const useUpdateRecipientGroup = () => {
     return useMutation({
-        mutationFn: async (params: Organization) => {
-            const flattendOrgTree = flattenOrgTree(params);
-            const response = await axios.post<Organization[]>(
-                `${URIS.institutions.index}/${institution.data.id}/structure`,
-                flattendOrgTree
+        mutationFn: async (data: RecipientGroup) => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
+
+            const response = await axios.put(
+                `${URIS.institutions.index}/${storedName?.data.id}/recipient-groups/${data.id}`,
+                data
             );
 
             return response.data;
         },
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['institution']
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['structure']
-            });
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['recipient-groups'] });
         }
     });
 };
 
-export const useDeleteStructure = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
+export const useDeleteRecipientGroup = () => {
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
 
-    const deleteOrganizationMutation = useMutation({
-        mutationFn: async (organizationId: number) => {
             const response = await axios.delete(
-                `${URIS.institutions.index}/${institution.data.id}/structure/${organizationId}`
+                `${URIS.institutions.index}/${storedName?.data.id}/recipient-groups/${id}`
             );
 
             return response.data;
         },
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['institution']
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['organizations']
-            });
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['recipient-groups'] });
         }
     });
-
-    return {
-        deleteOrganization: deleteOrganizationMutation.mutateAsync
-    };
 };
 
 export const useInstitutionFees = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
-
     return useQuery({
-        queryKey: ['fees', institution.data.id],
+        queryKey: ['institution-fees'],
 
         queryFn: async () => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
+
             const response = await axios.get<InstitutionFee[]>(
-                `${URIS.institutions.index}/${institution.data.id}/fees`
+                `${URIS.institutions.index}/${storedName?.data.id}/institution-fees`
             );
 
             return response.data;
@@ -148,77 +111,84 @@ export const useInstitutionFees = () => {
 };
 
 export const useCreateInstitutionFee = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
-
     return useMutation({
-        mutationFn: async (variables: Omit<InstitutionFee, 'id'>) => {
+        mutationFn: async (data: InstitutionFee) => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
+
             const response = await axios.post(
-                `${URIS.institutions.index}/${institution.data?.id}/fees`,
-                variables
+                `${URIS.institutions.index}/${storedName?.data.id}/institution-fees`,
+                data
             );
 
             return response.data;
         },
 
         onSettled: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['fees']
-            });
+            queryClient.invalidateQueries({ queryKey: ['institution-fees'] });
         }
     });
 };
 
-export const useEditInstitutionFees = () => {
-    const institution = JSON.parse(
-        localStorage.getItem('institutionTheme') ?? '{}'
-    );
+export const useUpdateInstitutionFee = () => {
+    return useMutation({
+        mutationFn: async (data: InstitutionFee) => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
 
-    const editFeeMutation = useMutation<
-        InstitutionRole,
-        AxiosError<FetchResponseError>,
-        { id: string; newName: string }
-    >({
-        mutationFn: async params => {
-            const { id, newName } = params;
-
-            const response = await axios.patch<InstitutionRole>(
-                `${URIS.institutions.index}/${institution.data.id}/fees/${id}`,
-                { newName }
+            const response = await axios.put(
+                `${URIS.institutions.index}/${storedName?.data.id}/institution-fees/${data.id}`,
+                data
             );
 
             return response.data;
         },
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['fees']
-            });
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['institution-fees'] });
         }
     });
+};
 
-    const deleteFeeMutation = useMutation({
-        mutationFn: async (roleId: string) => {
-            await axios.delete(
-                `${URIS.institutions.index}/${institution.data.id}/fees/${roleId}`
+export const useDeleteInstitutionFee = () => {
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
             );
+
+            const response = await axios.delete(
+                `${URIS.institutions.index}/${storedName?.data.id}/institution-fees/${id}`
+            );
+
+            return response.data;
         },
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['fees']
-            });
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['institution-fees'] });
         }
     });
+};
 
-    const editFee = async (id: string, newName: string) => {
-        await editFeeMutation.mutateAsync({ id, newName });
-    };
+// Fix the organization tree function
+export const useOrganizationTree = () => {
+    return useQuery({
+        queryKey: ['organization-tree'],
 
-    const deleteFee = async (id: string) => {
-        await deleteFeeMutation.mutateAsync(id);
-    };
+        queryFn: async () => {
+            const storedName = JSON.parse(
+                localStorage.getItem('institutionTheme') ?? '{}'
+            );
 
-    return { editFee, deleteFee };
+            const response = await axios.get<Organization>(
+                `${URIS.institutions.index}/${storedName?.data.id}/organization-structure`
+            );
+
+            const flattendOrgTree = flattenOrganizationTree(response.data);
+
+            return flattendOrgTree;
+        }
+    });
 };

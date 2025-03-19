@@ -1,22 +1,19 @@
 
-import type { User } from '@/types';
-import type { EmployeeUserResponse } from '@/types/responses';
+import type { Student, User } from '@/types';
 
 /**
- * Format the user's name from firstName and lastName
- * @param user User object or EmployeeUserResponse
+ * Helper function to format a user or student name
+ * @param user User or Student object
  * @returns Formatted name string
  */
-export const formatName = (user: User | EmployeeUserResponse | null): string => {
+export const formatName = (user: User | Student | null): string => {
   if (!user) return '';
-  
-  // Handle user with firstName and lastName
+
   if ('firstName' in user && 'lastName' in user) {
     return `${user.firstName} ${user.lastName}`;
   }
   
-  // If the user object has a name property and it's a string
-  if ('name' in user && typeof user.name === 'string') {
+  if ('name' in user && user.name) {
     return user.name;
   }
   

@@ -24,7 +24,7 @@ const ForgotPassword: React.FC = () => {
   const { forgotPassword } = useAuth();
   const {
     register,
-    handleSubmit: formSubmit,
+    handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -62,7 +62,7 @@ const ForgotPassword: React.FC = () => {
           Enter your email address and we will send you a reset link.
         </p>
       </div>
-      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
