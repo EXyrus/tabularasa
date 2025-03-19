@@ -65,6 +65,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initializeDarkMode();
   }, []);
 
+  // Add resetPassword function implementation
+  const resetPassword = async (data: UserResetPasswordRequest) => {
+    // For now, just a placeholder implementation that delegates to updatePassword
+    await updatePassword(data);
+  };
+
   const value: AuthContextType = {
     user,
     userRole,
@@ -73,7 +79,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     institutionLogin,
     logout,
     forgotPassword,
-    updatePassword
+    updatePassword,
+    resetPassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

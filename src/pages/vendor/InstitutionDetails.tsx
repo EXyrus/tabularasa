@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { MoreVertical, Edit, Trash, ArrowLeft, CheckCircle, Ban } from 'lucide-react';
 import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
-import { getInstitutionDetails, updateInstitutionDetails, updateInstitutionStatus } from '@/queries/use-institutions';
-import { InstitutionDetailsPayload } from '@/types';
+import { useInstitutionDetails, useUpdateInstitutionDetails, useUpdateInstitutionStatus } from '@/queries/use-institutions';
+import { InstitutionDetailsPayload, InstitutionStatusPayload } from '@/types/payloads';
 import HeaderBar from '@/components/HeaderBar';
 import { useAuth } from '@/context/AuthContext';
-import { InstitutionStatusPayload } from '@/types/payloads';
 
 const InstitutionDetails: React.FC = () => {
   const { user } = useAuth();
@@ -20,23 +19,12 @@ const InstitutionDetails: React.FC = () => {
   const { toast } = useToast();
   const [institutionData, setInstitutionData] = useState<any>(null);
 
-  const { data, isLoading, isError, error } = useQuery(
-    ['institution', institutionId],
-    () => getInstitutionDetails(institutionId as string),
-    {
-      enabled: !!institutionId,
-      onSuccess: (data) => {
-        setInstitutionData(data);
-      },
-      onError: (err: any) => {
-        toast({
-          title: 'Error',
-          description: `Failed to fetch institution details: ${err.message}`,
-          variant: 'destructive',
-        });
-      },
-    }
-  );
+  // Use the correct hook
+  const { data, isLoading, isError, error } = useInstitutionDetails(institutionId as string);
+  
+  // Use the mutation hooks
+  const updateInstitutionDetailsMutation = useUpdateInstitutionDetails();
+  const updateInstitutionStatusMutation = useUpdateInstitutionStatus();
 
   useEffect(() => {
     if (data) {
@@ -61,9 +49,9 @@ const InstitutionDetails: React.FC = () => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     
     try {
-      await updateInstitutionStatus({ 
+      await updateInstitutionStatusMutation.mutateAsync({ 
         id: institutionId, 
-        status: newStatus // Added the required status field
+        status: newStatus
       });
       
       // Update the local state to reflect the change

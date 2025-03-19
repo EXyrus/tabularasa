@@ -1,5 +1,6 @@
+
 import type { Institution } from './institution';
-import type { Employee } from './user';
+import type { Employee } from './users';
 
 export type InstitutionStatusPayload = {
   id: string;
@@ -53,38 +54,10 @@ export type EmployeePayload = {
   id: string;
 };
 
-export interface InstitutionStatusPayload {
-  id: string;
-  status: 'active' | 'inactive' | 'pending';
-}
-
-export interface InstitutionDetailsPayload {
-  id: string;
-  name?: string;
-  institutionType?: string;
-  email?: string;
-  phoneNumber?: string;
-}
-
-export interface CreateInstitutionDetailsPayload {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  type: string;
-}
-
-export interface InstitutionDetailsPayload {
-  id: string;
-  name?: string;
-  institutionType?: string;
-  email?: string;
-  phoneNumber?: string;
-}
-
-export interface BankAccountPayload {
+export type BankAccountPayload = {
   bank: string;
   accountNumber: string;
   accountName: string;
   accountType: string;
   password?: string;
-}
+};

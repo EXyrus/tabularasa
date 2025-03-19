@@ -25,4 +25,5 @@ export type Student = {
   grade?: string;
   section?: string;
   attendance?: number;
+  avatar?: string; // Add avatar as an alternative to photo
 };

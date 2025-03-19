@@ -80,6 +80,7 @@ export type Student = {
   grade?: string;
   section?: string;
   attendance?: number;
+  avatar?: string; // Add avatar as an alternative to photo
 };
 
 export type StudentData = {
@@ -130,11 +131,17 @@ export interface BankAccountResponse {
 }
 
 export interface InstitutionResponse {
+  institutions: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    type: string;
+    logo: string;
+    status: 'active' | 'inactive' | 'pending';
+    createdAt: string;
+    email: string;
+  }>;
   type: string;
-  id: string;
-  name: string;
-  logo: string;
-  status: 'pending' | 'active' | 'inactive';
 }
 
 export interface InstitutionsResponse {
@@ -145,6 +152,7 @@ export interface InstitutionsResponse {
   tertiary: number | string;
   secondary: number | string;
   primary: number | string;
+  total: number | string;
 }
 
 export type AdminLoginResponse = {

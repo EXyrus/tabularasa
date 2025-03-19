@@ -4,13 +4,7 @@ import {
   Search,
   PlusCircle,
   Building,
-  ArrowUpDown,
   MoreHorizontal,
-  Check,
-  X,
-  AlertTriangle,
-  Mail,
-  BellRing,
   Pencil,
   Trash2,
 } from 'lucide-react';
@@ -26,8 +20,8 @@ import {
 } from '@/components/ui/table';
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
@@ -48,7 +42,7 @@ import {
   useUpdateInstitutionStatus,
   useDeleteInstitution,
 } from '@/queries/use-institutions';
-import type { InstitutionStatusPayload } from '@/types';
+import type { InstitutionStatusPayload } from '@/types/payloads';
 
 const InstitutionsList: React.FC = () => {
   const { user } = useAuth();
@@ -268,13 +262,13 @@ const InstitutionsList: React.FC = () => {
                                 Edit Details
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleSendEmail(institution.email)}>
-                                <Mail className="mr-2 h-4 w-4" />
+                                <Pencil className="mr-2 h-4 w-4" />
                                 Email Admin
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => handleSendNotification(institution.id)}
                               >
-                                <BellRing className="mr-2 h-4 w-4" />
+                                <Pencil className="mr-2 h-4 w-4" />
                                 Send Notification
                               </DropdownMenuItem>
                               <DropdownMenuItem
